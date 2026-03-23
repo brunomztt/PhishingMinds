@@ -1,23 +1,34 @@
-Features Phishing Minds
+Features 
 
- 
+-Gestão de Empresas e Planos
+    Empresas, Usuários, Permissões
+    
+-Gestão de Usuários, Setores e Cargos
 
--Gestão de Empresas e Contratos  
+-Controle de Acesso
+    Perfis: ADM, Empresa, Desenvolvedores
 
--Gestão de Usuários e Setores e Cargos 
+-Templates de Phishing
 
--Templates de Phishing 
+-Criação e Agendamento de Campanhas
 
--Criação e Agendamento de Campanhas 
+-Disparo e Rastreamento de E-mails
 
--Disparo e Rastreamento de E-mails 
+-Landing Pages e Captura de Credenciais
 
--Alertas e Reincidência 
+-Reincidência e Filtros por Comportamento
 
--Dashboards e Métricas 
+-Treinamento Pós-Phishing
 
--Simulação de Impacto Financeiro 
+-Dashboards e Métricas
 
--Iframe e Integrações 
+-Simulação de Impacto Financeiro
 
--Landing Pages e Captura de Credenciais 
+-Alertas e Notificações
+
+-Auditoria e Logs
+
+-Iframe e Integrações
+
+-Relatórios Exportáveis
+    (Possível implementação futura)
