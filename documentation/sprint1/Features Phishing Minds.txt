@@ -1,0 +1,23 @@
+Features Phishing Minds
+
+ 
+
+-Gestão de Empresas e Contratos  
+
+-Gestão de Usuários e Setores e Cargos 
+
+-Templates de Phishing 
+
+-Criação e Agendamento de Campanhas 
+
+-Disparo e Rastreamento de E-mails 
+
+-Alertas e Reincidência 
+
+-Dashboards e Métricas 
+
+-Simulação de Impacto Financeiro 
+
+-Iframe e Integrações 
+
+-Landing Pages e Captura de Credenciais 
