@@ -1,0 +1,34 @@
+Features 
+
+-Gestão de Empresas e Planos
+    Empresas, Usuários, Permissões
+    
+-Gestão de Usuários, Setores e Cargos
+
+-Controle de Acesso
+    Perfis: ADM, Empresa, Desenvolvedores
+
+-Templates de Phishing
+
+-Criação e Agendamento de Campanhas
+
+-Disparo e Rastreamento de E-mails
+
+-Landing Pages e Captura de Credenciais
+
+-Reincidência e Filtros por Comportamento
+
+-Treinamento Pós-Phishing
+
+-Dashboards e Métricas
+
+-Simulação de Impacto Financeiro
+
+-Alertas e Notificações
+
+-Auditoria e Logs
+
+-Iframe e Integrações
+
+-Relatórios Exportáveis
+    (Possível implementação futura)

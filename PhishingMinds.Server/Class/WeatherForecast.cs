@@ -1,4 +1,4 @@
-namespace PhishingMinds.Server
+namespace PhishingMinds.Server.Class
 {
     public class WeatherForecast
     {

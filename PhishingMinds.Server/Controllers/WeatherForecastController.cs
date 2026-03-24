@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using PhishingMinds.Server.Class;
 
 namespace PhishingMinds.Server.Controllers
 {
