@@ -2,7 +2,9 @@
 {
     public class Setor
     {
-        int Id_Empresa { get; set; }
-        string Nm_Setor { get; set; }
+        public int IdSetor { get; set; }
+        public int IdEmpresa { get; set; }
+        public string Nm_Setor { get; set; }
+        public int? IdGestor { get; set; } //pd ser nulo
     }
 }
