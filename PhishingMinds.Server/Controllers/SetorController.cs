@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using PhishingMinds.Server.Class;
 
 namespace PhishingMinds.Server.Controllers
@@ -9,14 +9,12 @@ namespace PhishingMinds.Server.Controllers
     {
         private static List<Setor> setores = new List<Setor>();
 
-        // GET: api/setor
         [HttpGet]
         public ActionResult<List<Setor>> Get()
         {
             return Ok(setores);
         }
 
-        // GET: api/setor/{id}
         [HttpGet("{id}")]
         public ActionResult<Setor> GetById(int id)
         {
@@ -28,18 +26,22 @@ namespace PhishingMinds.Server.Controllers
             return Ok(setor);
         }
 
-        // POST: api/setor
+        [HttpGet("empresa/{idEmpresa}")]
+        public ActionResult<List<Setor>> GetByEmpresa(int idEmpresa)
+        {
+            var lista = setores.Where(s => s.IdEmpresa == idEmpresa).ToList();
+            return Ok(lista);
+        }
+
         [HttpPost]
         public ActionResult Create(Setor novoSetor)
         {
             novoSetor.IdSetor = setores.Count > 0 ? setores.Max(s => s.IdSetor) + 1 : 1;
-
             setores.Add(novoSetor);
 
             return Ok(novoSetor);
         }
 
-        // PUT: api/setor/{id}
         [HttpPut("{id}")]
         public ActionResult Update(int id, Setor setorAtualizado)
         {
@@ -48,14 +50,13 @@ namespace PhishingMinds.Server.Controllers
             if (setor == null)
                 return NotFound("Setor não encontrado");
 
-            setor.IdEmpresa = setorAtualizado.IdEmpresa;
             setor.Nm_Setor = setorAtualizado.Nm_Setor;
+            setor.IdEmpresa = setorAtualizado.IdEmpresa;
             setor.IdGestor = setorAtualizado.IdGestor;
 
             return Ok(setor);
         }
 
-        // DELETE: api/setor/{id}
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
@@ -65,7 +66,6 @@ namespace PhishingMinds.Server.Controllers
                 return NotFound("Setor não encontrado");
 
             setores.Remove(setor);
-
             return Ok("Setor removido");
         }
     }
