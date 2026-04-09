@@ -2,6 +2,7 @@
 {
     public class Cargo
     {
-        string Nm_Cargo { get; set; }
+        public int Id_Cargo { get; set;  }
+        public string Nm_Cargo { get; set; }
     }
 }
