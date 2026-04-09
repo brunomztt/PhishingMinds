@@ -39,6 +39,13 @@ namespace PhishingMinds.Server.Controllers
             return Ok(lista);
         }
 
+        [HttpGet("cargo/{idCargo}")]
+        public ActionResult<IEnumerable<Pessoa>> GetByCargo(int idCargo)
+        {
+            var lista = pessoas.Where(p => p.IdCargo == idCargo).ToList();
+            return Ok(lista);
+        }
+
         [HttpPost]
         public ActionResult<Pessoa> Create([FromBody] Pessoa novaPessoa)
         {
