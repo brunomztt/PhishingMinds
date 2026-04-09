@@ -2,14 +2,18 @@
 {
     public class Pessoa
     {
-        int IdEmpresa { get; set; }
-        int IdSetor { get; set; }
-        int IdCargo { get; set; }
-        string Nome { get; set; }
-        string Email { get; set; }
-        string Senha { get; set; }
-        bool Ativo { get; set; }
-        string Dt_cadastro { get; set; }
+        public int IdUser { get; set; }
+        public int IdEmpresa { get; set; }
+        public int IdSetor { get; set; }
+        public int IdGestor { get; set; }
+        public int IdCargo { get; set; }
+        public string Nome { get; set; }
+        public string Email { get; set; }
+        public string Senha { get; set; }
+        public bool Ativo { get; set; }
+        public string Dt_cadastro { get; set; }
+        public string UltimoLogin { get; set; }
+        public int PhishingScore { get; set; }
 
     }
 }
