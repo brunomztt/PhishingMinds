@@ -173,3 +173,45 @@ CREATE TABLE MailCredentials (
     Mail VARCHAR(200),
     Senha VARCHAR(200)
 );
+
+-- =========================
+-- CRIAÇÃO DE INDICES PARA PERFORMANCE
+-- =========================
+
+-- EMPRESA
+CREATE INDEX idx_empresa_plano ON Empresa(IdPlano);
+CREATE INDEX idx_empresa_nome ON Empresa(Nm_Empresa);
+CREATE INDEX idx_empresa_mail ON Empresa(Mail);
+
+-- SETOR
+CREATE INDEX idx_setor_empresa ON Setor(IdEmpresa);
+CREATE INDEX idx_setor_gestor ON Setor(IdGestor);
+
+-- PESSOA
+CREATE INDEX idx_pessoa_empresa ON Pessoa(IdEmpresa);
+CREATE INDEX idx_pessoa_setor ON Pessoa(IdSetor);
+CREATE INDEX idx_pessoa_cargo ON Pessoa(IdCargo);
+CREATE INDEX idx_pessoa_email ON Pessoa(Email);
+
+-- TEMPLATE PARAMETER
+CREATE INDEX idx_templateparameter_template ON TemplateParameter(IdTemplate);
+
+-- TEMPLATE EMPRESA
+CREATE INDEX idx_templateempresa_empresa ON PhishingTemplateEmpresa(IdEmpresa);
+CREATE INDEX idx_templateempresa_template ON PhishingTemplateEmpresa(IdTemplate);
+
+-- PARAMETER VALUE
+CREATE INDEX idx_parametervalue_parameter ON ParameterValue(IdParameter);
+CREATE INDEX idx_parametervalue_templateempresa ON ParameterValue(IdTemplateEmpresa);
+
+-- CAMPAIGN
+CREATE INDEX idx_campaign_empresa ON PhishingCampaign(IdEmpresa);
+CREATE INDEX idx_campaign_templateempresa ON PhishingCampaign(IdTemplateEmpresa);
+CREATE INDEX idx_campaign_setor ON PhishingCampaign(IdSetor);
+
+-- TARGET
+CREATE INDEX idx_target_campaign ON PhishingCampaignTarget(IdCampaign);
+CREATE INDEX idx_target_user ON PhishingCampaignTarget(IdUser);
+
+-- CONSULTAS ANALÍTICAS
+CREATE INDEX idx_target_campaign_user ON PhishingCampaignTarget(IdCampaign, IdUser);
