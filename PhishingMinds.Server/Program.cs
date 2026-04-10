@@ -1,4 +1,5 @@
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSingleton<PhishingMinds.Server.Data.DbConnectionFactory>();
 
 // Add services to the container.
 
@@ -26,5 +27,16 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapFallbackToFile("/index.html");
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbFactory = scope.ServiceProvider.GetRequiredService<PhishingMinds.Server.Data.DbConnectionFactory>();
+
+    using (var connection = dbFactory.CreateConnection())
+    {
+        connection.Open();
+        Console.WriteLine("Conectou com o MySQL!");
+    }
+}
 
 app.Run();
