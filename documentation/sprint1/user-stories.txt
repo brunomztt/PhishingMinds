@@ -1,0 +1,29 @@
+1 Gestão de Empresas e Contratos
+- Como representante da empresa, quero cadastrar minha empresa e contratar um plano, para iniciar o uso da plataforma.
+- Como gestor, quero visualizar a data de fim do contrato, para renovar antes que expire.
+2 Gestão de Usuários, Setores e Cargos
+- Como gestor de setor, quero cadastrar usuários e atribuir cargos, para organizar a hierarquia interna.
+- Como administrador, quero definir gestores por setor, para controlar responsabilidades.
+
+3 Templates de Phishing
+- Como gestor, quero customizar templates de phishing, para adaptar ao contexto da empresa.
+- Como administrador, quero definir parâmetros globais de templates, para padronizar as simulações.
+4 Criação e Agendamento de Campanhas
+- Como gestor, quero agendar campanhas de phishing, para testar a conscientização dos usuários periodicamente.
+- Como administrador, quero definir o nível de dificuldade do phishing, para avaliar diferentes cenários de risco.
+
+5 Disparo e Rastreamento de E-mails
+- Como gestor, quero disparar e-mails de phishing simulados, para avaliar vulnerabilidades.
+- Como administrador, quero rastrear abertura, clique e submissão de credenciais, para medir o engajamento e risco.
+6 Alertas e Reincidência
+- Como gestor, quero receber alertas quando usuários caírem no phishing, para intervir rapidamente.
+- Como administrador, quero forçar treinamento obrigatório após reincidência, para reduzir falhas futuras.
+7 Dashboards e Métricas
+- Como gestor, quero visualizar score por setor, para comparar desempenho interno.
+- Como administrador, quero comparar histórico de campanhas, para avaliar evolução da empresa.
+8 Simulação de Impacto Financeiro
+- Como gestor, quero simular impacto financeiro de ataques bem-sucedidos, para demonstrar riscos à diretoria.
+9 Iframe e Integrações
+- Como administrador, quero disponibilizar ranking via iframe na intranet, para engajar funcionários.
+10 Landing Pages e Captura de Credenciais
+- Como gestor, quero criar landing pages falsas, para testar vulnerabilidade dos usuários.
