@@ -1,24 +1,28 @@
 <template>
-  <section id="secao-hero" class="relative h-screen flex items-center justify-center text-center text-white">
+  <section id="secao-hero" class="relative pt-32 pb-40 flex items-center justify-center text-center text-white bg-[#1a3224] rounded-b-[3rem] shadow-xl">
 
-    <!-- Overlay -->
-    <div class="absolute inset-0 bg-black/60"></div>
+    <div class="absolute inset-0 bg-[url('/caminho-para-imagem-de-fundo.jpg')] bg-cover bg-center opacity-10 rounded-b-[3rem]"></div>
 
-    <!-- Conteúdo -->
-    <div class="relative z-10 max-w-3xl">
-      <p class="text-sm mb-4">PLATAFORMA INTELIGENTE DE SEGURANÇA</p>
+    <div class="relative z-10 max-w-4xl px-4">
+      <p class="text-xs tracking-widest uppercase mb-4 text-green-300 font-semibold">
+        PLATAFORMA INTELIGENTE DE SEGURANÇA
+      </p>
 
-      <h1 class="text-5xl font-bold mb-4">
-        A Primeira Linha de <span class="italic">Defesa</span> da sua empresa
+      <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+        A Primeira Linha de <span class="italic text-green-200">Defesa</span> da sua empresa
       </h1>
 
-      <p class="mb-6 text-gray-200">
-        Treinamento e conscientização em segurança cibernética
+      <p class="mb-10 text-gray-300 text-lg max-w-2xl mx-auto">
+        Treinamento e conscientização em segurança cibernética. Construa uma cultura de segurança robusta e reduza riscos corporativos.
       </p>
 
       <div class="flex gap-4 justify-center">
-        <BotaoPadrao>Começar Agora</BotaoPadrao>
-        <BotaoPadrao tipo="secundario">Ver Planos</BotaoPadrao>
+        <button class="bg-green-500 hover:bg-green-400 text-[#1a3224] font-bold py-3 px-8 rounded-full transition-colors">
+          Começar Agora
+        </button>
+        <button class="bg-white hover:bg-gray-100 text-[#1a3224] font-bold py-3 px-8 rounded-full transition-colors">
+          Ver Planos
+        </button>
       </div>
     </div>
   </section>

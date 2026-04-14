@@ -1,3 +1,5 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Remova qualquer regra direcionada a #app, body ou :root que o Vite tenha criado */

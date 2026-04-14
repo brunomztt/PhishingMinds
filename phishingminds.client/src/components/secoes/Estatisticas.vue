@@ -1,22 +1,20 @@
 <template>
-  <section class="px-10">
-    <div class="bg-white rounded-2xl shadow-xl p-6 flex justify-around text-center -mt-16 relative z-20">
-
+  <div class="relative z-20 -mt-24 max-w-5xl mx-auto px-6">
+    <div class="bg-white rounded-2xl shadow-lg py-8 px-12 flex justify-between items-center text-center">
       <div>
-        <h2 class="text-2xl font-bold">98%</h2>
-        <p class="text-gray-500 text-sm">Redução de riscos</p>
+        <h3 class="text-4xl font-bold text-gray-800">98%</h3>
+        <p class="text-sm text-gray-500 mt-1">Redução de riscos</p>
       </div>
-
+      <div class="w-px h-16 bg-gray-200"></div>
       <div>
-        <h2 class="text-2xl font-bold">500+</h2>
-        <p class="text-gray-500 text-sm">Empresas protegidas</p>
+        <h3 class="text-4xl font-bold text-gray-800">500+</h3>
+        <p class="text-sm text-gray-500 mt-1">Empresas protegidas</p>
       </div>
-
+      <div class="w-px h-16 bg-gray-200"></div>
       <div>
-        <h2 class="text-2xl font-bold">10M+</h2>
-        <p class="text-gray-500 text-sm">Simulações enviadas</p>
+        <h3 class="text-4xl font-bold text-gray-800">10M+</h3>
+        <p class="text-sm text-gray-500 mt-1">Simulações enviadas</p>
       </div>
-
     </div>
-  </section>
+  </div>
 </template>
