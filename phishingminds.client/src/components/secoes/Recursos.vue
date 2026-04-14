@@ -16,7 +16,7 @@
     </div>
 
     <!-- Grid -->
-    <div class="grid grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
       <!-- Card Principal -->
       <div class="bg-green-800 text-white rounded-2xl p-6 relative overflow-hidden">

@@ -1,33 +1,49 @@
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddSingleton<PhishingMinds.Server.Data.DbConnectionFactory>();
 
-// Add services to the container.
-
+// Services
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// ✅ CORS (ANTES DO BUILD)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy
+                .WithOrigins("https://localhost:51634")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
+
 var app = builder.Build();
 
+// Static files
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-// Configure the HTTP request pipeline.
+// Swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+// Pipeline
 app.UseHttpsRedirection();
+
+app.UseCors("AllowFrontend"); // ✅ aqui tá certo
 
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.MapFallbackToFile("/index.html");
 
+// Teste conexão
 using (var scope = app.Services.CreateScope())
 {
     var dbFactory = scope.ServiceProvider.GetRequiredService<PhishingMinds.Server.Data.DbConnectionFactory>();

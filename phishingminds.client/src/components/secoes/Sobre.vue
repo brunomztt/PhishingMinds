@@ -1,12 +1,12 @@
 <template>
   <section id="secao-sobre" class="bg-[#f5f3ef] py-20 px-10">
     
-    <div class="grid grid-cols-2 gap-16 items-center">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center px-6 md:px-10">
 
       <!-- Imagens -->
       <div class="relative">
         <!--<img src="/img1.jpg" class="rounded-xl shadow-lg" />
-        <img src="/img2.jpg" class="absolute bottom-[-30px] right-[-30px] w-48 rounded-xl shadow-lg border-4 border-white"/>-->
+    <img src="/img2.jpg" class="absolute bottom-[-30px] right-[-30px] w-48 rounded-xl shadow-lg border-4 border-white"/>-->
       </div>
 
       <!-- Conteúdo -->

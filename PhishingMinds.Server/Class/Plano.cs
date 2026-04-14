@@ -2,11 +2,12 @@
 {
     public class Plano
     {
-        string Nm_Plano { get; set; }
-        string Desc_Plano { get; set; }
-        string Temp_Plano { get; set; }
-        string Value_Plano { get; set; }
-        int MaxUsers { get; set; }
-        int MaxCampaigns { get; set; }
+        public int IdPlano { get; set; }
+        public string Nm_Plano { get; set; }
+        public string Desc_Plano { get; set; }
+        public int Temp_Plano { get; set; }
+        public decimal Value_Plano { get; set; }
+        public int MaxUsers { get; set; }
+        public int MaxCampaigns { get; set; }
     }
 }

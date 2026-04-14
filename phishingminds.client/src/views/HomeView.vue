@@ -7,6 +7,7 @@
     <Sobre />
     <Processo />
     <Planos />
+    <AppFooter></AppFooter>
   </div>
 </template>
 
@@ -18,4 +19,5 @@
   import Sobre from '../components/secoes/Sobre.vue'
   import Processo from '../components/secoes/Processo.vue'
   import Planos from '../components/secoes/Planos.vue'
+  import AppFooter from '../components/layout/AppFooter.vue'
 </script>
