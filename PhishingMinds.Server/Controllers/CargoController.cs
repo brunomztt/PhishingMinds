@@ -7,7 +7,6 @@ namespace PhishingMinds.Server.Controllers
     [ApiController]
     public class CargoController : ControllerBase
     {
-        private static List<Cargo> cargos = new List<Cargo>();
 
         [HttpGet]
         public ActionResult<IEnumerable<Cargo>> Get()
