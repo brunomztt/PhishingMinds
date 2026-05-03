@@ -31,12 +31,7 @@ namespace PhishingMinds.Server.Controllers
         [HttpGet("{id}/plano")]
         public ActionResult GetPlanoDaEmpresa(int id)
         {
-            var empresa = empresas.FirstOrDefault(e => e.IdEmpresa == id);
-
-            if (empresa == null)
-                return NotFound("Empresa não encontrada");
-
-            var plano = planos.FirstOrDefault(p => p.Id_Plano == empresa.IdPlano);
+            var plano = planos.FirstOrDefault(p => p.Id_Plano == id);
 
             if (plano == null)
                 return NotFound("Plano não encontrado");
