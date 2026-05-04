@@ -28,10 +28,19 @@
       </nav>
     </div>
 
-    <button class="text-red-500 text-left px-4 mt-10 w-full hover:bg-red-50 py-3 rounded-xl transition-colors font-medium">Sair</button>
+    <button @click="handleLogout" class="text-red-500 text-left px-4 mt-10 w-full hover:bg-red-50 py-3 rounded-xl transition-colors font-medium">Sair</button>
   </aside>
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router'
+
 defineEmits(['close'])
+
+const router = useRouter()
+const handleLogout = () => {
+  localStorage.removeItem('token')
+  localStorage.removeItem('user')
+  router.push('/login')
+}
 </script>
