@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-4 gap-4 mb-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
 
     <div class="bg-white rounded-2xl shadow-sm p-5 h-28 flex flex-col justify-center">
       <p class="text-gray-500 text-sm mb-2">Campanhas Ativas</p>

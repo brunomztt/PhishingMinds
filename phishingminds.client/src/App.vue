@@ -1,7 +1,7 @@
 <script setup>
-import SystemHomeView from './views/SystemHomeVIew.vue'
+import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <SystemHomeView />
+  <RouterView />
 </template>
