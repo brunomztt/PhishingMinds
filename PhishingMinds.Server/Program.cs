@@ -1,57 +1,74 @@
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
+var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<PhishingMinds.Server.Data.DbConnectionFactory>();
 
-// Services
+// Add JWT Auth
+var jwtKey = builder.Configuration["Jwt:Key"] ?? "PUC@1234";
+var key = Encoding.ASCII.GetBytes(jwtKey);
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(x =>
+{
+    x.RequireHttpsMetadata = false;
+    x.SaveToken = true;
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
+});
+
+// Add services to the container.
+
 builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// ✅ CORS (ANTES DO BUILD)
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowFrontend",
-        policy =>
-        {
-            policy
-                .WithOrigins("https://localhost:51634")
-                .AllowAnyHeader()
-                .AllowAnyMethod();
-        });
-});
-
 var app = builder.Build();
 
-// Static files
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-// Swagger
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// Pipeline
 app.UseHttpsRedirection();
 
-app.UseCors("AllowFrontend"); // ✅ aqui tá certo
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
 app.MapFallbackToFile("/index.html");
 
-// Teste conexão
 using (var scope = app.Services.CreateScope())
 {
     var dbFactory = scope.ServiceProvider.GetRequiredService<PhishingMinds.Server.Data.DbConnectionFactory>();
 
-    using (var connection = dbFactory.CreateConnection())
+    try
     {
-        connection.Open();
-        Console.WriteLine("Conectou com o MySQL!");
+        using (var connection = dbFactory.CreateConnection())
+        {
+            connection.Open();
+            Console.WriteLine("Conectou com o MySQL!");
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Erro ao conectar ao banco: {ex.Message}");
     }
 }
 
