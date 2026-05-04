@@ -1,4 +1,4 @@
-﻿namespace PhishingMinds.Server.Class
+namespace PhishingMinds.Server.Class
 {
     public class Setor
     {
@@ -6,5 +6,7 @@
         public int IdEmpresa { get; set; }
         public string Nm_Setor { get; set; }
         public int? IdGestor { get; set; } //pd ser nulo
+
+        public string? Nm_Gestor { get; set; }
     }
 }
