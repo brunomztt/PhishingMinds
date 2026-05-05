@@ -9,7 +9,7 @@ using Dapper;
 namespace PhishingMinds.Server.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     public class AuthController : ControllerBase
     {
         private readonly IConfiguration _config;
@@ -35,19 +35,18 @@ namespace PhishingMinds.Server.Controllers
             try
             {
                 using var db = _dbFactory.CreateConnection();
-                var sql = "SELECT * FROM Empresa WHERE Mail = @Email";
-                user = db.QueryFirstOrDefault<PhishingMinds.Server.Class.Empresa>(sql, new { request.Email });
+                var sql = "SELECT * FROM empresa WHERE Mail = @Email";
+                user = db.QueryFirstOrDefault<PhishingMinds.Server.Class.Empresa>(sql, new { Email = request.Email });
             }
             catch (Exception ex)
             {
-                // Se a tabela ou banco não existir, vai cair aqui e usar o fallback de dev
-                Console.WriteLine($"Erro no banco durante o login: {ex.Message}");
+                return StatusCode(500, ex.Message);
             }
 
             if (user == null)
             {
                 // Fallback for dev purposes to bypass if DB is empty
-                if (request.Email == "admin@phishingminds.com")
+                if (request.Email.Trim().ToLower() == "admin@phishingminds.com")
                 {
                     user = new PhishingMinds.Server.Class.Empresa { IdEmpresa = 1, Nm_Dono = "Master Admin", Mail = request.Email };
                 }

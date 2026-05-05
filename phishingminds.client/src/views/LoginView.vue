@@ -1,86 +1,131 @@
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+  import { ref } from 'vue'
+  import { useRouter } from 'vue-router'
+  import logo from '@/assets/logo.svg'
+  import LogoPhishingMinds from '@/assets/LogoPhishingMinds.png'
 
-const router = useRouter()
-const email = ref('')
-const password = ref('')
-const errorMsg = ref('')
-const loading = ref(false)
+  const router = useRouter()
+  const email = ref('')
+  const password = ref('')
+  const errorMsg = ref('')
+  const loading = ref(false)
 
-const handleLogin = async () => {
-  loading.value = true
-  errorMsg.value = ''
-  
-  try {
-    const response = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email.value, password: password.value })
-    })
+  const handleLogin = async () => {
+    loading.value = true
+    errorMsg.value = ''
 
-    if (!response.ok) {
-      throw new Error('Falha na autenticação')
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.value, password: password.value })
+      })
+
+      if (!response.ok) {
+        throw new Error('Falha na autenticação')
+      }
+
+      const data = await response.json()
+      localStorage.setItem('token', data.token)
+      localStorage.setItem('user', JSON.stringify(data.user))
+
+      router.push('/')
+    } catch (err) {
+      errorMsg.value = 'Credenciais inválidas. Tente novamente.'
+    } finally {
+      loading.value = false
     }
-
-    const data = await response.json()
-    localStorage.setItem('token', data.token)
-    localStorage.setItem('user', JSON.stringify(data.user))
-    
-    router.push('/')
-  } catch (err) {
-    errorMsg.value = 'Credenciais inválidas. Tente novamente.'
-  } finally {
-    loading.value = false
   }
-}
 </script>
 
 <template>
-  <div class="min-h-screen bg-[#f5f3ef] flex items-center justify-center p-4">
-    <div class="bg-white max-w-md w-full rounded-3xl shadow-xl p-8">
-      <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-green-900 leading-tight">
-          PHISHING <br /> MINDS
+  <div class="min-h-screen flex">
+
+    <!--  LADO ESQUERDO -->
+    <div class="hidden md:flex w-1/2 bg-gradient-to-br from-green-900 to-green-700 text-white p-12 flex-col justify-center">
+
+      <div class="max-w-md">
+
+        <!-- LOGO -->
+        <div class="mb-10 flex items-center gap-3">
+          <span class="text-xl font-semibold tracking-wide">
+            PHISHING MINDS
+          </span>
+        </div>
+
+        <h1 class="text-4xl font-bold leading-tight mb-6">
+          Proteja a mente da sua organização.
         </h1>
-        <p class="text-gray-500 mt-2">Faça login para acessar o painel.</p>
+
+        <p class="text-green-100">
+          O Phishing Minds simula ataques reais para treinar, mensurar e evoluir a cultura de cibersegurança da sua empresa.
+        </p>
+      </div>
+    </div>
+
+    <!-- LADO DIREITO -->
+    <div class="w-full md:w-1/2 bg-[#f5f3ef] flex items-center justify-center p-6">
+
+      <div class="bg-white w-full max-w-md rounded-3xl shadow-xl p-8">
+
+        <div class="text-center mb-6">
+          <h2 class="text-2xl font-bold text-green-900">
+            Bem-vindo de volta
+          </h2>
+          <p class="text-gray-500 text-sm">
+            Acesse seu painel de controle
+          </p>
+        </div>
+
+        <form @submit.prevent="handleLogin" class="space-y-5">
+
+          <div v-if="errorMsg" class="bg-red-50 text-red-600 p-3 rounded-lg text-sm text-center">
+            {{ errorMsg }}
+          </div>
+
+          <!-- EMAIL -->
+          <div>
+            <label class="text-sm text-gray-600">E-mail Corporativo</label>
+            <input v-model="email"
+                   type="email"
+                   required
+                   class="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-green-500"
+                   placeholder="admin@empresa.com" />
+          </div>
+
+          <!-- SENHA -->
+          <div>
+            <div class="flex justify-between text-sm text-gray-600">
+              <label>Senha</label>
+              <span class="text-green-700 cursor-pointer hover:underline">
+                Esqueceu a senha?
+              </span>
+            </div>
+
+            <input v-model="password"
+                   type="password"
+                   required
+                   class="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-green-500"
+                   placeholder="••••••••" />
+          </div>
+
+          <!-- BOTÃO -->
+          <button type="submit"
+                  :disabled="loading"
+                  class="w-full bg-green-700 hover:bg-green-800 text-white py-3 rounded-xl font-medium shadow-md transition">
+            {{ loading ? 'Entrando...' : 'Entrar na plataforma →' }}
+          </button>
+
+          <p class="text-xs text-center text-gray-500 mt-4">
+            Sua empresa ainda não tem conta?
+            <span class="text-green-700 cursor-pointer hover:underline">
+              Solicite uma demonstração
+            </span>
+          </p>
+
+        </form>
       </div>
 
-      <form @submit.prevent="handleLogin" class="space-y-6">
-        <div v-if="errorMsg" class="bg-red-50 text-red-600 p-3 rounded-lg text-sm text-center">
-          {{ errorMsg }}
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">E-mail</label>
-          <input 
-            v-model="email" 
-            type="email" 
-            required
-            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-green-500 transition-colors" 
-            placeholder="admin@phishingminds.com"
-          />
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Senha</label>
-          <input 
-            v-model="password" 
-            type="password" 
-            required
-            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-green-500 transition-colors" 
-            placeholder="••••••••"
-          />
-        </div>
-
-        <button 
-          type="submit" 
-          :disabled="loading"
-          class="w-full bg-green-700 hover:bg-green-800 text-white py-3 rounded-xl font-medium shadow-sm transition-colors"
-        >
-          {{ loading ? 'Entrando...' : 'Entrar' }}
-        </button>
-      </form>
     </div>
   </div>
 </template>
