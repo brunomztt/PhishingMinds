@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<PhishingMinds.Server.Data.DbConnectionFactory>();
 
 // Add JWT Auth
-var jwtKey = builder.Configuration["Jwt:Key"] ?? "PhishingMindsSuperSecretKey12345!@#";
+var jwtKey = builder.Configuration["Jwt:Key"] ?? "PUC@1234";
 var key = Encoding.ASCII.GetBytes(jwtKey);
 builder.Services.AddAuthentication(x =>
 {
