@@ -67,10 +67,10 @@ namespace PhishingMinds.Server.Controllers
                 }
             }
 
-            // if (user != null && user.Senha != request.Password)
-            // {
-            //     return Unauthorized("Senha inválida.");
-            // }
+            if (user != null && user.Senha != request.Password)
+            {
+                return Unauthorized("Senha inválida.");
+            }
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var jwtKey = _config["Jwt:Key"] ?? "PhishingMindsSuperSecretKey12345!@#";

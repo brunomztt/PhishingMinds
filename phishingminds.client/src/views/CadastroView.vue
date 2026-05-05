@@ -91,7 +91,7 @@ const handleSubmit = async () => {
   <div class="min-h-screen flex">
 
     <!-- LADO ESQUERDO -->
-    <div class="hidden md:flex w-1/2 bg-gradient-to-br from-green-900 to-green-700 text-white p-12 flex-col justify-center">
+    <div class="hidden md:flex w-1/2 bg-gradient-to-br bg-[#2D4A38] text-white p-12 flex-col justify-center">
       <div class="max-w-md">
         <!-- LOGO -->
         <div class="mb-10 flex items-center gap-3">
@@ -123,9 +123,9 @@ const handleSubmit = async () => {
           
           <!-- Barra de Progresso -->
           <div class="flex gap-2 mt-4">
-            <div class="h-2 flex-1 rounded-full transition-all" :class="currentStep >= 1 ? 'bg-green-600' : 'bg-gray-200'"></div>
-            <div class="h-2 flex-1 rounded-full transition-all" :class="currentStep >= 2 ? 'bg-green-600' : 'bg-gray-200'"></div>
-            <div class="h-2 flex-1 rounded-full transition-all" :class="currentStep >= 3 ? 'bg-green-600' : 'bg-gray-200'"></div>
+            <div class="h-2 flex-1 rounded-full transition-all" :class="currentStep >= 1 ? 'bg-[#2D4A38]' : 'bg-gray-200'"></div>
+            <div class="h-2 flex-1 rounded-full transition-all" :class="currentStep >= 2 ? 'bg-[#2D4A38]' : 'bg-gray-200'"></div>
+            <div class="h-2 flex-1 rounded-full transition-all" :class="currentStep >= 3 ? 'bg-[#2D4A38]' : 'bg-gray-200'"></div>
           </div>
         </div>
 
@@ -197,7 +197,7 @@ const handleSubmit = async () => {
             
             <button type="submit"
                     :disabled="loading"
-                    class="flex-1 bg-green-700 hover:bg-green-800 text-white py-3 rounded-xl font-medium shadow-md transition">
+                    class="flex-1 bg-[#2D4A38] hover:bg-green-800 text-white py-3 rounded-xl font-medium shadow-md transition">
               <span v-if="currentStep < 3">Continuar →</span>
               <span v-else-if="loading">Criando Conta...</span>
               <span v-else>Finalizar Cadastro</span>
