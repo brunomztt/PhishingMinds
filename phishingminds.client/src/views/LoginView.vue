@@ -97,7 +97,8 @@
           <div>
             <div class="flex justify-between text-sm text-gray-600">
               <label>Senha</label>
-              <span class="text-green-700 cursor-pointer hover:underline">
+              <span @click="$router.push('/reset-password')"
+                    class="text-green-700 cursor-pointer hover:underline">
                 Esqueceu a senha?
               </span>
             </div>

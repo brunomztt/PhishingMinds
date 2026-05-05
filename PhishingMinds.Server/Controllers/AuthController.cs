@@ -1,10 +1,11 @@
+using Dapper;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using PhishingMinds.Server.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Dapper;
 
 namespace PhishingMinds.Server.Controllers
 {
@@ -25,6 +26,12 @@ namespace PhishingMinds.Server.Controllers
         {
             public string Email { get; set; }
             public string Password { get; set; }
+        }
+
+        public class ResetPasswordRequest
+        {
+            public string Email { get; set; }
+            public string NewPassword { get; set; }
         }
 
         [HttpPost("login")]
@@ -60,6 +67,11 @@ namespace PhishingMinds.Server.Controllers
                 }
             }
 
+            if (user != null && user.Senha != request.Password)
+            {
+                return Unauthorized("Senha inválida.");
+            }
+
             var tokenHandler = new JwtSecurityTokenHandler();
             var jwtKey = _config["Jwt:Key"] ?? "PhishingMindsSuperSecretKey12345!@#";
             var key = Encoding.ASCII.GetBytes(jwtKey);
@@ -82,5 +94,39 @@ namespace PhishingMinds.Server.Controllers
                 User = new { idEmpresa = user.IdEmpresa, nome = user.Nm_Dono, email = user.Mail }
             });
         }
+
+
+        //senha reset
+        [HttpPost("reset-password")]
+        public IActionResult ResetPassword([FromBody] ResetPasswordRequest request)
+        {
+            try
+            {
+                using var db = _dbFactory.CreateConnection();
+
+                var user = db.QueryFirstOrDefault<PhishingMinds.Server.Class.Empresa>(
+                    "SELECT * FROM empresa WHERE Mail = @Email",
+                    new { Email = request.Email }
+                );
+
+                if (user == null)
+                {
+                    return NotFound("Usuário não encontrado.");
+                }
+
+                // atualiza senha (SEM criptografia)
+                db.Execute(
+                    "UPDATE empresa SET Senha = @Senha WHERE Mail = @Email",
+                    new { Senha = request.NewPassword, Email = request.Email }
+                );
+
+                return Ok("Senha atualizada com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
     }
 }
