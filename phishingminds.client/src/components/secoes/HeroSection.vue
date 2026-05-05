@@ -17,12 +17,10 @@
       </p>
 
       <div class="flex gap-4 justify-center">
-        <button class="bg-green-500 hover:bg-green-400 text-[#1a3224] font-bold py-3 px-8 rounded-full transition-colors">
+        <button @click="$router.push('/cadastro')" class="bg-green-500 hover:bg-green-400 text-[#1a3224] font-bold py-3 px-8 rounded-full transition-colors">
           Começar Agora
         </button>
-        <button class="bg-white hover:bg-gray-100 text-[#1a3224] font-bold py-3 px-8 rounded-full transition-colors">
-          Ver Planos
-        </button>
+        <a href="#secao-planos" class="bg-white hover:bg-gray-100 text-[#1a3224] font-bold py-3 px-8 rounded-full transition-colors">Ver Planos</a>
       </div>
     </div>
   </section>

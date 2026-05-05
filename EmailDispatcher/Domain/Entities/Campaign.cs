@@ -9,5 +9,7 @@ namespace EmailDispatcher.Domain.Entities
         public int IdCampaign { get; set; }
         public string Subject { get; set; }
         public string BodyMail { get; set; }
+        public string NomeCampanha { get; set; }
+
     }
 }
