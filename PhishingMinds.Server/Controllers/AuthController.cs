@@ -61,10 +61,10 @@ namespace PhishingMinds.Server.Controllers
                 {
                     user = new PhishingMinds.Server.Class.Empresa { IdEmpresa = 2, Nm_Dono = "Org Admin", Mail = request.Email };
                 }
-                // else
-                // {
-                //     return Unauthorized("Credenciais inválidas.");
-                // }
+                else
+                {
+                    return Unauthorized("Credenciais inválidas.");
+                }
             }
 
             // if (user != null && user.Senha != request.Password)

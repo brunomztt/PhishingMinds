@@ -129,34 +129,48 @@ namespace PhishingMinds.Server.Controllers
         [HttpPut("{id}")]
         public ActionResult Update(int id, [FromBody] Pessoa pessoaAtualizada)
         {
-            using var db = _dbFactory.CreateConnection();
-            
-            var sql = @"
-                UPDATE Pessoa 
-                SET Nome = @Nome, Email = @Email, Ativo = @Ativo, 
-                    PhishingScore = @PhishingScore, IdEmpresa = @IdEmpresa, 
-                    IdSetor = @IdSetor, IdCargo = @IdCargo
-                WHERE IdUser = @Id";
+            try
+            {
+                using var db = _dbFactory.CreateConnection();
+                
+                var sql = @"
+                    UPDATE Pessoa 
+                    SET Nome = @Nome, Email = @Email, Ativo = @Ativo, 
+                        PhishingScore = @PhishingScore, IdEmpresa = @IdEmpresa, 
+                        IdSetor = @IdSetor, IdCargo = @IdCargo
+                    WHERE IdUser = @IdUser";
 
-            pessoaAtualizada.IdUser = id;
-            var rows = db.Execute(sql, pessoaAtualizada);
+                pessoaAtualizada.IdUser = id;
+                var rows = db.Execute(sql, pessoaAtualizada);
 
-            if (rows == 0)
-                return NotFound(new { message = "Pessoa não encontrada" });
+                if (rows == 0)
+                    return NotFound(new { message = "Pessoa não encontrada" });
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Erro ao atualizar usuário", error = ex.Message });
+            }
         }
 
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
-            using var db = _dbFactory.CreateConnection();
-            var rows = db.Execute("DELETE FROM Pessoa WHERE IdUser = @Id", new { Id = id });
+            try
+            {
+                using var db = _dbFactory.CreateConnection();
+                var rows = db.Execute("DELETE FROM Pessoa WHERE IdUser = @Id", new { Id = id });
 
-            if (rows == 0)
-                return NotFound(new { message = "Pessoa não encontrada" });
+                if (rows == 0)
+                    return NotFound(new { message = "Pessoa não encontrada" });
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(400, new { message = "Erro ao excluir. O usuário pode estar vinculado a outros registros.", error = ex.Message });
+            }
         }
     }
 }

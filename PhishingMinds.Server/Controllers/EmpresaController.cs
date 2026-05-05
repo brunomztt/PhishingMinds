@@ -61,7 +61,7 @@ namespace PhishingMinds.Server.Controllers
             var sql = @"UPDATE Empresa 
                         SET IdPlano = @IdPlano, Nm_Empresa = @Nm_Empresa, Nm_Dono = @Nm_Dono, Mail = @Mail, 
                             CNPJ = @CNPJ, Dt_Contratacao = @Dt_Contratacao, Dt_FimContrato = @Dt_FimContrato, Ativo = @Ativo
-                        WHERE IdEmpresa = @Id";
+                        WHERE IdEmpresa = @IdEmpresa";
 
             empresaAtualizada.IdEmpresa = id;
             var rows = db.Execute(sql, empresaAtualizada);

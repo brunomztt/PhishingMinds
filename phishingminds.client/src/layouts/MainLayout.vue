@@ -1,7 +1,17 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import Sidebar from '../components/Layout/Sidebar.vue'
 import Topbar from '../components/Layout/Topbar.vue'
+
+const isDevAdmin = ref(false)
+
+onMounted(() => {
+  const userStr = localStorage.getItem('user')
+  if (userStr) {
+    const user = JSON.parse(userStr)
+    isDevAdmin.value = user.idEmpresa === 1
+  }
+})
 
 const isSidebarOpen = ref(false)
 
