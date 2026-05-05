@@ -11,8 +11,8 @@
     </nav>
 
     <div class="hidden md:flex gap-3">
-      <button class="text-white hover:text-green-200 px-4 py-2">Entrar</button>
-      <button class="bg-green-500 hover:bg-green-400 text-[#1a3224] px-4 py-2 rounded-lg font-bold">Começar</button>
+      <button @click="$router.push('/login')" class="text-white hover:text-green-200 px-4 py-2">Entrar</button>
+      <button @click="$router.push('/cadastro')" class="bg-green-500 hover:bg-green-400 text-[#1a3224] px-4 py-2 rounded-lg font-bold">Começar</button>
     </div>
 
     <button class="md:hidden text-white">

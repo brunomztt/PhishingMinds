@@ -82,7 +82,7 @@
 
   const fetchPlanos = async () => {
     try {
-      const response = await fetch('https://localhost:7193/api/Plano')
+      const response = await fetch('/api/plano')
 
       if (!response.ok) {
         throw new Error('Erro ao buscar planos')

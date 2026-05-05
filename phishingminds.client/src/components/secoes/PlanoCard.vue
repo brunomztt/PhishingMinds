@@ -40,7 +40,7 @@
     </ul>
 
     <!-- BTN -->
-    <button :class="buttonClass">
+    <button @click="$router.push({ path: '/cadastro', query: { plano: plano.id_Plano } })" :class="buttonClass">
       Escolher {{ plano.nm_Plano }}
     </button>
 

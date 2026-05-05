@@ -10,7 +10,7 @@
       </div>
 
       <nav class="space-y-2">
-        <router-link to="/" @click="$emit('close')" class="block w-full text-center md:text-left px-4 py-3 rounded-xl font-medium" :class="$route.path === '/' ? 'bg-green-700 text-white' : 'hover:bg-gray-100 text-gray-600'">
+        <router-link to="/painel" @click="$emit('close')" class="block w-full text-center md:text-left px-4 py-3 rounded-xl font-medium" :class="$route.path === '/painel' ? 'bg-green-700 text-white' : 'hover:bg-gray-100 text-gray-600'">
           Overview
         </router-link>
         <router-link to="/campanhas" @click="$emit('close')" class="block w-full text-center md:text-left px-4 py-3 rounded-xl font-medium hover:bg-gray-100 text-gray-600" :class="$route.path.startsWith('/campanhas') ? 'bg-green-700 text-white' : ''">
