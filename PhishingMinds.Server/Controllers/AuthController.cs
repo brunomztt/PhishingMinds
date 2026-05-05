@@ -1,15 +1,16 @@
+using Dapper;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using PhishingMinds.Server.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Dapper;
 
 namespace PhishingMinds.Server.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     public class AuthController : ControllerBase
     {
         private readonly IConfiguration _config;
@@ -27,6 +28,12 @@ namespace PhishingMinds.Server.Controllers
             public string Password { get; set; }
         }
 
+        public class ResetPasswordRequest
+        {
+            public string Email { get; set; }
+            public string NewPassword { get; set; }
+        }
+
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequest request)
         {
@@ -35,19 +42,18 @@ namespace PhishingMinds.Server.Controllers
             try
             {
                 using var db = _dbFactory.CreateConnection();
-                var sql = "SELECT * FROM Empresa WHERE Mail = @Email";
-                user = db.QueryFirstOrDefault<PhishingMinds.Server.Class.Empresa>(sql, new { request.Email });
+                var sql = "SELECT * FROM empresa WHERE Mail = @Email";
+                user = db.QueryFirstOrDefault<PhishingMinds.Server.Class.Empresa>(sql, new { Email = request.Email });
             }
             catch (Exception ex)
             {
-                // Se a tabela ou banco não existir, vai cair aqui e usar o fallback de dev
-                Console.WriteLine($"Erro no banco durante o login: {ex.Message}");
+                return StatusCode(500, ex.Message);
             }
 
             if (user == null)
             {
                 // Fallback for dev purposes to bypass if DB is empty
-                if (request.Email == "admin@phishingminds.com")
+                if (request.Email.Trim().ToLower() == "admin@phishingminds.com")
                 {
                     user = new PhishingMinds.Server.Class.Empresa { IdEmpresa = 1, Nm_Dono = "Master Admin", Mail = request.Email };
                 }
@@ -59,6 +65,11 @@ namespace PhishingMinds.Server.Controllers
                 {
                     return Unauthorized("Credenciais inválidas.");
                 }
+            }
+
+            if (user != null && user.Senha != request.Password)
+            {
+                return Unauthorized("Senha inválida.");
             }
 
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -83,5 +94,39 @@ namespace PhishingMinds.Server.Controllers
                 User = new { idEmpresa = user.IdEmpresa, nome = user.Nm_Dono, email = user.Mail }
             });
         }
+
+
+        //senha reset
+        [HttpPost("reset-password")]
+        public IActionResult ResetPassword([FromBody] ResetPasswordRequest request)
+        {
+            try
+            {
+                using var db = _dbFactory.CreateConnection();
+
+                var user = db.QueryFirstOrDefault<PhishingMinds.Server.Class.Empresa>(
+                    "SELECT * FROM empresa WHERE Mail = @Email",
+                    new { Email = request.Email }
+                );
+
+                if (user == null)
+                {
+                    return NotFound("Usuário não encontrado.");
+                }
+
+                // atualiza senha (SEM criptografia)
+                db.Execute(
+                    "UPDATE empresa SET Senha = @Senha WHERE Mail = @Email",
+                    new { Senha = request.NewPassword, Email = request.Email }
+                );
+
+                return Ok("Senha atualizada com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
     }
 }

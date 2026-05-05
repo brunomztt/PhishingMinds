@@ -28,6 +28,7 @@ CREATE TABLE Empresa (
     Dt_Contratacao DATETIME,
     Dt_FimContrato DATETIME,
     Ativo BOOLEAN,
+    Senha VARCHAR(255),
     FOREIGN KEY (IdPlano) REFERENCES Plano(IdPlano)
 );
 
