@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using PhishingMinds.Server.Class;
+using PhishingMinds.Server.Data;
+using Dapper;
 
 namespace PhishingMinds.Server.Controllers
 {
@@ -7,19 +9,27 @@ namespace PhishingMinds.Server.Controllers
     [ApiController]
     public class CargoController : ControllerBase
     {
+        private readonly DbConnectionFactory _dbFactory;
 
-        private static List<Cargo> cargos = new List<Cargo>();
+        public CargoController(DbConnectionFactory dbFactory)
+        {
+            _dbFactory = dbFactory;
+        }
 
         [HttpGet]
         public ActionResult<IEnumerable<Cargo>> Get()
         {
+            using var db = _dbFactory.CreateConnection();
+            var cargos = db.Query<Cargo>("SELECT IdCargo as Id_Cargo, Nm_Cargo FROM Cargo").ToList();
             return Ok(cargos);
         }
 
         [HttpGet("{id}")]
         public ActionResult<Cargo> GetById(int id)
         {
-            var cargo = cargos.FirstOrDefault(c => c.Id_Cargo == id);
+            using var db = _dbFactory.CreateConnection();
+            var cargo = db.QueryFirstOrDefault<Cargo>("SELECT IdCargo as Id_Cargo, Nm_Cargo FROM Cargo WHERE IdCargo = @Id", new { Id = id });
+            
             if (cargo == null)
                 return NotFound(new { message = "Cargo não encontrado" });
 
@@ -32,7 +42,11 @@ namespace PhishingMinds.Server.Controllers
             if (novoCargo == null)
                 return BadRequest();
 
-            cargos.Add(novoCargo);
+            using var db = _dbFactory.CreateConnection();
+            var sql = @"INSERT INTO Cargo (Nm_Cargo) VALUES (@Nm_Cargo); SELECT LAST_INSERT_ID();";
+            
+            var id = db.ExecuteScalar<int>(sql, novoCargo);
+            novoCargo.Id_Cargo = id;
 
             return CreatedAtAction(nameof(GetById), new { id = novoCargo.Id_Cargo }, novoCargo);
         }
@@ -40,11 +54,11 @@ namespace PhishingMinds.Server.Controllers
         [HttpPut("{id}")]
         public ActionResult Update(int id, [FromBody] Cargo cargoAtualizado)
         {
-            var cargo = cargos.FirstOrDefault(c => c.Id_Cargo == id);
-            if (cargo == null)
+            using var db = _dbFactory.CreateConnection();
+            var rows = db.Execute("UPDATE Cargo SET Nm_Cargo = @Nm_Cargo WHERE IdCargo = @Id", new { Nm_Cargo = cargoAtualizado.Nm_Cargo, Id = id });
+            
+            if (rows == 0)
                 return NotFound(new { message = "Cargo não encontrado" });
-
-            cargo.Nm_Cargo = cargoAtualizado.Nm_Cargo;
 
             return NoContent();
         }
@@ -52,11 +66,11 @@ namespace PhishingMinds.Server.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
-            var cargo = cargos.FirstOrDefault(c => c.Id_Cargo == id);
-            if (cargo == null)
+            using var db = _dbFactory.CreateConnection();
+            var rows = db.Execute("DELETE FROM Cargo WHERE IdCargo = @Id", new { Id = id });
+            
+            if (rows == 0)
                 return NotFound(new { message = "Cargo não encontrado" });
-
-            cargos.Remove(cargo);
 
             return NoContent();
         }
