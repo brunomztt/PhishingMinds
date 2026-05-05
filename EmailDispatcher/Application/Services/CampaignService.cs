@@ -56,6 +56,7 @@ namespace EmailDispatcher.Application.Services
                             campanha.Subject,
                             body,
                             cred.Mail,
+                            campanha.NomeCampanha,
                             cred.Senha
                         );
 

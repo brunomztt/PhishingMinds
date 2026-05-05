@@ -6,7 +6,7 @@ namespace EmailDispatcher.Infrastructure.Email
 {
     public class EmailSender
     {
-        public async Task Send(string to, string subject, string body, string fromEmail, string password)
+        public async Task Send(string to, string subject, string body, string fromEmail, string NomeCampanha, string password)
         {
             using var smtp = new SmtpClient("smtp.gmail.com", 587)
             {
@@ -17,7 +17,7 @@ namespace EmailDispatcher.Infrastructure.Email
 
             using var mail = new MailMessage
             {
-                From = new MailAddress(fromEmail, "Phishing Minds"),
+                From = new MailAddress(fromEmail, NomeCampanha),
                 Subject = subject,
                 Body = body,
                 IsBodyHtml = true

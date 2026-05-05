@@ -28,7 +28,8 @@ namespace EmailDispatcher.Infrastructure.Repositories
                 SELECT 
                     pc.IdCampaign,
                     pt.Subject,
-                    pt.BodyMail
+                    pt.BodyMail,
+                    pc.NomeCampanha
                 FROM PhishingCampaign pc
                 JOIN PhishingTemplateEmpresa pte 
                     ON pte.IdTemplateEmpresa = pc.IdTemplateEmpresa
@@ -46,7 +47,8 @@ namespace EmailDispatcher.Infrastructure.Repositories
                 {
                     IdCampaign = reader.GetInt32("IdCampaign"),
                     Subject = reader.GetString("Subject"),
-                    BodyMail = reader.GetString("BodyMail")
+                    BodyMail = reader.GetString("BodyMail"),
+                    NomeCampanha = reader.GetString("NomeCampanha")
                 });
             }
 

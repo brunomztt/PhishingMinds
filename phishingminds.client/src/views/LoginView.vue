@@ -29,7 +29,7 @@
       localStorage.setItem('token', data.token)
       localStorage.setItem('user', JSON.stringify(data.user))
 
-      router.push('/')
+      router.push('/painel')
     } catch (err) {
       errorMsg.value = 'Credenciais inválidas. Tente novamente.'
     } finally {
@@ -66,9 +66,15 @@
     <!-- LADO DIREITO -->
     <div class="w-full md:w-1/2 bg-[#f5f3ef] flex items-center justify-center p-6">
 
-      <div class="bg-white w-full max-w-md rounded-3xl shadow-xl p-8">
+      <div class="bg-white w-full max-w-md rounded-3xl shadow-xl p-8 relative">
 
-        <div class="text-center mb-6">
+        <!-- Botão Voltar -->
+        <button @click="$router.push('/')" class="absolute top-6 left-6 text-green-700 flex items-center gap-1 text-sm font-medium hover:underline">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+          Voltar
+        </button>
+
+        <div class="text-center mb-6 mt-4">
           <h2 class="text-2xl font-bold text-green-900">
             Bem-vindo de volta
           </h2>
