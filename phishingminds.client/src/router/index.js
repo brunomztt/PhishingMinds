@@ -5,6 +5,7 @@ import SystemOrganizationView from '../views/SystemOrganizationView.vue'
 import SystemContractsView from '../views/SystemContractsView.vue'
 import SystemProfileView from '../views/SystemProfileView.vue'
 import LoginView from '../views/LoginView.vue'
+import ResetPasswordView from '../views/ResetPasswordView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,6 +15,13 @@ const router = createRouter({
       name: 'Login',
       component: LoginView
     },
+
+    {
+      path: '/reset-password',
+      name: 'ResetPassword',
+      component: ResetPasswordView
+    },
+
     {
       path: '/',
       name: 'Home',

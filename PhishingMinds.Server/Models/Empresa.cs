@@ -8,6 +8,7 @@
         public string Nm_Empresa { get; set; }
         public string Nm_Dono { get; set; }
         public string Mail { get; set; }
+        public string Senha { get; set; }
         public string CNPJ { get; set; }
 
         public DateTime Dt_Cadastro { get; set; }
