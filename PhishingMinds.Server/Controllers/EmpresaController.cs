@@ -1,26 +1,36 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using PhishingMinds.Server.Class;
+using PhishingMinds.Server.Data;
+using Dapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PhishingMinds.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class EmpresaController : ControllerBase
     {
-        private static List<Empresa> empresas = new List<Empresa>();
+        private readonly DbConnectionFactory _dbFactory;
 
-        // GET: api/empresa
+        public EmpresaController(DbConnectionFactory dbFactory)
+        {
+            _dbFactory = dbFactory;
+        }
+
         [HttpGet]
         public ActionResult<List<Empresa>> Get()
         {
+            using var db = _dbFactory.CreateConnection();
+            var empresas = db.Query<Empresa>("SELECT * FROM Empresa").ToList();
             return Ok(empresas);
         }
 
-        // GET: api/empresa/id da empresa
         [HttpGet("{id}")]
         public ActionResult<Empresa> GetById(int id)
         {
-            var empresa = empresas.FirstOrDefault(e => e.IdPlano == id);
+            using var db = _dbFactory.CreateConnection();
+            var empresa = db.QueryFirstOrDefault<Empresa>("SELECT * FROM Empresa WHERE IdEmpresa = @Id", new { Id = id });
 
             if (empresa == null)
                 return NotFound("Empresa não encontrada");
@@ -28,44 +38,49 @@ namespace PhishingMinds.Server.Controllers
             return Ok(empresa);
         }
 
-        // POST: api/empresa
         [HttpPost]
         public ActionResult Create(Empresa novaEmpresa)
         {
-            empresas.Add(novaEmpresa);
-            return Ok("Empresa criada com sucesso");
+            using var db = _dbFactory.CreateConnection();
+            novaEmpresa.Dt_Cadastro = DateTime.Now;
+
+            var sql = @"INSERT INTO Empresa (IdPlano, Nm_Empresa, Nm_Dono, Mail, CNPJ, Dt_Cadastro, Dt_Contratacao, Dt_FimContrato, Ativo) 
+                        VALUES (@IdPlano, @Nm_Empresa, @Nm_Dono, @Mail, @CNPJ, @Dt_Cadastro, @Dt_Contratacao, @Dt_FimContrato, @Ativo);
+                        SELECT LAST_INSERT_ID();";
+
+            var id = db.ExecuteScalar<int>(sql, novaEmpresa);
+            novaEmpresa.IdEmpresa = id;
+
+            return Ok(novaEmpresa);
         }
 
-        // PUT: api/empresa/id da empresa
         [HttpPut("{id}")]
         public ActionResult Update(int id, Empresa empresaAtualizada)
         {
-            var empresa = empresas.FirstOrDefault(e => e.IdPlano == id);
+            using var db = _dbFactory.CreateConnection();
+            var sql = @"UPDATE Empresa 
+                        SET IdPlano = @IdPlano, Nm_Empresa = @Nm_Empresa, Nm_Dono = @Nm_Dono, Mail = @Mail, 
+                            CNPJ = @CNPJ, Dt_Contratacao = @Dt_Contratacao, Dt_FimContrato = @Dt_FimContrato, Ativo = @Ativo
+                        WHERE IdEmpresa = @Id";
 
-            if (empresa == null)
+            empresaAtualizada.IdEmpresa = id;
+            var rows = db.Execute(sql, empresaAtualizada);
+
+            if (rows == 0)
                 return NotFound("Empresa não encontrada");
 
-            empresa.Nm_Empresa = empresaAtualizada.Nm_Empresa;
-            empresa.Nm_Dono = empresaAtualizada.Nm_Dono;
-            empresa.Mail = empresaAtualizada.Mail;
-            empresa.CNPJ = empresaAtualizada.CNPJ;
-            empresa.Dt_Contratacao = empresaAtualizada.Dt_Contratacao;
-            empresa.Dt_FimContrato = empresaAtualizada.Dt_FimContrato;
-            empresa.Ativo = empresaAtualizada.Ativo;
-
-            return Ok("Empresa atualizada");
+            return Ok(empresaAtualizada);
         }
 
-        // DELETE: api/empresa/id da empresa
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
-            var empresa = empresas.FirstOrDefault(e => e.IdPlano == id);
+            using var db = _dbFactory.CreateConnection();
+            var rows = db.Execute("DELETE FROM Empresa WHERE IdEmpresa = @Id", new { Id = id });
 
-            if (empresa == null)
+            if (rows == 0)
                 return NotFound("Empresa não encontrada");
 
-            empresas.Remove(empresa);
             return Ok("Empresa removida");
         }
     }
