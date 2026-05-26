@@ -10,7 +10,6 @@ TRUNCATE TABLE PhishingTemplate;
 TRUNCATE TABLE Pessoa;
 TRUNCATE TABLE Setor;
 TRUNCATE TABLE Cargo;
-TRUNCATE TABLE Empresa;
 TRUNCATE TABLE Plano;
 
 SET FOREIGN_KEY_CHECKS = 1;
@@ -21,8 +20,6 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 INSERT INTO Plano VALUES (1, 'Teste', 'Plano teste', 30, 0, 100, 10);
 
-INSERT INTO Empresa 
-VALUES (1, 1, 'Empresa Teste', 'Bruno', 'teste@empresa.com', '00000000000100', NOW(), NOW(), NULL, 1);
 
 INSERT INTO Cargo VALUES (1, 'Funcionário');
 
