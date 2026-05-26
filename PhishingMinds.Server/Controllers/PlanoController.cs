@@ -1,3 +1,5 @@
+/*
+
 using Microsoft.AspNetCore.Mvc;
 using PhishingMinds.Server.Class;
 using PhishingMinds.Server.Data;
@@ -120,3 +122,5 @@ namespace PhishingMinds.Server.Controllers
         }
     }
 }
+
+*/
