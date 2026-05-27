@@ -54,7 +54,7 @@
          :class="gridClass">
 
       <PlanoCard v-for="(plano, index) in planos"
-                 :key="plano.IdPlano"
+                 :key="plano.idPlano"
                  :plano="plano"
                  :index="index"
                  :total="planos.length" />

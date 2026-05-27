@@ -9,6 +9,7 @@ namespace PhishingMinds.Server.Class
         public int IdGestor { get; set; }
         public string Nome { get; set; }
         public string Email { get; set; }
+        public string Senha { get; set; }
         public bool Ativo { get; set; }
         public string Dt_cadastro { get; set; }
         public string UltimoLogin { get; set; }
