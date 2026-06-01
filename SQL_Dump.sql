@@ -8,7 +8,9 @@ VALUES
 INSERT INTO Empresa
 (IdPlano,Nm_Empresa,Nm_Dono,Mail,CNPJ,Dt_Cadastro,Dt_Contratacao,Dt_FimContrato,Ativo, Senha)
 VALUES
-(2,'Phishing Minds Corp','Bruno Mazetto','admin@phishingminds.com','12345678000100',NOW(),NOW(),DATE_ADD(NOW(),INTERVAL 1 YEAR),1, '123456');
+(1,'Phishing Minds Corp','Bruno Mazetto','admin@phishingminds.com','12345678000100',NOW(),NOW(),DATE_ADD(NOW(),INTERVAL 1 YEAR),1, '123456'),
+(2,'Tech Corp','JoÃ£o Souza','joaosouza@techcorp.com','98765432000100',NOW(),NOW(),DATE_ADD(NOW(),INTERVAL 1 YEAR),1, '123456');
+
 
 -- CARGOS
 INSERT INTO Cargo (Nm_Cargo)
@@ -43,8 +45,8 @@ INSERT INTO PhishingTemplate
 VALUES
 (
 'Reset Senha Microsoft',
-'Atualização de senha obrigatória',
-'Olá {{Nome}}, detectamos atividade suspeita. Clique aqui {{Link}}',
+'Atualizaï¿½ï¿½o de senha obrigatï¿½ria',
+'Olï¿½ {{Nome}}, detectamos atividade suspeita. Clique aqui {{Link}}',
 'Credential',
 3
 );

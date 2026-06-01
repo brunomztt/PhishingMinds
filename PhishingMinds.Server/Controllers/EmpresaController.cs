@@ -61,7 +61,7 @@ namespace PhishingMinds.Server.Controllers
             var sql = @"UPDATE Empresa 
                         SET IdPlano = @IdPlano, Nm_Empresa = @Nm_Empresa, Nm_Dono = @Nm_Dono, Mail = @Mail, 
                             CNPJ = @CNPJ, Dt_Contratacao = @Dt_Contratacao, Dt_FimContrato = @Dt_FimContrato, Ativo = @Ativo
-                        WHERE IdEmpresa = @Id";
+                        WHERE IdEmpresa = @IdEmpresa";
 
             empresaAtualizada.IdEmpresa = id;
             var rows = db.Execute(sql, empresaAtualizada);
@@ -82,6 +82,56 @@ namespace PhishingMinds.Server.Controllers
                 return NotFound("Empresa não encontrada");
 
             return Ok("Empresa removida");
+        }
+
+        [HttpGet("global-contracts")]
+        public IActionResult GetGlobalContracts()
+        {
+            try
+            {
+                using var db = _dbFactory.CreateConnection();
+                var activeCount = db.ExecuteScalar<int>("SELECT COUNT(*) FROM Empresa WHERE Ativo = 1");
+                var mrr = db.ExecuteScalar<decimal>("SELECT IFNULL(SUM(p.Value_Plano), 0) FROM Empresa e JOIN Plano p ON e.IdPlano = p.IdPlano WHERE e.Ativo = 1");
+                var list = db.Query(@"
+                    SELECT e.Nm_Empresa, p.Nm_Plano, p.Value_Plano, e.Ativo 
+                    FROM Empresa e 
+                    JOIN Plano p ON e.IdPlano = p.IdPlano").ToList();
+                return Ok(new { ActiveCompanies = activeCount, MRR = mrr, Subscriptions = list });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Erro ao buscar contratos globais", error = ex.Message });
+            }
+        }
+
+        [HttpGet("billing/{id}")]
+        public IActionResult GetBillingInfo(int id)
+        {
+            try
+            {
+                using var db = _dbFactory.CreateConnection();
+                var plano = db.QueryFirstOrDefault<Plano>(@"
+                    SELECT p.* FROM Empresa e 
+                    JOIN Plano p ON e.IdPlano = p.IdPlano 
+                    WHERE e.IdEmpresa = @Id", new { Id = id });
+
+                if (plano == null)
+                    return NotFound("Plano não encontrado para esta empresa");
+
+                var activeEmployees = db.ExecuteScalar<int>("SELECT COUNT(*) FROM Pessoa WHERE IdEmpresa = @Id AND Ativo = 1", new { Id = id });
+                var campaignCount = db.ExecuteScalar<int>("SELECT COUNT(*) FROM PhishingCampaign WHERE IdEmpresa = @Id", new { Id = id });
+
+                return Ok(new
+                {
+                    Plano = plano,
+                    ActiveEmployees = activeEmployees,
+                    CampaignCount = campaignCount
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Erro ao buscar faturamento da empresa", error = ex.Message });
+            }
         }
     }
 }

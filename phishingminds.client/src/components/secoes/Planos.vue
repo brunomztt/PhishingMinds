@@ -1,5 +1,5 @@
 <template>
-  <section id="secao-planos" class="bg-[#2c4033] text-white py-24">
+  <section id="secao-planos" class="bg-[#2D4A38] text-white py-24 rounded-t-[4rem] md:rounded-t-[8rem]">
 
     <!-- HEADER -->
     <div class="text-center mb-16 px-6">
@@ -54,7 +54,7 @@
          :class="gridClass">
 
       <PlanoCard v-for="(plano, index) in planos"
-                 :key="plano.IdPlano"
+                 :key="plano.idPlano"
                  :plano="plano"
                  :index="index"
                  :total="planos.length" />
