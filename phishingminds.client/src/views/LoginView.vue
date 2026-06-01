@@ -125,7 +125,8 @@
 
           <p class="text-xs text-center text-gray-500 mt-4">
             Sua empresa ainda não tem conta?
-            <span class="text-green-700 cursor-pointer hover:underline">
+            <span @click="$router.push('/cadastro')"
+                  class="text-green-700 cursor-pointer hover:underline">
               Solicite uma demonstração
             </span>
           </p>
