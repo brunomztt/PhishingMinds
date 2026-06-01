@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import Sidebar from '../components/Layout/Sidebar.vue'
-import Topbar from '../components/Layout/Topbar.vue'
+import Sidebar from '../components/layout/Sidebar.vue'
+import Topbar from '../components/layout/Topbar.vue'
 
 const isDevAdmin = ref(false)
 
