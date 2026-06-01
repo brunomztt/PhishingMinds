@@ -1,5 +1,40 @@
 <script setup>
+import { ref, onMounted } from 'vue'
 import MainLayout from '../layouts/MainLayout.vue'
+
+const campaigns = ref([])
+const loading = ref(true)
+const userEmpresaId = ref(null)
+
+const getToken = () => localStorage.getItem('token')
+
+onMounted(async () => {
+  const userStr = localStorage.getItem('user')
+  if (userStr) {
+    const user = JSON.parse(userStr)
+    userEmpresaId.value = user.idEmpresa
+
+    try {
+      loading.value = true
+      const res = await fetch(`/api/Campanha/empresa/${userEmpresaId.value}`, {
+        headers: { 'Authorization': `Bearer ${getToken()}` }
+      })
+      if (res.ok) {
+        campaigns.value = await res.json()
+      }
+    } catch (e) {
+      console.error('Erro ao buscar campanhas:', e)
+    } finally {
+      loading.value = false
+    }
+  }
+})
+
+const formatDate = (dateStr) => {
+  if (!dateStr) return '--'
+  const date = new Date(dateStr)
+  return date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+}
 </script>
 
 <template>
@@ -14,7 +49,7 @@ import MainLayout from '../layouts/MainLayout.vue'
       </button>
     </div>
 
-    <!-- Campaigns List Placeholder -->
+    <!-- Campaigns List -->
     <div class="bg-white rounded-3xl shadow-sm overflow-hidden mt-8">
       <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
         <h3 class="text-xl font-semibold text-gray-800">Campanhas Recentes</h3>
@@ -26,31 +61,30 @@ import MainLayout from '../layouts/MainLayout.vue'
       </div>
       
       <div class="p-6">
-        <div class="space-y-4">
+        <div v-if="loading" class="text-center py-8 text-gray-500 font-medium">
+          Carregando campanhas...
+        </div>
+        <div v-else-if="campaigns.length === 0" class="text-center py-8 text-gray-500">
+          Nenhuma campanha encontrada.
+        </div>
+        <div v-else class="space-y-4">
           <!-- Campaign Item -->
-          <div v-for="i in 3" :key="i" class="flex flex-col md:flex-row md:items-center justify-between p-4 border border-gray-100 rounded-2xl hover:bg-gray-50 transition-colors cursor-pointer gap-4">
+          <div v-for="c in campaigns" :key="c.idCampaign" class="flex flex-col md:flex-row md:items-center justify-between p-4 border border-gray-100 rounded-2xl hover:bg-gray-50 transition-colors cursor-pointer gap-4">
             <div class="flex items-center gap-4">
               <div class="w-12 h-12 bg-green-100 text-green-700 rounded-xl flex items-center justify-center font-bold flex-shrink-0">
-                C{{ i }}
+                C{{ c.idCampaign }}
               </div>
               <div>
-                <h4 class="font-semibold text-gray-800">Simulação de Segurança Financeira #{{ i }}</h4>
-                <p class="text-sm text-gray-500">Agendado para: 15/10/2026 - Alvo: Financeiro</p>
+                <h4 class="font-semibold text-gray-800">{{ c.nomeCampaign || c.nomeCampanha }}</h4>
+                <p class="text-sm text-gray-500">Disparo em: {{ formatDate(c.dt_Disparo) }} - Alvo: {{ c.nm_Setor || 'Geral' }}</p>
               </div>
             </div>
             
-            <div class="flex gap-6 text-sm text-center md:justify-end">
+            <div class="flex gap-6 text-sm text-center md:justify-end items-center">
               <div>
-                <div class="font-bold text-gray-800">78%</div>
-                <div class="text-gray-400 text-xs">Abertura</div>
-              </div>
-              <div>
-                <div class="font-bold text-yellow-600">12%</div>
-                <div class="text-gray-400 text-xs">Cliques</div>
-              </div>
-              <div>
-                <div class="font-bold text-red-600">4%</div>
-                <div class="text-gray-400 text-xs">Vítimas</div>
+                <span class="bg-blue-50 text-blue-700 text-xs px-3 py-1.5 rounded-full font-bold uppercase tracking-wider">
+                  {{ c.status }}
+                </span>
               </div>
             </div>
           </div>
