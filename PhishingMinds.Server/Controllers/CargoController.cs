@@ -20,7 +20,7 @@ namespace PhishingMinds.Server.Controllers
         public ActionResult<IEnumerable<Cargo>> Get()
         {
             using var db = _dbFactory.CreateConnection();
-            var cargos = db.Query<Cargo>("SELECT IdCargo as Id_Cargo, Nm_Cargo FROM Cargo").ToList();
+            var cargos = db.Query<Cargo>("SELECT IdCargo, Nm_Cargo FROM Cargo").ToList();
             return Ok(cargos);
         }
 
@@ -28,7 +28,7 @@ namespace PhishingMinds.Server.Controllers
         public ActionResult<Cargo> GetById(int id)
         {
             using var db = _dbFactory.CreateConnection();
-            var cargo = db.QueryFirstOrDefault<Cargo>("SELECT IdCargo as Id_Cargo, Nm_Cargo FROM Cargo WHERE IdCargo = @Id", new { Id = id });
+            var cargo = db.QueryFirstOrDefault<Cargo>("SELECT IdCargo, Nm_Cargo FROM Cargo WHERE IdCargo = @Id", new { Id = id });
             
             if (cargo == null)
                 return NotFound(new { message = "Cargo não encontrado" });
@@ -46,9 +46,9 @@ namespace PhishingMinds.Server.Controllers
             var sql = @"INSERT INTO Cargo (Nm_Cargo) VALUES (@Nm_Cargo); SELECT LAST_INSERT_ID();";
             
             var id = db.ExecuteScalar<int>(sql, novoCargo);
-            novoCargo.Id_Cargo = id;
+            novoCargo.IdCargo = id;
 
-            return CreatedAtAction(nameof(GetById), new { id = novoCargo.Id_Cargo }, novoCargo);
+            return CreatedAtAction(nameof(GetById), new { id = novoCargo.IdCargo }, novoCargo);
         }
 
         [HttpPut("{id}")]

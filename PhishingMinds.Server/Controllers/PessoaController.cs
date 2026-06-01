@@ -112,12 +112,12 @@ namespace PhishingMinds.Server.Controllers
                 return BadRequest();
 
             using var db = _dbFactory.CreateConnection();
-            novaPessoa.Dt_cadastro = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            novaPessoa.Dt_Cadastro = DateTime.Now;
             novaPessoa.Senha = HashPassword(Guid.NewGuid().ToString("N").Substring(0, 8)); // Generate a random hash code for the initial password
 
             var sql = @"
-                INSERT INTO Pessoa (IdEmpresa, IdSetor, IdCargo, Nome, Email, Senha, Ativo, Dt_cadastro, UltimoLogin, PhishingScore)
-                VALUES (@IdEmpresa, @IdSetor, @IdCargo, @Nome, @Email, @Senha, @Ativo, @Dt_cadastro, @UltimoLogin, @PhishingScore);
+                INSERT INTO Pessoa (IdEmpresa, IdSetor, IdCargo, Nome, Email, Senha, Ativo, Dt_Cadastro, UltimoLogin, PhishingScore)
+                VALUES (@IdEmpresa, @IdSetor, @IdCargo, @Nome, @Email, @Senha, @Ativo, @Dt_Cadastro, @UltimoLogin, @PhishingScore);
                 SELECT LAST_INSERT_ID();";
 
             var id = db.ExecuteScalar<int>(sql, novaPessoa);
