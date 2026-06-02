@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using PhishingMinds.Server.Data;
 
@@ -23,7 +23,7 @@ namespace PhishingMinds.Server.Controllers
                 using var db = _dbFactory.CreateConnection();
 
                 var sql = @"
-                    UPDATE phishingcampaigntarget
+                    UPDATE PhishingCampaignTarget
                     SET LinkClicked = 1
                     WHERE IdTarget = @IdTarget
                 ";

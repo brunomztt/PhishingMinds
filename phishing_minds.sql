@@ -112,6 +112,17 @@ CREATE TABLE PhishingTemplateEmpresa (
 );
 
 -- =========================
+-- MULTIPLOS SETORES PARA CAMPANHAS DE PHISHING 
+-- =========================
+CREATE TABLE PhishingCampaignSetor (
+    IdCampaign INT,
+    IdSetor INT,
+    PRIMARY KEY (IdCampaign, IdSetor),
+    FOREIGN KEY (IdCampaign) REFERENCES PhishingCampaign(IdCampaign) ON DELETE CASCADE,
+    FOREIGN KEY (IdSetor) REFERENCES Setor(IdSetor) ON DELETE CASCADE
+);
+
+-- =========================
 -- VALORES DOS PARAMETROS
 -- =========================
 CREATE TABLE ParameterValue (

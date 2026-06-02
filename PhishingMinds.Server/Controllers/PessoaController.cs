@@ -112,12 +112,12 @@ namespace PhishingMinds.Server.Controllers
                 return BadRequest();
 
             using var db = _dbFactory.CreateConnection();
-            novaPessoa.Dt_cadastro = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            novaPessoa.Dt_Cadastro = DateTime.Now;
             novaPessoa.Senha = HashPassword(Guid.NewGuid().ToString("N").Substring(0, 8)); // Generate a random hash code for the initial password
 
             var sql = @"
-                INSERT INTO Pessoa (IdEmpresa, IdSetor, IdCargo, Nome, Email, Senha, Ativo, Dt_cadastro, UltimoLogin, PhishingScore)
-                VALUES (@IdEmpresa, @IdSetor, @IdCargo, @Nome, @Email, @Senha, @Ativo, @Dt_cadastro, @UltimoLogin, @PhishingScore);
+                INSERT INTO Pessoa (IdEmpresa, IdSetor, IdCargo, Nome, Email, Senha, Ativo, Dt_Cadastro, UltimoLogin, PhishingScore)
+                VALUES (@IdEmpresa, @IdSetor, @IdCargo, @Nome, @Email, @Senha, @Ativo, @Dt_Cadastro, @UltimoLogin, @PhishingScore);
                 SELECT LAST_INSERT_ID();";
 
             var id = db.ExecuteScalar<int>(sql, novaPessoa);
@@ -129,34 +129,48 @@ namespace PhishingMinds.Server.Controllers
         [HttpPut("{id}")]
         public ActionResult Update(int id, [FromBody] Pessoa pessoaAtualizada)
         {
-            using var db = _dbFactory.CreateConnection();
-            
-            var sql = @"
-                UPDATE Pessoa 
-                SET Nome = @Nome, Email = @Email, Ativo = @Ativo, 
-                    PhishingScore = @PhishingScore, IdEmpresa = @IdEmpresa, 
-                    IdSetor = @IdSetor, IdCargo = @IdCargo
-                WHERE IdUser = @Id";
+            try
+            {
+                using var db = _dbFactory.CreateConnection();
+                
+                var sql = @"
+                    UPDATE Pessoa 
+                    SET Nome = @Nome, Email = @Email, Ativo = @Ativo, 
+                        PhishingScore = @PhishingScore, IdEmpresa = @IdEmpresa, 
+                        IdSetor = @IdSetor, IdCargo = @IdCargo
+                    WHERE IdUser = @IdUser";
 
-            pessoaAtualizada.IdUser = id;
-            var rows = db.Execute(sql, pessoaAtualizada);
+                pessoaAtualizada.IdUser = id;
+                var rows = db.Execute(sql, pessoaAtualizada);
 
-            if (rows == 0)
-                return NotFound(new { message = "Pessoa não encontrada" });
+                if (rows == 0)
+                    return NotFound(new { message = "Pessoa não encontrada" });
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Erro ao atualizar usuário", error = ex.Message });
+            }
         }
 
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
-            using var db = _dbFactory.CreateConnection();
-            var rows = db.Execute("DELETE FROM Pessoa WHERE IdUser = @Id", new { Id = id });
+            try
+            {
+                using var db = _dbFactory.CreateConnection();
+                var rows = db.Execute("DELETE FROM Pessoa WHERE IdUser = @Id", new { Id = id });
 
-            if (rows == 0)
-                return NotFound(new { message = "Pessoa não encontrada" });
+                if (rows == 0)
+                    return NotFound(new { message = "Pessoa não encontrada" });
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(400, new { message = "Erro ao excluir. O usuário pode estar vinculado a outros registros.", error = ex.Message });
+            }
         }
     }
 }

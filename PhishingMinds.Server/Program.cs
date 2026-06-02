@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<PhishingMinds.Server.Data.DbConnectionFactory>();
 
 // Add JWT Auth
-var jwtKey = builder.Configuration["Jwt:Key"] ?? "PUC@1234";
+var jwtKey = builder.Configuration["Jwt:Key"] ?? "PhishingMindsSuperSecretKey12345!@#";
 var key = Encoding.ASCII.GetBytes(jwtKey);
 builder.Services.AddAuthentication(x =>
 {
@@ -64,6 +64,20 @@ using (var scope = app.Services.CreateScope())
         {
             connection.Open();
             Console.WriteLine("Conectou com o MySQL!");
+
+            // Criar tabela de múltiplos setores para campanha caso não exista
+            using (var cmd = connection.CreateCommand())
+            {
+                cmd.CommandText = @"
+                    CREATE TABLE IF NOT EXISTS PhishingCampaignSetor (
+                        IdCampaign INT,
+                        IdSetor INT,
+                        PRIMARY KEY (IdCampaign, IdSetor),
+                        FOREIGN KEY (IdCampaign) REFERENCES PhishingCampaign(IdCampaign) ON DELETE CASCADE,
+                        FOREIGN KEY (IdSetor) REFERENCES Setor(IdSetor) ON DELETE CASCADE
+                    );";
+                cmd.ExecuteNonQuery();
+            }
         }
     }
     catch (Exception ex)

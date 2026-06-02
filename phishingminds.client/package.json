@@ -12,7 +12,6 @@
     "lint:eslint": "eslint . --fix --cache"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.2.4",
     "postcss-nesting": "^14.0.0",
     "vue": "^3.5.29",
     "vue-router": "^5.0.6"
@@ -20,7 +19,6 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@vitejs/plugin-vue": "^6.0.4",
-    "autoprefixer": "^10.5.0",
     "eslint": "^10.0.2",
     "eslint-plugin-oxlint": "~1.50.0",
     "eslint-plugin-vue": "~10.8.0",
