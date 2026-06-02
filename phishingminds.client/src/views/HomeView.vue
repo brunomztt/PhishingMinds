@@ -6,7 +6,7 @@
     <Recursos />
     <Sobre />
     <Processo />
-    <Planos />
+    <PlanosSection />
     <AppFooter></AppFooter>
   </div>
 </template>
@@ -18,6 +18,6 @@
   import Recursos from '../components/secoes/Recursos.vue'
   import Sobre from '../components/secoes/Sobre.vue'
   import Processo from '../components/secoes/Processo.vue'
-  import Planos from '../components/secoes/Planos.vue'
+  import PlanosSection from '../components/secoes/PlanosSection.vue'
   import AppFooter from '../components/Layout/AppFooter.vue'
 </script>

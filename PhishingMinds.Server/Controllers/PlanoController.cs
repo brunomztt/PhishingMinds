@@ -1,54 +1,62 @@
 using Microsoft.AspNetCore.Mvc;
 using PhishingMinds.Server.Class;
+using PhishingMinds.Server.Data;
+using Dapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PhishingMinds.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize] // Descomente quando implementar autenticação
     public class PlanoController : ControllerBase
     {
-        private static List<Plano> planos = new List<Plano>();
+        private readonly DbConnectionFactory _dbFactory;
+
+        public PlanoController(DbConnectionFactory dbFactory)
+        {
+            _dbFactory = dbFactory;
+        }
 
         // GET: api/plano
         [HttpGet]
-        public ActionResult<IEnumerable<Plano>> Get()
+        public ActionResult<List<Plano>> Get()
         {
-            List<Plano> planos = new List<Plano>();
+            using var db = _dbFactory.CreateConnection();
 
-            try
-            {
-                string query = "SELECT IdPlano, Nm_Plano, Desc_Plano, Temp_Plano, Value_Plano, MaxUsers, MaxCampaigns FROM Plano";
-                //Vou criar um CoreDb pra facilitar a conexão com o banco, mas por enquanto, aqui está a estrutura básica para buscar os planos do banco de dados:
+            var planos = db.Query<Plano>(
+                @"SELECT
+                    IdPlano AS Id_Plano,
+                    Nm_Plano,
+                    Desc_Plano,
+                    Temp_Plano,
+                    Value_Plano,
+                    MaxUsers,
+                    MaxCampaigns
+                  FROM Plano")
+                .ToList();
 
-                // Simulando conexao ante do CoreDb
-                planos.Add(new Plano { Id_Plano = 1, Nm_Plano = "Ouro", Desc_Plano = "Plano inicial", Temp_Plano = "12", Value_Plano = "99.90", MaxUsers = 50, MaxCampaigns = 5 });
-                planos.Add(new Plano { Id_Plano = 2, Nm_Plano = "Diamante", Desc_Plano = "Plano completo", Temp_Plano = "12", Value_Plano = "999.90", MaxUsers = 1000, MaxCampaigns = 999 });
-                planos.Add(new Plano { Id_Plano = 3, Nm_Plano = "Prata", Desc_Plano = "Plano Intermediario", Temp_Plano = "12", Value_Plano = "499.90", MaxUsers = 500, MaxCampaigns = 499 });
-
-                return Ok(planos);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "Erro ao buscar os planos", error = ex.Message });
-            }
+            return Ok(planos);
         }
 
-        // GET: api/plano/{id}
+        // GET: api/plano/1
         [HttpGet("{id}")]
         public ActionResult<Plano> GetById(int id)
         {
-            var plano = planos.FirstOrDefault(p => p.Id_Plano == id);
+            using var db = _dbFactory.CreateConnection();
 
-            if (plano == null)
-                return NotFound("Plano não encontrado");
-
-            return Ok(plano);
-        }
-
-        [HttpGet("{id}/plano")]
-        public ActionResult GetPlanoDaEmpresa(int id)
-        {
-            var plano = planos.FirstOrDefault(p => p.Id_Plano == id);
+            var plano = db.QueryFirstOrDefault<Plano>(
+                @"SELECT
+                    IdPlano AS Id_Plano,
+                    Nm_Plano,
+                    Desc_Plano,
+                    Temp_Plano,
+                    Value_Plano,
+                    MaxUsers,
+                    MaxCampaigns
+                  FROM Plano
+                  WHERE IdPlano = @Id",
+                new { Id = id });
 
             if (plano == null)
                 return NotFound("Plano não encontrado");
@@ -60,45 +68,87 @@ namespace PhishingMinds.Server.Controllers
         [HttpPost]
         public ActionResult Create(Plano novoPlano)
         {
-            novoPlano.Id_Plano = planos.Count > 0 ? planos.Max(p => p.Id_Plano) + 1 : 1;
+            using var db = _dbFactory.CreateConnection();
 
-            planos.Add(novoPlano);
+            var sql = @"
+                INSERT INTO Plano
+                (
+                    Nm_Plano,
+                    Desc_Plano,
+                    Temp_Plano,
+                    Value_Plano,
+                    MaxUsers,
+                    MaxCampaigns
+                )
+                VALUES
+                (
+                    @Nm_Plano,
+                    @Desc_Plano,
+                    @Temp_Plano,
+                    @Value_Plano,
+                    @MaxUsers,
+                    @MaxCampaigns
+                );
+
+                SELECT LAST_INSERT_ID();";
+
+            var id = db.ExecuteScalar<int>(sql, novoPlano);
+
+            novoPlano.Id_Plano = id;
 
             return Ok(novoPlano);
         }
 
-        // PUT: api/plano/{id}
+        // PUT: api/plano/1
         [HttpPut("{id}")]
         public ActionResult Update(int id, Plano planoAtualizado)
         {
-            var plano = planos.FirstOrDefault(p => p.Id_Plano == id);
+            using var db = _dbFactory.CreateConnection();
 
-            if (plano == null)
+            var sql = @"
+                UPDATE Plano
+                SET
+                    Nm_Plano = @Nm_Plano,
+                    Desc_Plano = @Desc_Plano,
+                    Temp_Plano = @Temp_Plano,
+                    Value_Plano = @Value_Plano,
+                    MaxUsers = @MaxUsers,
+                    MaxCampaigns = @MaxCampaigns
+                WHERE IdPlano = @Id";
+
+            var rows = db.Execute(sql, new
+            {
+                Id = id,
+                planoAtualizado.Nm_Plano,
+                planoAtualizado.Desc_Plano,
+                planoAtualizado.Temp_Plano,
+                planoAtualizado.Value_Plano,
+                planoAtualizado.MaxUsers,
+                planoAtualizado.MaxCampaigns
+            });
+
+            if (rows == 0)
                 return NotFound("Plano não encontrado");
 
-            plano.Nm_Plano = planoAtualizado.Nm_Plano;
-            plano.Desc_Plano = planoAtualizado.Desc_Plano;
-            plano.Temp_Plano = planoAtualizado.Temp_Plano;
-            plano.Value_Plano = planoAtualizado.Value_Plano;
-            plano.MaxUsers = planoAtualizado.MaxUsers;
-            plano.MaxCampaigns = planoAtualizado.MaxCampaigns;
+            planoAtualizado.Id_Plano = id;
 
-            return Ok(plano);
+            return Ok(planoAtualizado);
         }
 
-        // DELETE: api/plano/{id}
+        // DELETE: api/plano/1
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
-            var plano = planos.FirstOrDefault(p => p.Id_Plano == id);
+            using var db = _dbFactory.CreateConnection();
 
-            if (plano == null)
+            var rows = db.Execute(
+                "DELETE FROM Plano WHERE IdPlano = @Id",
+                new { Id = id });
+
+            if (rows == 0)
                 return NotFound("Plano não encontrado");
-
-            planos.Remove(plano);
 
             return Ok("Plano removido");
         }
     }
-
 }

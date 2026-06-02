@@ -63,9 +63,13 @@
   </section>
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { ref, onMounted, computed } from 'vue'
   import PlanoCard from './PlanoCard.vue'
+
+  defineOptions({
+    name: 'PlanosSection'
+  })
 
   const planos = ref([])
   const loading = ref(true)

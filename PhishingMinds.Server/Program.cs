@@ -4,6 +4,16 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<PhishingMinds.Server.Data.DbConnectionFactory>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("VuePolicy", policy =>
+    {
+        policy
+            .WithOrigins("https://localhost:51634")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 // Add JWT Auth
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "PUC@1234";
@@ -51,7 +61,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.UseCors("VuePolicy");
 app.MapFallbackToFile("/index.html");
 
 using (var scope = app.Services.CreateScope())
