@@ -6,9 +6,9 @@ VALUES
 
 -- EMPRESA
 INSERT INTO Empresa
-(IdPlano,Nm_Empresa,Nm_Dono,Mail,CNPJ,Dt_Cadastro,Dt_Contratacao,Dt_FimContrato,Ativo)
+(IdPlano,Nm_Empresa,Nm_Dono,Mail,CNPJ,Dt_Cadastro,Dt_Contratacao,Dt_FimContrato,Ativo, Senha)
 VALUES
-(2,'Phishing Minds Corp','Bruno Mazetto','admin@phishingminds.com','12345678000100',NOW(),NOW(),DATE_ADD(NOW(),INTERVAL 1 YEAR),1);
+(2,'Phishing Minds Corp','Bruno Mazetto','admin@phishingminds.com','12345678000100',NOW(),NOW(),DATE_ADD(NOW(),INTERVAL 1 YEAR),1, '123456');
 
 -- CARGOS
 INSERT INTO Cargo (Nm_Cargo)
