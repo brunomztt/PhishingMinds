@@ -50,66 +50,162 @@ namespace PhishingMinds.Server.Controllers
 
                 using var db = _dbFactory.CreateConnection();
 
+                // 1. Tentar Empresa
+                var sqlEmpresa = "SELECT * FROM Empresa WHERE Mail = @Email";
+                var empresa = db.QueryFirstOrDefault<PhishingMinds.Server.Class.Empresa>(
+                    sqlEmpresa,
+                    new { Email = request.Email });
+
                 Console.WriteLine("PASSO 2");
 
-                var sql = "SELECT * FROM empresa WHERE Mail = @Email";
+                if (empresa != null)
+                {
+                    if (empresa.Senha != request.Password)
+                    {
+                        return Unauthorized("Senha inválida.");
+                    }
 
-                var user = db.QueryFirstOrDefault<PhishingMinds.Server.Class.Empresa>(
-                    sql,
-                    new { Email = request.Email }
-                );
+                    var tokenHandler = new JwtSecurityTokenHandler();
+                    var jwtKey = _config["Jwt:Key"] ?? "PhishingMindsSuperSecretKey12345!@#";
+                    var key = Encoding.ASCII.GetBytes(jwtKey);
+
+                    var tokenDescriptor = new SecurityTokenDescriptor
+                    {
+                        Subject = new ClaimsIdentity(new[]
+                        {
+                    new Claim(ClaimTypes.NameIdentifier, empresa.IdEmpresa.ToString()),
+                    new Claim(ClaimTypes.Email, empresa.Mail),
+                    new Claim("IdEmpresa", empresa.IdEmpresa.ToString())
+                }),
+                        Expires = DateTime.UtcNow.AddHours(8),
+                        SigningCredentials = new SigningCredentials(
+                            new SymmetricSecurityKey(key),
+                            SecurityAlgorithms.HmacSha256Signature)
+                    };
+
+                    var token = tokenHandler.CreateToken(tokenDescriptor);
+
+                    return Ok(new
+                    {
+                        Token = tokenHandler.WriteToken(token),
+                        User = new
+                        {
+                            idEmpresa = empresa.IdEmpresa,
+                            idPlano = empresa.IdPlano,
+                            nome = empresa.Nm_Dono,
+                            email = empresa.Mail,
+                            isEmpresa = true
+                        }
+                    });
+                }
 
                 Console.WriteLine("PASSO 3");
 
-                if (user == null)
-                    return Unauthorized();
+                // 2. Tentar Pessoa
+                var sqlPessoa = "SELECT * FROM Pessoa WHERE Email = @Email";
+                var pessoa = db.QueryFirstOrDefault<PhishingMinds.Server.Class.Pessoa>(
+                    sqlPessoa,
+                    new { Email = request.Email });
+
+                if (pessoa != null)
+                {
+                    var hashedInput = HashPassword(request.Password);
+
+                    if (pessoa.Senha != request.Password &&
+                        pessoa.Senha != hashedInput)
+                    {
+                        return Unauthorized("Senha inválida.");
+                    }
+
+                    // Atualiza último login
+                    db.Execute(
+                        "UPDATE Pessoa SET UltimoLogin = @Now WHERE IdUser = @IdUser",
+                        new
+                        {
+                            Now = DateTime.Now,
+                            IdUser = pessoa.IdUser
+                        });
+
+                    var tokenHandler = new JwtSecurityTokenHandler();
+                    var jwtKey = _config["Jwt:Key"] ?? "PhishingMindsSuperSecretKey12345!@#";
+                    var key = Encoding.ASCII.GetBytes(jwtKey);
+
+                    var tokenDescriptor = new SecurityTokenDescriptor
+                    {
+                        Subject = new ClaimsIdentity(new[]
+                        {
+                    new Claim(ClaimTypes.NameIdentifier, pessoa.IdUser.ToString()),
+                    new Claim(ClaimTypes.Email, pessoa.Email),
+                    new Claim("IdEmpresa", pessoa.IdEmpresa.ToString())
+                }),
+                        Expires = DateTime.UtcNow.AddHours(8),
+                        SigningCredentials = new SigningCredentials(
+                            new SymmetricSecurityKey(key),
+                            SecurityAlgorithms.HmacSha256Signature)
+                    };
+
+                    var idPlano = db.ExecuteScalar<int>(
+                        "SELECT IdPlano FROM Empresa WHERE IdEmpresa = @IdEmpresa",
+                        new { IdEmpresa = pessoa.IdEmpresa });
+
+                    var token = tokenHandler.CreateToken(tokenDescriptor);
+
+                    return Ok(new
+                    {
+                        Token = tokenHandler.WriteToken(token),
+                        User = new
+                        {
+                            idEmpresa = pessoa.IdEmpresa,
+                            idPlano = idPlano,
+                            nome = pessoa.Nome,
+                            email = pessoa.Email,
+                            isPessoa = true
+                        }
+                    });
+                }
 
                 Console.WriteLine("PASSO 4");
 
-                if (user.Senha != request.Password)
-                    return Unauthorized();
-
-                Console.WriteLine("PASSO 5");
-
-                var tokenHandler = new JwtSecurityTokenHandler();
-
-                Console.WriteLine("PASSO 6");
-
-                var jwtKey = _config["Jwt:Key"] ?? "PhishingMindsSuperSecretKey12345!@#";
-                var key = Encoding.ASCII.GetBytes(jwtKey);
-
-                Console.WriteLine("PASSO 7");
-
-                var tokenDescriptor = new SecurityTokenDescriptor
+                // 3. Fallback DEV
+                if (request.Email.Trim().ToLower() == "admin@phishingminds.com")
                 {
-                    Subject = new ClaimsIdentity(new[]
-{
-    new Claim(ClaimTypes.NameIdentifier, user.IdEmpresa.ToString()),
-    new Claim(ClaimTypes.Email, user.Mail),
-    new Claim("IdEmpresa", user.IdEmpresa.ToString())
-}),
-                    Expires = DateTime.UtcNow.AddHours(8),
-                    SigningCredentials = new SigningCredentials(
-                        new SymmetricSecurityKey(key),
-                        SecurityAlgorithms.HmacSha256Signature)
-                };
-
-                Console.WriteLine("PASSO 8");
-
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-
-                Console.WriteLine("PASSO 9");
-
-                return Ok(new
-                {
-                    Token = tokenHandler.WriteToken(token),
-                    User = new
+                    if (request.Password == "123456" ||
+                        request.Password == "123")
                     {
-                        idEmpresa = user.IdEmpresa,
-                        nome = user.Nm_Dono,
-                        email = user.Mail
+                        var tokenHandler = new JwtSecurityTokenHandler();
+                        var jwtKey = _config["Jwt:Key"] ?? "PhishingMindsSuperSecretKey12345!@#";
+                        var key = Encoding.ASCII.GetBytes(jwtKey);
+
+                        var tokenDescriptor = new SecurityTokenDescriptor
+                        {
+                            Subject = new ClaimsIdentity(new[]
+                            {
+                        new Claim(ClaimTypes.NameIdentifier, "1"),
+                        new Claim(ClaimTypes.Email, request.Email),
+                        new Claim("IdEmpresa", "1")
+                    }),
+                            Expires = DateTime.UtcNow.AddHours(8),
+                            SigningCredentials = new SigningCredentials(
+                                new SymmetricSecurityKey(key),
+                                SecurityAlgorithms.HmacSha256Signature)
+                        };
+
+                        var token = tokenHandler.CreateToken(tokenDescriptor);
+
+                        return Ok(new
+                        {
+                            Token = tokenHandler.WriteToken(token),
+                            User = new
+                            {
+                                idEmpresa = 1,
+                                email = request.Email,
+                                isEmpresa = true
+                            }
+                        });
                     }
-                });
+                }
+
+                return Unauthorized("Credenciais inválidas.");
             }
             catch (Exception ex)
             {
