@@ -10,6 +10,10 @@ const funcionarios = ref([])
 const loadingSetores = ref(false)
 const loadingFuncionarios = ref(false)
 
+const funcionariosPhishing = ref([])
+const loadingPhishing = ref(false)
+
+
 // Modals
 const isSetorModalOpen = ref(false)
 const isFuncionarioModalOpen = ref(false)
@@ -28,6 +32,33 @@ const searchFuncionario = ref('')
 const currentPageSetor = ref(1)
 const currentPageFuncionario = ref(1)
 const itemsPerPage = ref(5)
+
+const fetchFuncionariosPhishing = async () => {
+  if (!userEmpresaId.value) return
+
+  loadingPhishing.value = true
+
+  try {
+    const res = await fetch(
+      `/api/Pessoa/caidos-phishing/${userEmpresaId.value}`,
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`
+        }
+      }
+    )
+
+    if (res.ok) {
+      funcionariosPhishing.value = await res.json()
+    }
+  }
+  catch (e) {
+    console.error(e)
+  }
+  finally {
+    loadingPhishing.value = false
+  }
+}
 
 const filteredSetores = computed(() => {
   let result = setores.value
@@ -197,18 +228,28 @@ const deleteFuncionario = async () => {
   }
 }
 
-onMounted(() => {
-  const userStr = localStorage.getItem('user')
-  if (userStr) {
-    const user = JSON.parse(userStr)
-    isDevAdmin.value = user.idEmpresa === 1
-    userEmpresaId.value = user.idEmpresa
-    if (!isDevAdmin.value) {
-      fetchSetores()
-      fetchFuncionarios()
+  onMounted(() => {
+    const userStr = localStorage.getItem('user')
+
+    if (userStr) {
+      const user = JSON.parse(userStr)
+
+      isDevAdmin.value = user.idEmpresa === 1
+      userEmpresaId.value = user.idEmpresa
+
+      if (!isDevAdmin.value) {
+        fetchSetores()
+        fetchFuncionarios()
+        fetchFuncionariosPhishing()
+
+        // marca o momento em que o gestor visualizou a tela
+        localStorage.setItem(
+          'ultimaVisualizacaoPhishing',
+          Date.now().toString()
+        )
+      }
     }
-  }
-})
+  })
 </script>
 
 <template>
@@ -278,7 +319,7 @@ onMounted(() => {
             </button>
           </div>
         </div>
-        
+
         <div class="p-6">
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse min-w-[500px]">
@@ -329,7 +370,7 @@ onMounted(() => {
             </button>
           </div>
         </div>
-        
+
         <div class="p-6">
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse min-w-[700px]">
@@ -367,6 +408,77 @@ onMounted(() => {
               <button :disabled="currentPageFuncionario === 1" @click="currentPageFuncionario--" class="px-3 py-1 border rounded hover:bg-gray-50 disabled:opacity-50">Anterior</button>
               <button :disabled="currentPageFuncionario === totalPagesFuncionario" @click="currentPageFuncionario++" class="px-3 py-1 border rounded hover:bg-gray-50 disabled:opacity-50">Próxima</button>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Funcionários que Caíram em Phishing -->
+      <div class="bg-white rounded-3xl shadow-sm overflow-hidden mt-8">
+        <div class="p-6 border-b border-gray-100 bg-red-50">
+          <h3 class="text-xl font-semibold text-red-700">
+            ⚠ Funcionários que Caíram em Phishing
+          </h3>
+          <p class="text-sm text-gray-500 mt-1">
+            Usuários que clicaram em links de campanhas de phishing.
+          </p>
+        </div>
+
+        <div class="p-6">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse min-w-[700px]">
+              <thead>
+                <tr class="text-gray-500 text-sm border-b border-gray-100">
+                  <th class="pb-3 font-medium">Nome</th>
+                  <th class="pb-3 font-medium">Email</th>
+                  <th class="pb-3 font-medium">Setor</th>
+                  <th class="pb-3 font-medium">Campanha</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr v-if="loadingPhishing">
+                  <td colspan="4" class="py-4 text-center text-gray-500">
+                    Carregando...
+                  </td>
+                </tr>
+
+                <tr v-else-if="funcionariosPhishing.length === 0">
+                  <td colspan="4" class="py-4 text-center text-gray-500">
+                    Nenhum funcionário caiu em phishing.
+                  </td>
+                </tr>
+
+                <tr v-else
+                    v-for="func in funcionariosPhishing"
+                    :key="func.idUser"
+                    class="border-b border-gray-50 hover:bg-red-50 transition-colors">
+                  <td class="py-4 font-semibold text-gray-800">
+                    {{ func.Nome }}
+                  </td>
+
+                  <td class="py-4 text-gray-500">
+                    {{ func.Email }}
+                  </td>
+
+                  <td class="py-4">
+                    <span class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-md font-semibold">
+                      {{ func.Nm_Setor || 'Sem Setor' }}
+                    </span>
+                  </td>
+
+                  <td class="py-4">
+                    <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded-md font-semibold">
+                      {{ func.NomeCampanha }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="mt-4 text-sm text-gray-500">
+            Total de funcionários comprometidos:
+            <strong>{{ funcionariosPhishing.length }}</strong>
           </div>
         </div>
       </div>

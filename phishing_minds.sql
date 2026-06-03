@@ -163,6 +163,7 @@ CREATE TABLE PhishingCampaignTarget (
     CredentialsSubmitted BOOLEAN,
     Reported BOOLEAN,
     Dt_Register DATETIME,
+    Dt_Click DATETIME,
     FOREIGN KEY (IdCampaign) REFERENCES PhishingCampaign(IdCampaign),
     FOREIGN KEY (IdUser) REFERENCES Pessoa(IdUser)
 );

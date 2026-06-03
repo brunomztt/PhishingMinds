@@ -172,5 +172,34 @@ namespace PhishingMinds.Server.Controllers
                 return StatusCode(400, new { message = "Erro ao excluir. O usuário pode estar vinculado a outros registros.", error = ex.Message });
             }
         }
+
+        [HttpGet("caidos-phishing/{idEmpresa}")]
+        public IActionResult GetCaidosPhishing(int idEmpresa)
+        {
+            using var db = _dbFactory.CreateConnection();
+
+            var sql = @"
+    SELECT DISTINCT
+        p.IdUser,
+        p.Nome,
+        p.Email,
+        s.Nm_Setor,
+        pc.NomeCampanha,
+        pct.Dt_Click
+    FROM PhishingCampaignTarget pct
+    INNER JOIN Pessoa p
+        ON p.IdUser = pct.IdUser
+    INNER JOIN PhishingCampaign pc
+        ON pc.IdCampaign = pct.IdCampaign
+    LEFT JOIN Setor s
+        ON s.IdSetor = p.IdSetor
+    WHERE pc.IdEmpresa = @IdEmpresa
+      AND pct.LinkClicked = 1
+";
+
+            var resultado = db.Query(sql, new { IdEmpresa = idEmpresa });
+
+            return Ok(resultado);
+        }
     }
 }

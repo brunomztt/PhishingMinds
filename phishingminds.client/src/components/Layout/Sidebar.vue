@@ -16,8 +16,16 @@
         <router-link to="/campanhas" @click="$emit('close')" class="block w-full text-center md:text-left px-4 py-3 rounded-xl font-medium" :class="$route.path.startsWith('/campanhas') ? (isDevAdmin ? 'bg-green-600 text-white' : 'bg-green-700 text-white') : (isDevAdmin ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600')">
           Campanhas
         </router-link>
-        <router-link to="/organizacao" @click="$emit('close')" class="block w-full text-center md:text-left px-4 py-3 rounded-xl font-medium" :class="$route.path.startsWith('/organizacao') ? (isDevAdmin ? 'bg-green-600 text-white' : 'bg-green-700 text-white') : (isDevAdmin ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600')">
+        <router-link to="/organizacao"
+                     @click="$emit('close')"
+                     class="relative block w-full text-center md:text-left px-4 py-3 rounded-xl font-medium"
+                     :class="$route.path.startsWith('/organizacao')
+    ? (isDevAdmin ? 'bg-green-600 text-white' : 'bg-green-700 text-white')
+    : (isDevAdmin ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600')">
           Organização
+
+          <span v-if="possuiNovasQuedas"
+                class="absolute top-4 right-4 w-3 h-3 bg-red-500 rounded-full"></span>
         </router-link>
         <router-link to="/contratos" @click="$emit('close')" class="block w-full text-center md:text-left px-4 py-3 rounded-xl font-medium" :class="$route.path.startsWith('/contratos') ? (isDevAdmin ? 'bg-green-600 text-white' : 'bg-green-700 text-white') : (isDevAdmin ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600')">
           Contratos
@@ -37,16 +45,58 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 defineEmits(['close'])
+const possuiNovasQuedas = ref(false)
 
+const verificarNovasQuedas = async () => {
+  const userStr = localStorage.getItem('user')
+
+  if (!userStr) return
+
+  const user = JSON.parse(userStr)
+
+  if (user.idEmpresa === 1) return
+
+  try {
+    const res = await fetch(
+      `/api/Pessoa/caidos-phishing/${user.idEmpresa}`
+    )
+
+    if (!res.ok) return
+
+    const dados = await res.json()
+
+    const ultimaVisualizacao = Number(
+      localStorage.getItem('ultimaVisualizacaoPhishing')
+    )
+
+    // primeira vez que entrou no sistema
+    if (!ultimaVisualizacao) {
+      possuiNovasQuedas.value = dados.length > 0
+      return
+    }
+
+    possuiNovasQuedas.value = dados.some(
+      x =>
+        x.Dt_Click &&
+        new Date(x.Dt_Click).getTime() > ultimaVisualizacao
+    )
+  }
+  catch (err) {
+    console.error(err)
+  }
+}
 const router = useRouter()
 const isDevAdmin = ref(false)
 
-onMounted(() => {
+onMounted(async () => {
   const userStr = localStorage.getItem('user')
+
   if (userStr) {
     const user = JSON.parse(userStr)
     isDevAdmin.value = user.idEmpresa === 1
   }
+
+  await verificarNovasQuedas()
 })
 const handleLogout = () => {
   localStorage.removeItem('token')
