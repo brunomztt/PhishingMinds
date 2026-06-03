@@ -3,12 +3,37 @@ import { ref, onMounted, computed } from 'vue'
 import MainLayout from '../layouts/MainLayout.vue'
 
 const isDevAdmin = ref(false)
+const isPessoa = ref(false)
 const userEmpresaId = ref(null)
 
 const setores = ref([])
 const funcionarios = ref([])
 const loadingSetores = ref(false)
 const loadingFuncionarios = ref(false)
+
+const funcionariosPhishing = ref([])
+const loadingPhishing = ref(false)
+const funcionariosPhishingFiltrados = computed(() => {
+  const userStr = localStorage.getItem('user')
+
+  if (!userStr)
+    return funcionariosPhishing.value
+
+  const user = JSON.parse(userStr)
+
+  // Admin continua vendo tudo
+  if (!user.isPessoa)
+    return funcionariosPhishing.value
+
+  // Colaborador vê apenas ele mesmo
+  return funcionariosPhishing.value.filter(
+    f =>
+      f.Email?.toLowerCase() ===
+      user.email?.toLowerCase()
+  )
+})
+
+
 
 // Modals
 const isSetorModalOpen = ref(false)
@@ -29,6 +54,33 @@ const currentPageSetor = ref(1)
 const currentPageFuncionario = ref(1)
 const itemsPerPage = ref(5)
 
+const fetchFuncionariosPhishing = async () => {
+  if (!userEmpresaId.value) return
+
+  loadingPhishing.value = true
+
+  try {
+    const res = await fetch(
+      `/api/Pessoa/caidos-phishing/${userEmpresaId.value}`,
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`
+        }
+      }
+    )
+
+    if (res.ok) {
+      funcionariosPhishing.value = await res.json()
+    }
+  }
+  catch (e) {
+    console.error(e)
+  }
+  finally {
+    loadingPhishing.value = false
+  }
+}
+
 const filteredSetores = computed(() => {
   let result = setores.value
   if (searchSetor.value) {
@@ -46,10 +98,29 @@ const totalPagesSetor = computed(() => Math.ceil(filteredSetores.value.length / 
 
 const filteredFuncionarios = computed(() => {
   let result = funcionarios.value
-  if (searchFuncionario.value) {
-    result = result.filter(f => f.nome?.toLowerCase().includes(searchFuncionario.value.toLowerCase()) || 
-                                f.email?.toLowerCase().includes(searchFuncionario.value.toLowerCase()))
+
+  const userStr = localStorage.getItem('user')
+
+  if (userStr) {
+    const user = JSON.parse(userStr)
+
+    // colaborador comum só vê a si mesmo
+    if (user.isPessoa === true) {
+      result = result.filter(
+        f =>
+          f.email?.toLowerCase() === user.email?.toLowerCase()
+      )
+    }
   }
+
+  if (searchFuncionario.value) {
+    result = result.filter(
+      f =>
+        f.nome?.toLowerCase().includes(searchFuncionario.value.toLowerCase()) ||
+        f.email?.toLowerCase().includes(searchFuncionario.value.toLowerCase())
+    )
+  }
+
   return result
 })
 
@@ -197,18 +268,34 @@ const deleteFuncionario = async () => {
   }
 }
 
-onMounted(() => {
-  const userStr = localStorage.getItem('user')
-  if (userStr) {
-    const user = JSON.parse(userStr)
-    isDevAdmin.value = user.idEmpresa === 1
-    userEmpresaId.value = user.idEmpresa
-    if (!isDevAdmin.value) {
-      fetchSetores()
-      fetchFuncionarios()
+  onMounted(() => {
+    const userStr = localStorage.getItem('user')
+
+    if (userStr) {
+      const user = JSON.parse(userStr)
+
+      isDevAdmin.value =
+        user.idEmpresa === 1 &&
+        user.isEmpresa === true
+
+      isPessoa.value =
+        user.isPessoa === true
+
+      userEmpresaId.value = user.idEmpresa
+
+      if (!isDevAdmin.value) {
+        fetchSetores()
+        fetchFuncionarios()
+        fetchFuncionariosPhishing()
+
+        // marca o momento em que o gestor visualizou a tela
+        localStorage.setItem(
+          'ultimaVisualizacaoPhishing',
+          Date.now().toString()
+        )
+      }
     }
-  }
-})
+  })
 </script>
 
 <template>
@@ -273,12 +360,13 @@ onMounted(() => {
           <h3 class="text-xl font-semibold text-gray-800">Setores</h3>
           <div class="flex gap-4 w-full sm:w-auto">
             <input v-model="searchSetor" @input="currentPageSetor = 1" type="text" placeholder="Buscar setor..." class="w-full sm:w-64 px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500" />
-            <button @click="openSetorModal()" class="bg-green-700 hover:bg-green-800 text-white px-5 py-2.5 rounded-xl font-medium shadow-sm transition-colors whitespace-nowrap">
+            <button v-if="!isPessoa"
+                    @click="openSetorModal()" class="bg-green-700 hover:bg-green-800 text-white px-5 py-2.5 rounded-xl font-medium shadow-sm transition-colors whitespace-nowrap">
               Novo Setor
             </button>
           </div>
         </div>
-        
+
         <div class="p-6">
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse min-w-[500px]">
@@ -286,7 +374,10 @@ onMounted(() => {
                 <tr class="text-gray-500 text-sm border-b border-gray-100">
                   <th class="pb-3 font-medium">ID</th>
                   <th class="pb-3 font-medium">Nome do Setor</th>
-                  <th class="pb-3 font-medium w-32 text-center">Ações</th>
+                  <th v-if="!isPessoa"
+                      class="pb-3 font-medium w-32 text-center">
+                    Ações
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -295,7 +386,8 @@ onMounted(() => {
                 <tr v-else v-for="setor in paginatedSetores" :key="setor.idSetor" class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
                   <td class="py-4 font-medium text-gray-500">#{{ setor.idSetor }}</td>
                   <td class="py-4 font-semibold text-gray-800">{{ setor.nm_Setor }}</td>
-                  <td class="py-4 flex justify-center gap-3">
+                  <td v-if="!isPessoa"
+                      class="py-4 flex justify-center gap-3">
                     <button @click="openSetorModal(setor)" class="text-blue-600 hover:text-blue-800 transition-colors" title="Editar">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                     </button>
@@ -324,12 +416,13 @@ onMounted(() => {
           <h3 class="text-xl font-semibold text-gray-800">Funcionários</h3>
           <div class="flex gap-4 w-full sm:w-auto">
             <input v-model="searchFuncionario" @input="currentPageFuncionario = 1" type="text" placeholder="Buscar funcionário..." class="w-full sm:w-64 px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500" />
-            <button @click="openFuncionarioModal()" class="bg-green-700 hover:bg-green-800 text-white px-5 py-2.5 rounded-xl font-medium shadow-sm transition-colors whitespace-nowrap">
+            <button v-if="!isPessoa"
+                    @click="openFuncionarioModal()" class="bg-green-700 hover:bg-green-800 text-white px-5 py-2.5 rounded-xl font-medium shadow-sm transition-colors whitespace-nowrap">
               Novo Funcionário
             </button>
           </div>
         </div>
-        
+
         <div class="p-6">
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse min-w-[700px]">
@@ -338,7 +431,10 @@ onMounted(() => {
                   <th class="pb-3 font-medium">Nome</th>
                   <th class="pb-3 font-medium">Email</th>
                   <th class="pb-3 font-medium">Setor</th>
-                  <th class="pb-3 font-medium w-32 text-center">Ações</th>
+                  <th v-if="!isPessoa"
+                      class="pb-3 font-medium w-32 text-center">
+                    Ações
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -348,7 +444,8 @@ onMounted(() => {
                   <td class="py-4 font-semibold text-gray-800">{{ func.nome }}</td>
                   <td class="py-4 text-gray-500">{{ func.email }}</td>
                   <td class="py-4"><span class="bg-green-50 text-green-700 text-xs px-2 py-1 rounded-md font-semibold">{{ func.nm_Setor || 'Sem Setor' }}</span></td>
-                  <td class="py-4 flex justify-center gap-3">
+                  <td v-if="!isPessoa"
+                      class="py-4 flex justify-center gap-3">
                     <button @click="openFuncionarioModal(func)" class="text-blue-600 hover:text-blue-800 transition-colors" title="Editar">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                     </button>
@@ -367,6 +464,77 @@ onMounted(() => {
               <button :disabled="currentPageFuncionario === 1" @click="currentPageFuncionario--" class="px-3 py-1 border rounded hover:bg-gray-50 disabled:opacity-50">Anterior</button>
               <button :disabled="currentPageFuncionario === totalPagesFuncionario" @click="currentPageFuncionario++" class="px-3 py-1 border rounded hover:bg-gray-50 disabled:opacity-50">Próxima</button>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Funcionários que Caíram em Phishing -->
+      <div class="bg-white rounded-3xl shadow-sm overflow-hidden mt-8">
+        <div class="p-6 border-b border-gray-100 bg-red-50">
+          <h3 class="text-xl font-semibold text-red-700">
+            ⚠ Funcionários que Caíram em Phishing
+          </h3>
+          <p class="text-sm text-gray-500 mt-1">
+            Usuários que clicaram em links de campanhas de phishing.
+          </p>
+        </div>
+
+        <div class="p-6">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse min-w-[700px]">
+              <thead>
+                <tr class="text-gray-500 text-sm border-b border-gray-100">
+                  <th class="pb-3 font-medium">Nome</th>
+                  <th class="pb-3 font-medium">Email</th>
+                  <th class="pb-3 font-medium">Setor</th>
+                  <th class="pb-3 font-medium">Campanha</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr v-if="loadingPhishing">
+                  <td colspan="4" class="py-4 text-center text-gray-500">
+                    Carregando...
+                  </td>
+                </tr>
+
+                <tr v-else-if="funcionariosPhishing.length === 0">
+                  <td colspan="4" class="py-4 text-center text-gray-500">
+                    Nenhum funcionário caiu em phishing.
+                  </td>
+                </tr>
+
+                <tr v-else
+                    v-for="func in funcionariosPhishingFiltrados"
+                    :key="func.idUser"
+                    class="border-b border-gray-50 hover:bg-red-50 transition-colors">
+                  <td class="py-4 font-semibold text-gray-800">
+                    {{ func.Nome }}
+                  </td>
+
+                  <td class="py-4 text-gray-500">
+                    {{ func.Email }}
+                  </td>
+
+                  <td class="py-4">
+                    <span class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-md font-semibold">
+                      {{ func.Nm_Setor || 'Sem Setor' }}
+                    </span>
+                  </td>
+
+                  <td class="py-4">
+                    <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded-md font-semibold">
+                      {{ func.NomeCampanha }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="mt-4 text-sm text-gray-500">
+            Total de funcionários comprometidos:
+            <strong>{{ funcionariosPhishingFiltrados.length }}</strong>
           </div>
         </div>
       </div>

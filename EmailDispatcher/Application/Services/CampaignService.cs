@@ -55,9 +55,16 @@ namespace EmailDispatcher.Application.Services
                     try
                     {
                         var trackingLink = $"{baseUrl}/track?idTarget={user.IdTarget}";
+                        var openTracking = $"{baseUrl}/track/open?idTarget={user.IdTarget}";
                         var body = campanha.BodyMail
-                            .Replace("{{Nome}}", user.Nome)
-                            .Replace("{{Link}}", trackingLink);
+                        .Replace("{{Nome}}", user.Nome)
+                        .Replace("{{Link}}", trackingLink);
+
+                                            body += $@"
+                    <img src='{openTracking}'
+                         width='1'
+                         height='1'
+                         style='display:none;' />";
 
                         await _emailSender.Send(
                             user.Email,

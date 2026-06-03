@@ -4,6 +4,8 @@ import MainLayout from '../layouts/MainLayout.vue'
 
 const userEmpresaId = ref(null)
 const isDevAdmin = ref(false)
+const isPessoa = ref(false)
+const currentUser = ref(null)
 const loading = ref(true)
 
 const isModalOpen = ref(false)
@@ -82,8 +84,17 @@ onMounted(() => {
   const userStr = localStorage.getItem('user')
   if (userStr) {
     const user = JSON.parse(userStr)
-    isDevAdmin.value = user.idEmpresa === 1
+
+    currentUser.value = user
+
+    isDevAdmin.value =
+      user.idEmpresa === 1 &&
+      user.isEmpresa === true
+
+    isPessoa.value = user.isPessoa === true
+
     userEmpresaId.value = user.idEmpresa
+
     fetchProfile()
   }
 })
@@ -96,8 +107,19 @@ onMounted(() => {
         <h2 class="text-3xl md:text-4xl font-bold text-green-900">Meu Perfil</h2>
         <p class="text-gray-500 mt-1">Gerencie as informações da sua organização.</p>
       </div>
-      <button @click="openModal" class="bg-green-700 hover:bg-green-800 text-white px-5 py-2.5 rounded-xl font-medium shadow-sm transition-colors w-full sm:w-auto flex items-center justify-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+      <button v-if="!isPessoa"
+              @click="openModal"
+              class="bg-green-700 hover:bg-green-800 text-white px-5 py-2.5 rounded-xl font-medium shadow-sm transition-colors w-full sm:w-auto flex items-center justify-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg"
+             class="h-5 w-5"
+             fill="none"
+             viewBox="0 0 24 24"
+             stroke="currentColor">
+          <path stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+        </svg>
         Editar Perfil
       </button>
     </div>
@@ -105,8 +127,8 @@ onMounted(() => {
     <div v-if="loading" class="text-center py-10 text-gray-500">
       Carregando...
     </div>
-
-    <div v-else class="bg-white rounded-3xl shadow-sm overflow-hidden mt-8">
+    <div v-else-if="!isPessoa"
+         class="bg-white rounded-3xl shadow-sm overflow-hidden mt-8">
       <div class="p-8 border-b border-gray-100 flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left bg-gray-50/50">
         <div class="w-24 h-24 bg-green-700 rounded-full flex-shrink-0 flex items-center justify-center text-white text-3xl font-bold shadow-md">
           {{ profileData.nm_Empresa ? profileData.nm_Empresa.charAt(0).toUpperCase() : 'O' }}
@@ -143,6 +165,57 @@ onMounted(() => {
           <div>
             <p class="text-sm font-medium text-gray-500 mb-1">CNPJ</p>
             <p class="text-base font-semibold text-gray-900">{{ profileData.cnpj || 'Não informado' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- PERFIL FUNCIONÁRIO -->
+    <div v-else
+         class="bg-white rounded-3xl shadow-sm overflow-hidden mt-8">
+      <div class="p-8 border-b border-gray-100 flex items-center gap-6 bg-gray-50/50">
+        <div class="w-24 h-24 bg-green-700 rounded-full flex items-center justify-center text-white text-3xl font-bold">
+          {{ currentUser?.nome?.charAt(0)?.toUpperCase() }}
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-bold text-gray-800">
+            {{ currentUser?.nome }}
+          </h3>
+
+          <p class="text-gray-500">
+            {{ currentUser?.email }}
+          </p>
+
+          <span class="inline-block mt-3 text-xs font-bold uppercase tracking-wider text-green-800 bg-green-100 px-3 py-1 rounded-full">
+            Funcionário
+          </span>
+        </div>
+      </div>
+
+      <div class="p-8">
+        <h4 class="text-lg font-semibold text-gray-800 mb-6">
+          Informações Detalhadas
+        </h4>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <p class="text-sm text-gray-500">Nome</p>
+            <p class="font-semibold">{{ currentUser?.nome }}</p>
+          </div>
+
+          <div>
+            <p class="text-sm text-gray-500">Email</p>
+            <p class="font-semibold">{{ currentUser?.email }}</p>
+          </div>
+
+          <div>
+            <p class="text-sm text-gray-500">Empresa</p>
+            <p class="font-semibold">{{ profileData.nm_Empresa }}</p>
+          </div>
+
+          <div>
+            <p class="text-sm text-gray-500">ID Empresa</p>
+            <p class="font-semibold">{{ currentUser?.idEmpresa }}</p>
           </div>
         </div>
       </div>
