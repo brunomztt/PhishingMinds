@@ -5,8 +5,9 @@
 
       <!-- Imagens -->
       <div class="relative">
-        <!--<img src="/img1.jpg" class="rounded-xl shadow-lg" />
-    <img src="/img2.jpg" class="absolute bottom-[-30px] right-[-30px] w-48 rounded-xl shadow-lg border-4 border-white"/>-->
+        <img src="../../assets/img/analytics_dashboard.png"
+             alt="Dashboard de análise"
+             class="w-full max-w-2xl" />
       </div>
 
       <!-- Conteúdo -->
