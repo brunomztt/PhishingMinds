@@ -32,6 +32,9 @@ namespace PhishingMinds.Server.Controllers
             try
             {
                 var context = GetUserContext();
+                Console.WriteLine($"TOKEN EMPRESA: {context.idEmpresa}");
+                Console.WriteLine($"TOKEN DEV ADMIN: {context.isDevAdmin}");
+
                 using var db = _dbFactory.CreateConnection();
                 
                 string sql;

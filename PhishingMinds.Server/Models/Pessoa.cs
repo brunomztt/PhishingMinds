@@ -8,7 +8,7 @@ namespace PhishingMinds.Server.Class
         public int? IdCargo { get; set; }
         public string Nome { get; set; }
         public string Email { get; set; }
-        public string Senha { get; set; }
+        public string? Senha { get; set; }
         public bool Ativo { get; set; }
         public DateTime Dt_Cadastro { get; set; }
         public DateTime? UltimoLogin { get; set; }
