@@ -42,7 +42,7 @@
   <div class="min-h-screen flex">
 
     <!--  LADO ESQUERDO -->
-    <div class="hidden md:flex w-1/2 bg-gradient-to-br from-green-900 to-green-700 text-white p-12 flex-col justify-center">
+    <div class="hidden md:flex w-1/2 bg-gradient-to-br bg-[#2D4A38] text-white p-12 flex-col justify-center">
 
       <div class="max-w-md">
 
@@ -119,13 +119,14 @@
           <!-- BOTÃO -->
           <button type="submit"
                   :disabled="loading"
-                  class="w-full bg-green-700 hover:bg-green-800 text-white py-3 rounded-xl font-medium shadow-md transition">
+                  class="w-full bg-[#2D4A38] hover:bg-green-800 text-white py-3 rounded-xl font-medium shadow-md transition">
             {{ loading ? 'Entrando...' : 'Entrar na plataforma →' }}
           </button>
 
           <p class="text-xs text-center text-gray-500 mt-4">
             Sua empresa ainda não tem conta?
-            <span class="text-green-700 cursor-pointer hover:underline">
+            <span @click="$router.push('/cadastro')"
+                  class="text-green-700 cursor-pointer hover:underline">
               Solicite uma demonstração
             </span>
           </p>

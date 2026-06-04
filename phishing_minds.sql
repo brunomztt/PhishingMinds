@@ -204,7 +204,18 @@ CREATE TABLE PhishingTemplateEmpresa (
 
 
 -- =========================
--- VALOR PARAMETRO
+-- MULTIPLOS SETORES PARA CAMPANHAS DE PHISHING 
+-- =========================
+CREATE TABLE PhishingCampaignSetor (
+    IdCampaign INT,
+    IdSetor INT,
+    PRIMARY KEY (IdCampaign, IdSetor),
+    FOREIGN KEY (IdCampaign) REFERENCES PhishingCampaign(IdCampaign) ON DELETE CASCADE,
+    FOREIGN KEY (IdSetor) REFERENCES Setor(IdSetor) ON DELETE CASCADE
+);
+
+-- =========================
+-- VALORES DOS PARAMETROS
 -- =========================
 CREATE TABLE ParameterValue (
 
@@ -280,45 +291,23 @@ CREATE TABLE PhishingCampaign (
 CREATE TABLE PhishingCampaignTarget (
 
     IdTarget INT AUTO_INCREMENT PRIMARY KEY,
-
     IdCampaign INT NOT NULL,
-
     IdUser INT NOT NULL,
-
-
     MailSent TINYINT(1) DEFAULT 0,
-
     MailOpened TINYINT(1) DEFAULT 0,
-
     LinkClicked TINYINT(1) DEFAULT 0,
-
     CredentialsSubmitted TINYINT(1) DEFAULT 0,
-
     Reported TINYINT(1) DEFAULT 0,
-
-
     Dt_Register DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-
-
+    Dt_Click DATETIME,
     FOREIGN KEY(IdCampaign)
         REFERENCES PhishingCampaign(IdCampaign)
         ON DELETE CASCADE,
-
-
     FOREIGN KEY(IdUser)
         REFERENCES Pessoa(IdUser)
         ON DELETE CASCADE,
-
-
     UNIQUE(IdCampaign, IdUser)
-
-
 ) ENGINE=InnoDB;
-
-
-
-
 
 -- =========================
 -- LANDING PAGE

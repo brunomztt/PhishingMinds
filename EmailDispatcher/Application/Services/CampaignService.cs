@@ -1,5 +1,6 @@
-﻿using EmailDispatcher.Infrastructure.Email;
+using EmailDispatcher.Infrastructure.Email;
 using EmailDispatcher.Infrastructure.Repositories;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,12 +11,14 @@ namespace EmailDispatcher.Application.Services
     {
         private readonly CampaignRepository _repo;
         private readonly EmailSender _emailSender;
+        private readonly IConfiguration _configuration;
         private readonly ILogger<CampaignService> _logger;
 
-        public CampaignService(CampaignRepository repo, EmailSender emailSender, ILogger<CampaignService> logger)
+        public CampaignService(CampaignRepository repo, EmailSender emailSender, IConfiguration configuration, ILogger<CampaignService> logger)
         {
             _repo = repo;
             _emailSender = emailSender;
+            _configuration = configuration;
             _logger = logger;
         }
 
@@ -45,11 +48,23 @@ namespace EmailDispatcher.Application.Services
 
                 int enviados = 0;
 
+                var baseUrl = _configuration["TrackingBaseUrl"] ?? "https://localhost:7193";
+
                 foreach (var user in usuarios)
                 {
                     try
                     {
-                        var body = campanha.BodyMail.Replace("{{Nome}}", user.Nome);
+                        var trackingLink = $"{baseUrl}/track?idTarget={user.IdTarget}";
+                        var openTracking = $"{baseUrl}/track/open?idTarget={user.IdTarget}";
+                        var body = campanha.BodyMail
+                        .Replace("{{Nome}}", user.Nome)
+                        .Replace("{{Link}}", trackingLink);
+
+                                            body += $@"
+                    <img src='{openTracking}'
+                         width='1'
+                         height='1'
+                         style='display:none;' />";
 
                         await _emailSender.Send(
                             user.Email,
