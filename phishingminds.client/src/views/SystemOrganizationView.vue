@@ -281,7 +281,7 @@ const importarFuncionarios = async () => {
         phishingScore: 0
       }
 
-      const res = await fetch(`/api/Pessoa/empresa/${userEmpresaId.value}`, {
+      const res = await fetch(`/api/Pessoa`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -681,6 +681,11 @@ const deleteFuncionario = async () => {
           <div v-if="!funcionarioForm.idUser">
             <label class="block text-sm font-medium text-gray-700 mb-1">Adicione uma lista de funcionarios</label>
             <div class="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center text-gray-400">
+              <p class="text-xs text-gray-500 mb-2">
+                A planilha deve conter apenas as colunas
+                <strong>Nome</strong> e <strong>Email</strong>.
+                O setor será selecionado manualmente antes da importação.
+              </p>
               <FileUploadButton
                 text="Selecionar Planilha Excel"
                 @change="handleExcelUpload"
