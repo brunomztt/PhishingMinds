@@ -9,15 +9,23 @@
           <p class="text-sm text-[#4A7C59] font-medium tracking-[0.35px] uppercase">Nossos Recursos</p>
         </div>
         <h2 class="text-4xl md:text-5xl font-bold text-[#2D4A38] leading-tight font-playfair">
-          Tudo o que você precisa para <br class="hidden md:block"/>
+          Tudo o que você precisa para <br class="hidden md:block" />
           <span class="text-[#6B9E7E]">elevar sua segurança</span>
         </h2>
       </div>
 
-      <button class="bg-[#4A7C59] hover:bg-[#3d684a] transition-colors text-white px-6 py-3 rounded-full text-base font-medium flex items-center gap-2">
+      <button @click="$router.push('/cadastro')"
+              class="bg-[#4A7C59] hover:bg-[#3d684a] transition-colors text-white px-6 py-3 rounded-full text-base font-medium flex items-center gap-2">
         Ver todos
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
+        <svg xmlns="http://www.w3.org/2000/svg"
+             fill="none"
+             viewBox="0 0 24 24"
+             stroke-width="2"
+             stroke="currentColor"
+             class="w-4 h-4">
+          <path stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
         </svg>
       </button>
     </div>
@@ -29,7 +37,7 @@
       <div class="bg-[#2D4A38] text-white rounded-[32px] p-8 md:p-10 relative overflow-hidden flex flex-col min-h-[360px]">
         <!-- Decorative Circle -->
         <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-bl-[100px]"></div>
-        
+
         <!-- Icon -->
         <div class="w-14 h-14 bg-[#4A7C59] rounded-2xl flex items-center justify-center mb-10 z-10">
           <svg class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -41,11 +49,22 @@
         <p class="text-base text-white/80 mb-auto z-10 leading-[26px]">
           Crie campanhas de phishing que imitam ataques reais para testar a prontidão da sua equipe.
         </p>
-        
-        <button class="mt-8 flex items-center gap-2 text-[#A8D5B8] font-semibold text-sm z-10 hover:text-white transition-colors">
+
+        <button @click="abrirModal(
+    'Simulações Realistas',
+    'Crie campanhas de phishing altamente personalizadas que simulam ataques reais. Avalie o comportamento dos colaboradores, identifique vulnerabilidades humanas e fortaleça a cultura de segurança da informação.'
+  )"
+                class="mt-8 flex items-center gap-2 text-[#A8D5B8] font-semibold text-sm z-10 hover:text-white transition-colors">
           Saiba mais
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
+          <svg xmlns="http://www.w3.org/2000/svg"
+               fill="none"
+               viewBox="0 0 24 24"
+               stroke-width="2"
+               stroke="currentColor"
+               class="w-4 h-4">
+            <path stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
           </svg>
         </button>
       </div>
@@ -61,10 +80,21 @@
         <p class="text-base text-[#4A5565] mb-auto leading-[26px]">
           Dashboards completos com métricas de desempenho e identificação de vulnerabilidades.
         </p>
-        <button class="mt-8 flex items-center gap-2 text-[#4A7C59] font-semibold text-sm hover:text-[#2D4A38] transition-colors">
+        <button @click="abrirModal(
+    'Análise Detalhada',
+    'Acompanhe dashboards completos com métricas de desempenho, taxas de clique, evolução histórica e identificação dos usuários mais vulneráveis.'
+  )"
+                class="mt-8 flex items-center gap-2 text-[#4A7C59] font-semibold text-sm hover:text-[#2D4A38] transition-colors">
           Saiba mais
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
+          <svg xmlns="http://www.w3.org/2000/svg"
+               fill="none"
+               viewBox="0 0 24 24"
+               stroke-width="2"
+               stroke="currentColor"
+               class="w-4 h-4">
+            <path stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
           </svg>
         </button>
       </div>
@@ -79,10 +109,21 @@
         <p class="text-base text-[#4A5565] mb-auto leading-[26px]">
           Colaboradores recebem treinamento imediato e personalizado após falharem em testes.
         </p>
-        <button class="mt-8 flex items-center gap-2 text-[#4A7C59] font-semibold text-sm hover:text-[#2D4A38] transition-colors">
+        <button @click="abrirModal(
+    'Treinamento Automático',
+    'Usuários que falham em testes recebem treinamentos imediatos e personalizados, aumentando a conscientização e reduzindo riscos futuros.'
+  )"
+                class="mt-8 flex items-center gap-2 text-[#4A7C59] font-semibold text-sm hover:text-[#2D4A38] transition-colors">
           Saiba mais
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
+          <svg xmlns="http://www.w3.org/2000/svg"
+               fill="none"
+               viewBox="0 0 24 24"
+               stroke-width="2"
+               stroke="currentColor"
+               class="w-4 h-4">
+            <path stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
           </svg>
         </button>
       </div>
@@ -97,10 +138,21 @@
         <p class="text-base text-[#4A5565] mb-auto leading-[26px]">
           Atenda aos requisitos de privacidade e segurança essenciais para as leis atuais.
         </p>
-        <button class="mt-8 flex items-center gap-2 text-[#4A7C59] font-semibold text-sm hover:text-[#2D4A38] transition-colors">
+        <button @click="abrirModal(
+    'Conformidade LGPD',
+    'Auxilie sua empresa no cumprimento das exigências da LGPD por meio de programas contínuos de conscientização e redução de riscos.'
+  )"
+                class="mt-8 flex items-center gap-2 text-[#4A7C59] font-semibold text-sm hover:text-[#2D4A38] transition-colors">
           Saiba mais
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
+          <svg xmlns="http://www.w3.org/2000/svg"
+               fill="none"
+               viewBox="0 0 24 24"
+               stroke-width="2"
+               stroke="currentColor"
+               class="w-4 h-4">
+            <path stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
           </svg>
         </button>
       </div>
@@ -115,10 +167,21 @@
         <p class="text-base text-[#4A5565] mb-auto leading-[26px]">
           Programe testes periódicos para manter seu time sempre alerta e preparado.
         </p>
-        <button class="mt-8 flex items-center gap-2 text-[#4A7C59] font-semibold text-sm hover:text-[#2D4A38] transition-colors">
+        <button @click="abrirModal(
+    'Campanhas Agendadas',
+    'Automatize campanhas de phishing simuladas em intervalos programados para manter o nível de atenção dos colaboradores ao longo do tempo.'
+  )"
+                class="mt-8 flex items-center gap-2 text-[#4A7C59] font-semibold text-sm hover:text-[#2D4A38] transition-colors">
           Saiba mais
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
+          <svg xmlns="http://www.w3.org/2000/svg"
+               fill="none"
+               viewBox="0 0 24 24"
+               stroke-width="2"
+               stroke="currentColor"
+               class="w-4 h-4">
+            <path stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
           </svg>
         </button>
       </div>
@@ -133,17 +196,70 @@
         <p class="text-base text-[#4A5565] mb-auto leading-[26px]">
           Organize usuários por departamentos e aplique políticas específicas de teste.
         </p>
-        <button class="mt-8 flex items-center gap-2 text-[#4A7C59] font-semibold text-sm hover:text-[#2D4A38] transition-colors">
+        <button @click="abrirModal(
+    'Gestão de Equipes',
+    'Organize colaboradores por departamentos, unidades ou grupos específicos e acompanhe métricas segmentadas para cada equipe.'
+  )"
+                class="mt-8 flex items-center gap-2 text-[#4A7C59] font-semibold text-sm hover:text-[#2D4A38] transition-colors">
           Saiba mais
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
+          <svg xmlns="http://www.w3.org/2000/svg"
+               fill="none"
+               viewBox="0 0 24 24"
+               stroke-width="2"
+               stroke="currentColor"
+               class="w-4 h-4">
+            <path stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
           </svg>
         </button>
       </div>
 
     </div>
   </section>
+
+  <!-- Modal -->
+  <div v-if="modalAberto"
+       @click="fecharModal"
+       class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div @click.stop
+         class="bg-white rounded-[32px] p-8 max-w-2xl w-full shadow-2xl relative">
+      <button @click="fecharModal"
+              class="absolute top-4 right-6 text-3xl text-gray-400 hover:text-gray-700">
+        ×
+      </button>
+
+      <h3 class="text-3xl font-semibold text-[#2D4A38] mb-6">
+        {{ recursoSelecionado.titulo }}
+      </h3>
+
+      <p class="text-[#4A5565] leading-8 text-lg">
+        {{ recursoSelecionado.descricao }}
+      </p>
+    </div>
+  </div>
 </template>
 
 <script setup>
+  import { ref } from 'vue'
+
+  const modalAberto = ref(false)
+
+  const recursoSelecionado = ref({
+    titulo: '',
+    descricao: ''
+  })
+
+  function abrirModal(titulo, descricao) {
+    recursoSelecionado.value = {
+      titulo,
+      descricao
+    }
+
+    modalAberto.value = true
+  }
+
+  function fecharModal() {
+    modalAberto.value = false
+  }
 </script>

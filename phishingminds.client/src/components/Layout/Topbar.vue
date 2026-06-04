@@ -20,15 +20,40 @@
 
       <div class="flex items-center gap-3">
         <div class="hidden md:block text-right leading-tight">
-          <h4 class="font-semibold text-sm text-gray-700">Administrador</h4>
-          <p class="text-xs text-gray-400">Usuário</p>
+          <h4 class="font-semibold text-sm text-gray-700">
+            {{ nomeUsuario }}
+          </h4>
+
+          <p class="text-xs text-gray-400">
+            {{ tipoUsuario }}
+          </p>
         </div>
-        <div class="w-10 h-10 bg-green-700 rounded-full flex-shrink-0"></div>
+        <div class="w-10 h-10 bg-green-700 rounded-full flex items-center justify-center text-white font-semibold">
+          {{ nomeUsuario.charAt(0).toUpperCase() }}
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-defineEmits(['toggle-sidebar'])
+  import { ref, onMounted } from 'vue'
+
+  defineEmits(['toggle-sidebar'])
+
+  const nomeUsuario = ref('Administrador')
+  const tipoUsuario = ref('Usuário')
+
+  onMounted(() => {
+    const userStr = localStorage.getItem('user')
+
+    if (!userStr) return
+
+    const user = JSON.parse(userStr)
+
+    if (user.isPessoa) {
+      nomeUsuario.value = user.nome
+      tipoUsuario.value = 'Funcionário'
+    }
+  })
 </script>
