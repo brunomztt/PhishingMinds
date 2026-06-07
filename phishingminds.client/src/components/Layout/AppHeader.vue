@@ -2,7 +2,7 @@
   <header class="absolute top-0 left-0 w-full z-50 px-6 md:px-12 py-5 flex justify-between items-center text-white bg-[#2D4A38]">
     <div class="font-bold text-xl flex items-center gap-2 tracking-wide">
       <div class="w-10 h-10 flex-shrink-0">
-        <img src="@/assets/img/logo.svg" alt="Logo Phishing Minds" class="w-full h-full object-contain" />
+        <img src="@/assets/img/Logo.svg" alt="Logo Phishing Minds" class="w-full h-full object-contain" />
       </div>
       PhishingMinds
     </div>

@@ -3,7 +3,7 @@
   <section id="secao-hero" class="relative pt-32 pb-48 md:pb-64 flex flex-col items-center justify-center text-center text-white bg-[#2D4A38] rounded-b-[4rem] md:rounded-b-[8rem] shadow-2xl">
     
     <!-- Background layers -->
-    <div class="absolute inset-0 bg-[url('/caminho-para-imagem-de-fundo.jpg')] bg-cover bg-center opacity-60 rounded-b-[4rem] md:rounded-b-[8rem]"></div>
+    <div class="absolute inset-0 bg-gradient-to-tr from-[#162a1e] via-[#2d4a38] to-[#3f6b4e] opacity-60 rounded-b-[4rem] md:rounded-b-[8rem]"></div>
     <div class="absolute inset-0 bg-gradient-to-br from-[#4A7C59]/40 to-transparent rounded-b-[4rem] md:rounded-b-[8rem]"></div>
     <div class="absolute inset-0 bg-black/40 rounded-b-[4rem] md:rounded-b-[8rem]"></div>
 
