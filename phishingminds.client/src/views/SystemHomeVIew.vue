@@ -14,8 +14,11 @@ const metrics = ref({
   avgEvolution: 100
 })
 const ranking = ref([])
+const evolucao = ref([])
 
 const getToken = () => localStorage.getItem('token')
+
+
 
 onMounted(async () => {
   const userStr = localStorage.getItem('user')
@@ -41,6 +44,25 @@ onMounted(async () => {
       if (rankingRes.ok) {
         ranking.value = await rankingRes.json()
       }
+
+      // Fetch evolução
+      const evolucaoRes = await fetch(
+        `/api/Dashboard/evolucao/${userEmpresaId.value}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${getToken()}`
+          }
+        }
+      )
+
+      if (evolucaoRes.ok) {
+        evolucao.value = await evolucaoRes.json()
+
+        console.log('EVOLUCAO:')
+        console.log(evolucao.value)
+        console.log(JSON.stringify(evolucao.value, null, 2))
+      }
+
     } catch (e) {
       console.error('Erro ao buscar dados do dashboard:', e)
     } finally {
@@ -66,7 +88,9 @@ onMounted(async () => {
 
       <section class="mt-4 flex flex-col lg:flex-row gap-4 items-stretch">
         <div class="flex-[2.3] w-full">
-          <MainPlaceholder />
+          <MainPlaceholder
+            :evolucao="evolucao"
+            />
         </div>
 
         <div class="flex-1 w-full lg:w-auto">
