@@ -96,5 +96,68 @@ namespace PhishingMinds.Server.Controllers
                 return StatusCode(500, new { message = "Erro ao buscar ranking de setores", error = ex.Message });
             }
         }
+
+        [HttpGet("evolucao/{idEmpresa}")]
+        public IActionResult GetEvolucao(int idEmpresa)
+        {
+            try
+            {
+                using var db = _dbFactory.CreateConnection();
+
+                var sql = @"
+                    SELECT
+                        pc.IdCampaign,
+                        pc.NomeCampanha,
+
+                        COUNT(pct.IdTarget) as TotalUsuarios,
+
+                        SUM(CASE WHEN pct.LinkClicked = 1 THEN 1 ELSE 0 END) as LinksClicados,
+
+                        SUM(CASE WHEN pct.CredentialsSubmitted = 1 THEN 1 ELSE 0 END) as CredenciaisEnviadas
+
+                    FROM PhishingCampaign pc
+
+                    LEFT JOIN PhishingCampaignTarget pct
+                        ON pct.IdCampaign = pc.IdCampaign
+
+                    WHERE pc.IdEmpresa = @IdEmpresa
+
+                    GROUP BY
+                        pc.IdCampaign,
+                        pc.NomeCampanha
+
+                    ORDER BY pc.Dt_Disparo;
+                ";
+
+                var campanhas = db.Query(sql, new { IdEmpresa = idEmpresa });
+
+                var resultado = campanhas.Select(c =>
+                {
+                    double score = 100;
+
+                    score -= Convert.ToDouble(c.LinksClicados) * 5;
+                    score -= Convert.ToDouble(c.CredenciaisEnviadas) * 20;
+
+                    if (score < 0)
+                        score = 0;
+
+                    return new
+                    {
+                        c.IdCampaign,
+                        c.NomeCampanha,
+                        c.TotalUsuarios,
+                        c.LinksClicados,
+                        c.CredenciaisEnviadas,
+                        Score = (double)score
+                    };
+                });
+
+                return Ok(resultado);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Erro ao buscar evolução", error = ex.Message});
+            }
+        }
     }
 }
