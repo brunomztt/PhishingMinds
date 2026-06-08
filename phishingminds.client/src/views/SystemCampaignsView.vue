@@ -302,7 +302,7 @@ const saveCustomizedTemplate = async () => {
     <!-- Header -->
     <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
       <div>
-        <h2 class="text-3xl md:text-4xl font-bold" :class="isDevAdmin ? 'text-white' : 'text-green-900'">
+        <h2 class="text-3xl md:text-4xl font-bold text-green-900">
           Gestão de Campanhas
         </h2>
         <p class="text-gray-500 mt-1">Crie, agende e monitore suas simulações de phishing no sistema.</p>
@@ -321,14 +321,14 @@ const saveCustomizedTemplate = async () => {
     </div>
 
     <!-- Dev Admin Alert banner -->
-    <div v-if="isDevAdmin" class="bg-gray-800 border border-gray-700 text-gray-300 p-4 rounded-2xl mb-6">
-      <span class="font-bold text-white">Modo Administrador Global:</span> Você possui visão e privilégios de edição sobre todas as campanhas de clientes do sistema.
+    <div v-if="isDevAdmin" class="bg-gray-100 border border-gray-200 text-gray-700 p-4 rounded-2xl mb-6">
+      <span class="font-bold text-gray-900">Modo Administrador Global:</span> Você possui visão e privilégios de edição sobre todas as campanhas de clientes do sistema.
     </div>
 
     <!-- Campaigns List Box -->
-    <div class="rounded-3xl shadow-sm overflow-hidden mt-8" :class="isDevAdmin ? 'bg-gray-900 border border-gray-800' : 'bg-white'">
-      <div class="p-6 border-b flex justify-between items-center bg-gray-50/50" :class="isDevAdmin ? 'border-gray-800 bg-gray-900/50' : 'border-gray-100 bg-gray-50/50'">
-        <h3 class="text-xl font-semibold" :class="isDevAdmin ? 'text-white' : 'text-gray-800'">Lista de Campanhas</h3>
+    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mt-8">
+      <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+        <h3 class="text-xl font-semibold text-gray-800">Lista de Campanhas</h3>
         <span class="text-sm font-medium text-gray-500">{{ campaigns.length }} campanhas cadastradas</span>
       </div>
       
@@ -345,25 +345,20 @@ const saveCustomizedTemplate = async () => {
           <div 
             v-for="c in campaigns" 
             :key="c.idCampaign" 
-            class="flex flex-col md:flex-row md:items-center justify-between p-5 border rounded-2xl transition-all gap-4"
-            :class="[
-              isDevAdmin 
-                ? 'border-gray-800 bg-gray-900/40 hover:bg-gray-800/50' 
-                : 'border-gray-100 bg-white hover:bg-gray-50'
-            ]"
+            class="flex flex-col md:flex-row md:items-center justify-between p-5 border border-gray-100 bg-white hover:bg-gray-50 rounded-2xl transition-all gap-4"
           >
             <div class="flex items-start gap-4">
-              <div class="w-12 h-12 rounded-xl flex items-center justify-center font-bold flex-shrink-0" :class="isDevAdmin ? 'bg-gray-800 text-gray-300' : 'bg-green-50 text-green-700'">
+              <div class="w-12 h-12 rounded-xl flex items-center justify-center font-bold flex-shrink-0 bg-green-50 text-green-700">
                 C{{ c.idCampaign }}
               </div>
               <div>
-                <h4 class="font-bold text-lg" :class="isDevAdmin ? 'text-white' : 'text-gray-800'">
+                <h4 class="font-bold text-lg text-gray-800">
                   {{ c.nomeCampanha }}
                 </h4>
                 <div class="text-sm text-gray-500 mt-1 space-y-1">
-                  <p>📅 Disparo em: <span class="font-medium text-gray-700" :class="isDevAdmin && 'text-gray-300'">{{ formatDate(c.dt_Disparo) }}</span></p>
-                  <p>🎯 Setor Alvo: <span class="font-medium text-gray-700" :class="isDevAdmin && 'text-gray-300'">{{ c.nm_Setor || 'Geral (Todos os Setores)' }}</span></p>
-                  <p>📧 Template: <span class="font-medium text-gray-700" :class="isDevAdmin && 'text-gray-300'">{{ c.nomeTemplate || 'Carregando...' }}</span></p>
+                  <p>📅 Disparo em: <span class="font-medium text-gray-700">{{ formatDate(c.dt_Disparo) }}</span></p>
+                  <p>🎯 Setor Alvo: <span class="font-medium text-gray-700">{{ c.nm_Setor || 'Geral (Todos os Setores)' }}</span></p>
+                  <p>📧 Template: <span class="font-medium text-gray-700">{{ c.nomeTemplate || 'Carregando...' }}</span></p>
                   <p v-if="isDevAdmin" class="text-green-500 font-semibold">🏢 Empresa: {{ c.nm_Empresa || 'Desconhecida' }}</p>
                 </div>
               </div>
@@ -390,12 +385,7 @@ const saveCustomizedTemplate = async () => {
                   @click="openEditModal(c)"
                   :disabled="!isCampaignEditable(c)"
                   :title="!isCampaignEditable(c) ? 'Campanhas disparadas não podem ser editadas' : 'Editar campanha'"
-                  class="p-2.5 rounded-xl border transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center"
-                  :class="[
-                    isDevAdmin
-                      ? 'border-gray-700 text-gray-300 hover:bg-gray-800'
-                      : 'border-gray-200 text-gray-600 hover:bg-gray-50'
-                  ]"
+                  class="p-2.5 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
@@ -424,12 +414,11 @@ const saveCustomizedTemplate = async () => {
       style="animation: fadeIn 0.2s ease-out;"
     >
       <div 
-        class="w-full max-w-xl rounded-3xl shadow-xl overflow-hidden border transition-all"
-        :class="isDevAdmin ? 'bg-gray-900 border-gray-800 text-white' : 'bg-white border-gray-100 text-gray-800'"
+        class="w-full max-w-xl bg-white border border-gray-100 text-gray-800 rounded-3xl shadow-xl overflow-hidden transition-all"
         style="animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);"
       >
         <!-- Modal Header -->
-        <div class="px-6 py-5 border-b flex justify-between items-center" :class="isDevAdmin ? 'border-gray-800' : 'border-gray-100'">
+        <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
           <h3 class="text-xl font-bold">
             {{ modalMode === 'create' ? 'Agendar Nova Campanha' : 'Editar Campanha' }}
           </h3>
@@ -448,26 +437,21 @@ const saveCustomizedTemplate = async () => {
 
           <!-- Campaign Name -->
           <div class="space-y-1.5">
-            <label class="text-sm font-semibold block" :class="isDevAdmin ? 'text-gray-300' : 'text-gray-700'">
+            <label class="text-sm font-semibold block text-gray-700">
               Nome da Campanha *
             </label>
             <input 
               v-model="campaignForm.nomeCampanha"
               type="text"
               placeholder="Ex: Campanha de Conscientização Financeiro"
-              class="w-full px-4 py-2.5 border rounded-xl outline-none focus:ring-2 transition-all font-medium"
-              :class="[
-                isDevAdmin 
-                  ? 'bg-gray-800 border-gray-700 text-white focus:ring-green-600 focus:border-green-600' 
-                  : 'bg-white border-gray-200 text-gray-800 focus:ring-green-700 focus:border-green-700'
-              ]"
+              class="w-full px-4 py-2.5 bg-white border border-gray-200 text-gray-800 rounded-xl outline-none focus:ring-2 focus:ring-green-700 focus:border-green-700 transition-all font-medium"
             />
           </div>
 
           <!-- Template Selection -->
           <div class="space-y-1.5">
             <div class="flex justify-between items-center">
-              <label class="text-sm font-semibold block" :class="isDevAdmin ? 'text-gray-300' : 'text-gray-700'">
+              <label class="text-sm font-semibold block text-gray-700">
                 Template de Phishing *
               </label>
               <button 
@@ -481,12 +465,7 @@ const saveCustomizedTemplate = async () => {
             
             <select
               v-model="campaignForm.idTemplateEmpresa"
-              class="w-full px-4 py-2.5 border rounded-xl outline-none focus:ring-2 transition-all font-medium bg-white text-gray-800"
-              :class="[
-                isDevAdmin 
-                  ? 'border-gray-700 focus:ring-green-600 focus:border-green-600' 
-                  : 'border-gray-200 focus:ring-green-700 focus:border-green-700'
-              ]"
+              class="w-full px-4 py-2.5 bg-white border border-gray-200 text-gray-800 rounded-xl outline-none focus:ring-2 focus:ring-green-700 focus:border-green-700 transition-all font-medium"
             >
               <option v-for="t in templates" :key="t.idTemplateEmpresa" :value="t.idTemplateEmpresa">
                 {{ t.nomePersonalizado || t.nomeTemplate }}
@@ -500,11 +479,11 @@ const saveCustomizedTemplate = async () => {
 
           <!-- Target Sectors (Multiple Checkboxes) -->
           <div class="space-y-1.5">
-            <label class="text-sm font-semibold block" :class="isDevAdmin ? 'text-gray-300' : 'text-gray-700'">
+            <label class="text-sm font-semibold block text-gray-700">
               Setores Destinatários *
             </label>
-            <div class="border rounded-xl p-4 space-y-2" :class="isDevAdmin ? 'border-gray-750 bg-gray-800' : 'border-gray-200 bg-white'">
-              <label class="flex items-center gap-2 font-medium cursor-pointer text-sm" :class="isDevAdmin ? 'text-white' : 'text-gray-800'">
+            <div class="bg-white border border-gray-200 rounded-xl p-4 space-y-2">
+              <label class="flex items-center gap-2 font-medium cursor-pointer text-sm text-gray-800">
                 <input 
                   type="checkbox" 
                   :checked="campaignForm.idSetores.length === 0"
@@ -514,14 +493,13 @@ const saveCustomizedTemplate = async () => {
                 Geral (Todos os Setores)
               </label>
               
-              <div class="border-t my-2" :class="isDevAdmin ? 'border-gray-750' : 'border-gray-150'"></div>
+              <div class="border-t border-gray-150 my-2"></div>
               
               <div class="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto">
                 <label 
                   v-for="s in sectors" 
                   :key="s.idSetor" 
-                  class="flex items-center gap-2 cursor-pointer text-sm"
-                  :class="isDevAdmin ? 'text-gray-300' : 'text-gray-700'"
+                  class="flex items-center gap-2 cursor-pointer text-sm text-gray-700"
                 >
                   <input 
                     type="checkbox" 
@@ -537,24 +515,19 @@ const saveCustomizedTemplate = async () => {
 
           <!-- Launch Date -->
           <div class="space-y-1.5">
-            <label class="text-sm font-semibold block" :class="isDevAdmin ? 'text-gray-300' : 'text-gray-700'">
+            <label class="text-sm font-semibold block text-gray-700">
               Data e Hora do Disparo *
             </label>
             <input 
               v-model="campaignForm.dt_Disparo"
               type="datetime-local"
-              class="w-full px-4 py-2.5 border rounded-xl outline-none focus:ring-2 transition-all font-medium"
-              :class="[
-                isDevAdmin 
-                  ? 'bg-gray-800 border-gray-700 text-white focus:ring-green-600 focus:border-green-600' 
-                  : 'bg-white border-gray-200 text-gray-800 focus:ring-green-700 focus:border-green-700'
-              ]"
+              class="w-full px-4 py-2.5 bg-white border border-gray-200 text-gray-800 rounded-xl outline-none focus:ring-2 focus:ring-green-700 focus:border-green-700 transition-all font-medium"
             />
           </div>
         </div>
 
         <!-- Modal Footer -->
-        <div class="px-6 py-4 border-t flex justify-end gap-3" :class="isDevAdmin ? 'border-gray-800' : 'border-gray-100'">
+        <div class="px-6 py-4 border-t border-gray-100 flex justify-end gap-3">
           <button 
             @click="isModalOpen = false"
             class="px-5 py-2.5 rounded-xl border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors font-semibold cursor-pointer"
@@ -564,12 +537,7 @@ const saveCustomizedTemplate = async () => {
           <button 
             @click="saveCampaign"
             :disabled="formSubmitting"
-            class="px-5 py-2.5 rounded-xl text-white font-semibold transition-colors flex items-center justify-center gap-2 cursor-pointer"
-            :class="[
-              isDevAdmin 
-                ? 'bg-green-600 hover:bg-green-700 disabled:bg-gray-700' 
-                : 'bg-green-700 hover:bg-green-800 disabled:bg-gray-300'
-            ]"
+            class="px-5 py-2.5 rounded-xl bg-green-700 hover:bg-green-800 disabled:bg-gray-300 text-white font-semibold transition-colors flex items-center justify-center gap-2 cursor-pointer"
           >
             {{ formSubmitting ? 'Salvando...' : 'Salvar Campanha' }}
           </button>
@@ -584,10 +552,9 @@ const saveCustomizedTemplate = async () => {
       style="animation: fadeIn 0.15s ease-out;"
     >
       <div 
-        class="w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border"
-        :class="isDevAdmin ? 'bg-gray-900 border-gray-800 text-white' : 'bg-white border-gray-100 text-gray-800'"
+        class="w-full max-w-lg bg-white border border-gray-100 text-gray-800 rounded-3xl shadow-2xl overflow-hidden"
       >
-        <div class="px-6 py-5 border-b flex justify-between items-center" :class="isDevAdmin ? 'border-gray-800' : 'border-gray-100'">
+        <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
           <div>
             <h4 class="text-lg font-bold">Customizar Parâmetros do Template</h4>
             <p class="text-xs text-gray-400 mt-0.5">Base: {{ selectedTemplateForEdit?.nomeTemplate }}</p>
@@ -602,52 +569,42 @@ const saveCustomizedTemplate = async () => {
         <div class="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
           <!-- Custom template name -->
           <div class="space-y-1.5">
-            <label class="text-sm font-semibold block" :class="isDevAdmin ? 'text-gray-300' : 'text-gray-700'">
+            <label class="text-sm font-semibold block text-gray-700">
               Nome Personalizado do Template
             </label>
             <input 
               v-model="customTemplateForm.nomePersonalizado"
               type="text"
-              class="w-full px-4 py-2 border rounded-xl outline-none focus:ring-2 font-medium"
-              :class="[
-                isDevAdmin 
-                  ? 'bg-gray-800 border-gray-700 text-white focus:ring-green-600' 
-                  : 'bg-white border-gray-200 text-gray-800 focus:ring-green-700'
-              ]"
+              class="w-full px-4 py-2 bg-white border border-gray-200 text-gray-800 rounded-xl outline-none focus:ring-2 focus:ring-green-700 font-medium"
             />
           </div>
 
           <!-- Template Details Preview -->
-          <div class="bg-gray-50 p-4 rounded-2xl border text-sm space-y-2" :class="isDevAdmin ? 'bg-gray-800/50 border-gray-800' : 'bg-gray-50 border-gray-100'">
-            <p class="font-bold text-gray-700" :class="isDevAdmin && 'text-gray-300'">📧 Assunto Base:</p>
-            <p class="text-gray-600" :class="isDevAdmin && 'text-gray-400'">{{ selectedTemplateForEdit?.subject }}</p>
-            <p class="font-bold text-gray-700 mt-2" :class="isDevAdmin && 'text-gray-300'">📝 Corpo Base:</p>
-            <p class="text-gray-600 font-mono text-xs whitespace-pre-wrap leading-relaxed" :class="isDevAdmin && 'text-gray-400'">{{ selectedTemplateForEdit?.bodyMail }}</p>
+          <div class="bg-gray-50 border border-gray-100 p-4 rounded-2xl text-sm space-y-2">
+            <p class="font-bold text-gray-700">📧 Assunto Base:</p>
+            <p class="text-gray-600">{{ selectedTemplateForEdit?.subject }}</p>
+            <p class="font-bold text-gray-700 mt-2">📝 Corpo Base:</p>
+            <p class="text-gray-600 font-mono text-xs whitespace-pre-wrap leading-relaxed">{{ selectedTemplateForEdit?.bodyMail }}</p>
           </div>
 
           <!-- Dynamic parameters forms -->
-          <div class="border-t pt-4 space-y-4" :class="isDevAdmin ? 'border-gray-800' : 'border-gray-100'">
+          <div class="border-t border-gray-100 pt-4 space-y-4">
             <h5 class="text-sm font-bold uppercase tracking-wider text-gray-400">Variáveis do Email</h5>
             
             <div v-for="p in customTemplateForm.parameters" :key="p.idParameter" class="space-y-1">
-              <label class="text-sm font-semibold text-gray-700 flex justify-between" :class="isDevAdmin && 'text-gray-300'">
+              <label class="text-sm font-semibold text-gray-700 flex justify-between">
                 <span>{{ p.parameterName }}</span>
               </label>
               <input 
                 v-model="p.parameterValue"
                 type="text"
-                class="w-full px-4 py-2 border rounded-xl outline-none focus:ring-2 font-medium"
-                :class="[
-                  isDevAdmin 
-                    ? 'bg-gray-800 border-gray-700 text-white focus:ring-green-600' 
-                    : 'bg-white border-gray-200 text-gray-800 focus:ring-green-700'
-                ]"
+                class="w-full px-4 py-2 bg-white border border-gray-200 text-gray-800 rounded-xl outline-none focus:ring-2 focus:ring-green-700 font-medium"
               />
             </div>
           </div>
         </div>
 
-        <div class="px-6 py-4 border-t flex justify-end gap-3" :class="isDevAdmin ? 'border-gray-800' : 'border-gray-100'">
+        <div class="px-6 py-4 border-t border-gray-100 flex justify-end gap-3">
           <button 
             @click="isCustomizingTemplate = false"
             class="px-5 py-2.5 rounded-xl border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors font-semibold cursor-pointer"
@@ -656,12 +613,7 @@ const saveCustomizedTemplate = async () => {
           </button>
           <button 
             @click="saveCustomizedTemplate"
-            class="px-5 py-2.5 rounded-xl text-white font-semibold transition-colors flex items-center justify-center gap-2 cursor-pointer"
-            :class="[
-              isDevAdmin 
-                ? 'bg-green-600 hover:bg-green-700' 
-                : 'bg-green-700 hover:bg-green-800'
-            ]"
+            class="px-5 py-2.5 bg-green-700 hover:bg-green-800 rounded-xl text-white font-semibold transition-colors flex items-center justify-center gap-2 cursor-pointer"
           >
             Salvar Customização
           </button>
@@ -676,19 +628,18 @@ const saveCustomizedTemplate = async () => {
       style="animation: fadeIn 0.2s ease-out;"
     >
       <div 
-        class="w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border transition-all text-center p-6"
-        :class="isDevAdmin ? 'bg-gray-900 border-gray-800 text-white' : 'bg-white border-gray-100 text-gray-800'"
+        class="w-full max-w-md bg-white border border-gray-100 text-gray-800 rounded-3xl shadow-2xl overflow-hidden text-center p-6"
         style="animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);"
       >
         <!-- Warning Icon -->
-        <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border" :class="isDevAdmin ? 'bg-red-950/30 border-red-900/50 text-red-400' : 'bg-red-50 border-red-200 text-red-500'">
+        <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border bg-red-50 border-red-200 text-red-500">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
         </div>
 
         <h3 class="text-xl font-bold mb-2">Excluir Campanha?</h3>
-        <p class="text-sm mb-6 leading-relaxed" :class="isDevAdmin ? 'text-gray-400' : 'text-gray-500'">
+        <p class="text-sm text-gray-500 mb-6 leading-relaxed">
           Tem certeza de que deseja excluir esta campanha? Todos os alvos cadastrados e os resultados coletados serão apagados permanentemente do banco de dados. Esta ação não pode ser desfeita.
         </p>
 
@@ -696,8 +647,7 @@ const saveCustomizedTemplate = async () => {
         <div class="flex flex-col sm:flex-row gap-3 justify-center">
           <button 
             @click="isDeleteModalOpen = false"
-            class="px-5 py-2.5 rounded-xl border transition-colors font-semibold cursor-pointer w-full sm:w-auto"
-            :class="isDevAdmin ? 'border-gray-700 hover:bg-gray-800 text-gray-300' : 'border-gray-200 text-gray-500 hover:bg-gray-50'"
+            class="px-5 py-2.5 rounded-xl border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors font-semibold cursor-pointer w-full sm:w-auto"
           >
             Não, Cancelar
           </button>

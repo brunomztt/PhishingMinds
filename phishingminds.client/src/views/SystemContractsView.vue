@@ -112,7 +112,7 @@ onMounted(async () => {
                 <tr v-for="sub in subscriptions" :key="sub.nm_Empresa" class="border-b border-gray-50 hover:bg-gray-50">
                   <td class="py-4 font-semibold text-gray-800">{{ sub.nm_Empresa }}</td>
                   <td class="py-4 text-gray-600">{{ sub.nm_Plano }}</td>
-                  <td class="py-4 font-medium text-gray-800">R$ {{ sub.value_Plano.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) }}</td>
+                  <td class="py-4 font-medium text-gray-800">R$ {{ (sub.value_Plano ?? 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) }}</td>
                   <td class="py-4">
                     <span :class="[sub.ativo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800', 'text-xs px-2 py-1 rounded-full font-bold']">
                       {{ sub.ativo ? 'ATIVO' : 'INATIVO' }}
