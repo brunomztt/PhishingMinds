@@ -15,10 +15,18 @@ const metrics = ref({
 })
 const ranking = ref([])
 const evolucao = ref([])
+const selectedCampaign = ref(null)
+const isCampaignModalOpen = ref(false)
 
 const getToken = () => localStorage.getItem('token')
 
+const openCampaignModal = (campaign) => {
+  selectedCampaign.value = campaign
+  isCampaignModalOpen.value = true
 
+  console.log('Campanha clicada:')
+  console.log(campaign)
+}
 
 onMounted(async () => {
   const userStr = localStorage.getItem('user')
@@ -69,6 +77,8 @@ onMounted(async () => {
       loading.value = false
     }
   }
+
+  
 })
 </script>
 
@@ -90,6 +100,7 @@ onMounted(async () => {
         <div class="flex-[2.3] w-full">
           <MainPlaceholder
             :evolucao="evolucao"
+            @campaign-click="openCampaignModal"
             />
         </div>
 
@@ -98,5 +109,72 @@ onMounted(async () => {
         </div>
       </section>
     </div>
+    <div
+  v-if="isCampaignModalOpen"
+  class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+>
+  <div
+    class="bg-white rounded-3xl shadow-xl w-full max-w-2xl overflow-hidden"
+  >
+
+    <div class="p-6 border-b flex justify-between items-center">
+      <h3 class="text-2xl font-bold text-green-900">
+        {{ selectedCampaign.nomeCampanha }}
+      </h3>
+
+      <button
+        @click="isCampaignModalOpen = false"
+        class="text-gray-400 hover:text-gray-600"
+      >
+        ✕
+      </button>
+    </div>
+
+    <div class="p-6 space-y-4">
+
+      <div>
+        <span class="font-semibold">Data:</span>
+        {{ new Date(selectedCampaign.dt_Disparo)
+            .toLocaleDateString('pt-BR') }}
+      </div>
+
+      <div>
+        <span class="font-semibold">Score:</span>
+        {{ selectedCampaign.score }}
+      </div>
+
+      <div>
+        <span class="font-semibold">Setores:</span>
+        {{ selectedCampaign.setores }}
+      </div>
+
+      <div>
+        <span class="font-semibold">Total de Usuários:</span>
+        {{ selectedCampaign.totalUsuarios }}
+      </div>
+
+      <div>
+        <span class="font-semibold">Links Clicados:</span>
+        {{ selectedCampaign.linksClicados }}
+      </div>
+
+      <div>
+        <span class="font-semibold">Credenciais Enviadas:</span>
+        {{ selectedCampaign.credenciaisEnviadas }}
+      </div>
+
+    </div>
+
+    <div class="p-6 bg-gray-50 flex justify-end">
+      <button
+        @click="isCampaignModalOpen = false"
+        class="px-5 py-2 bg-green-700 text-white rounded-xl hover:bg-green-800"
+      >
+        Fechar
+      </button>
+    </div>
+
+  </div>
+</div>
   </MainLayout>
 </template>

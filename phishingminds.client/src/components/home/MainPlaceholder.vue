@@ -1,6 +1,10 @@
 <script setup>
 import SecurityChart from './SecurityChart.vue'
 
+const emit = defineEmits([
+  'campaign-click'
+])
+
 defineProps({
   evolucao: {
     type: Array,
@@ -21,7 +25,7 @@ defineProps({
 
     <SecurityChart
       :evolucao="evolucao"
+      @campaign-click="emit('campaign-click', $event)"
     />
-    <pre>{{  evolucao }} </pre>
   </div>
 </template>
