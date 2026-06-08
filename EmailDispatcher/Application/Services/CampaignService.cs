@@ -52,6 +52,10 @@ namespace EmailDispatcher.Application.Services
 
                 foreach (var user in usuarios)
                 {
+                    _logger.LogInformation(
+                        $"Enviando para {user.Email} | Target={user.IdTarget}"
+                    );
+                    
                     try
                     {
                         var trackingLink = $"{baseUrl}/track?idTarget={user.IdTarget}";
