@@ -188,6 +188,21 @@ CREATE TABLE MailCredentials (
 );
 
 -- =========================
+-- TABELA DE TREINAMENTOS
+-- =========================
+
+CREATE TABLE treinamento (
+    IdTreinamento INT AUTO_INCREMENT PRIMARY KEY,
+    IdUser INT NOT NULL,
+    Aprovado BIT NOT NULL DEFAULT 0,
+    DtConclusao DATETIME NULL,
+
+    CONSTRAINT FK_Treinamento_Pessoa
+    FOREIGN KEY (IdUser)
+    REFERENCES pessoa(IdUser)
+);
+
+-- =========================
 -- CRIAÇÃO DE INDICES PARA PERFORMANCE
 -- =========================
 
