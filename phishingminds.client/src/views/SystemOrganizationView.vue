@@ -711,8 +711,8 @@ const deleteFuncionario = async () => {
 
 
     <!-- Modal Setor -->
-    <div v-if="isSetorModalOpen" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div class="bg-white rounded-3xl w-full max-w-md shadow-xl overflow-hidden">
+    <div v-if="isSetorModalOpen" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+      <div class="bg-white rounded-3xl w-full max-w-md shadow-xl overflow-hidden my-auto">
         <div class="p-6 border-b border-gray-100 flex justify-between items-center">
           <h3 class="text-xl font-bold text-gray-800">{{ setorForm.idSetor ? 'Editar' : 'Novo' }} Setor</h3>
           <button @click="isSetorModalOpen = false" class="text-gray-400 hover:text-gray-600">
@@ -739,8 +739,8 @@ const deleteFuncionario = async () => {
     </div>
 
     <!-- Modal Funcionario -->
-    <div v-if="isFuncionarioModalOpen" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div class="bg-white rounded-3xl w-full max-w-lg shadow-xl overflow-hidden">
+    <div v-if="isFuncionarioModalOpen" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+      <div class="bg-white rounded-3xl w-full max-w-lg shadow-xl overflow-hidden my-auto">
         <div class="p-6 border-b border-gray-100 flex justify-between items-center">
           <h3 class="text-xl font-bold text-gray-800">{{ funcionarioForm.idUser ? 'Editar' : 'Novo' }} Funcionário</h3>
           <button @click="isFuncionarioModalOpen = false" class="text-gray-400 hover:text-gray-600">
@@ -800,8 +800,8 @@ const deleteFuncionario = async () => {
     </div>
 
     <!-- Confirm Delete Modal Setor -->
-    <div v-if="isDeleteSetorModalOpen" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div class="bg-white rounded-3xl w-full max-w-sm shadow-xl p-6 text-center">
+    <div v-if="isDeleteSetorModalOpen" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+      <div class="bg-white rounded-3xl w-full max-w-sm shadow-xl p-6 text-center my-auto">
         <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
           <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
         </div>
@@ -815,8 +815,8 @@ const deleteFuncionario = async () => {
     </div>
 
     <!-- Confirm Delete Modal Funcionario -->
-    <div v-if="isDeleteFuncionarioModalOpen" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div class="bg-white rounded-3xl w-full max-w-sm shadow-xl p-6 text-center">
+    <div v-if="isDeleteFuncionarioModalOpen" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+      <div class="bg-white rounded-3xl w-full max-w-sm shadow-xl p-6 text-center my-auto">
         <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
           <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
         </div>

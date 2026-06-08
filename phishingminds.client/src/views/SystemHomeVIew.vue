@@ -250,10 +250,10 @@ onMounted(async () => {
       </div> <!-- FECHA O V-ELSE PRINCIPAL -->
     <div
   v-if="isCampaignModalOpen"
-  class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+  class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto"
 >
   <div
-    class="bg-white rounded-3xl shadow-xl w-full max-w-2xl overflow-hidden"
+    class="bg-white rounded-3xl shadow-xl w-full max-w-2xl overflow-hidden my-auto"
   >
 
     <div class="p-6 border-b flex justify-between items-center">

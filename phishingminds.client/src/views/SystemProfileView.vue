@@ -222,8 +222,8 @@ onMounted(() => {
     </div>
 
     <!-- Edit Modal -->
-    <div v-if="isModalOpen" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div class="bg-white rounded-3xl w-full max-w-2xl shadow-xl overflow-hidden">
+    <div v-if="isModalOpen" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+      <div class="bg-white rounded-3xl w-full max-w-2xl shadow-xl overflow-hidden my-auto">
         <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
           <h3 class="text-xl font-bold text-gray-800">Editar Perfil</h3>
           <button @click="isModalOpen = false" class="text-gray-400 hover:text-gray-600">
