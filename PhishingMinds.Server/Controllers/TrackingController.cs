@@ -15,6 +15,7 @@ namespace PhishingMinds.Server.Controllers
             _dbFactory = dbFactory;
         }
 
+        
         [HttpGet]
         public IActionResult Track([FromQuery] int idTarget)
         {
@@ -22,14 +23,38 @@ namespace PhishingMinds.Server.Controllers
             {
                 using var db = _dbFactory.CreateConnection();
 
-                var sql = @"
-                    UPDATE PhishingCampaignTarget
-                    SET LinkClicked = 1,
-                    Dt_Click = NOW()
+                var target = db.QueryFirstOrDefault(@"
+                    SELECT
+                        IdUser,
+                        LinkClicked
+                    FROM PhishingCampaignTarget
                     WHERE IdTarget = @IdTarget
-                ";
+                ", new { IdTarget = idTarget });
 
-                db.Execute(sql, new { IdTarget = idTarget });
+                if (target == null)
+                    return NotFound();
+
+                // Só desconta na primeira vez
+                if (!(bool)target.LinkClicked)
+                {
+                    db.Execute(@"
+                        UPDATE Pessoa
+                        SET PhishingScore =
+                            GREATEST(0, PhishingScore - 40)
+                        WHERE IdUser = @IdUser
+                    ", new
+                    {
+                        IdUser = target.IdUser
+                    });
+                }
+
+                db.Execute(@"
+                    UPDATE PhishingCampaignTarget
+                    SET
+                        LinkClicked = 1,
+                        Dt_Click = NOW()
+                    WHERE IdTarget = @IdTarget
+                ", new { IdTarget = idTarget });
 
                 return Redirect("https://www.microsoft.com");
             }
@@ -46,12 +71,36 @@ namespace PhishingMinds.Server.Controllers
             {
                 using var db = _dbFactory.CreateConnection();
 
-                db.Execute(@"
-            UPDATE PhishingCampaignTarget
-            SET MailOpened = 1
-            WHERE IdTarget = @IdTarget
-        ", new { IdTarget = idTarget });
+                var target = db.QueryFirstOrDefault(@"
+                    SELECT
+                        IdUser,
+                        MailOpened
+                    FROM PhishingCampaignTarget
+                    WHERE IdTarget = @IdTarget
+                ", new { IdTarget = idTarget });
 
+                if (target == null)
+                    return NotFound();
+
+                // Só desconta na primeira abertura
+                if (!(bool)target.MailOpened)
+                {
+                    db.Execute(@"
+                        UPDATE Pessoa
+                        SET PhishingScore =
+                            GREATEST(0, PhishingScore - 10)
+                        WHERE IdUser = @IdUser
+                    ", new
+                    {
+                        IdUser = target.IdUser
+                    });
+                }
+
+                db.Execute(@"
+                    UPDATE PhishingCampaignTarget
+                    SET MailOpened = 1
+                    WHERE IdTarget = @IdTarget
+                ", new { IdTarget = idTarget });
                 // imagem transparente 1x1 pixel
                 byte[] pixel = Convert.FromBase64String(
                     "R0lGODlhAQABAPAAAP///wAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="

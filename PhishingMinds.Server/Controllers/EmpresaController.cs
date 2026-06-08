@@ -93,7 +93,7 @@ namespace PhishingMinds.Server.Controllers
                 var activeCount = db.ExecuteScalar<int>("SELECT COUNT(*) FROM Empresa WHERE Ativo = 1");
                 var mrr = db.ExecuteScalar<decimal>("SELECT IFNULL(SUM(p.Value_Plano), 0) FROM Empresa e JOIN Plano p ON e.IdPlano = p.IdPlano WHERE e.Ativo = 1");
                 var list = db.Query(@"
-                    SELECT e.Nm_Empresa, p.Nm_Plano, p.Value_Plano, e.Ativo 
+                    SELECT e.Nm_Empresa AS nm_Empresa, p.Nm_Plano AS nm_Plano, p.Value_Plano AS value_Plano, e.Ativo AS ativo 
                     FROM Empresa e 
                     JOIN Plano p ON e.IdPlano = p.IdPlano").ToList();
                 return Ok(new { ActiveCompanies = activeCount, MRR = mrr, Subscriptions = list });

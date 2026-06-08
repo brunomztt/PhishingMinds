@@ -65,7 +65,7 @@ CREATE TABLE Pessoa (
     Ativo BOOLEAN,
     Dt_Cadastro DATETIME,
     UltimoLogin DATETIME,
-    PhishingScore INT DEFAULT 0,
+    PhishingScore INT DEFAULT 100,
     FOREIGN KEY (IdEmpresa) REFERENCES Empresa(IdEmpresa),
     FOREIGN KEY (IdSetor) REFERENCES Setor(IdSetor),
     FOREIGN KEY (IdCargo) REFERENCES Cargo(IdCargo)

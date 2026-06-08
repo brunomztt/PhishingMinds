@@ -103,5 +103,107 @@ namespace PhishingMinds.Server.Controllers
                 return StatusCode(500, new { message = "Erro ao buscar ranking de setores", error = ex.Message });
             }
         }
+
+        [HttpGet("evolucao/{idEmpresa}")]
+        public IActionResult GetEvolucao(int idEmpresa)
+        {
+            try
+            {
+                using var db = _dbFactory.CreateConnection();
+
+                var sql = @"
+                    SELECT
+                        pc.IdCampaign,
+                        pc.NomeCampanha,
+                        pc.Dt_Disparo,
+
+                        GROUP_CONCAT(
+                            DISTINCT s.Nm_Setor
+                            SEPARATOR ', '
+                        ) as Setores,
+
+                        COUNT(pct.IdTarget) as TotalUsuarios,
+
+                        SUM(
+                            CASE
+                                WHEN pct.LinkClicked = 1
+                                THEN 1
+                                ELSE 0
+                            END
+                        ) as LinksClicados,
+
+                        SUM(
+                            CASE
+                                WHEN pct.CredentialsSubmitted = 1
+                                THEN 1
+                                ELSE 0
+                            END
+                        ) as CredenciaisEnviadas
+
+                    FROM PhishingCampaign pc
+
+                    LEFT JOIN PhishingCampaignTarget pct
+                        ON pct.IdCampaign = pc.IdCampaign
+
+                    LEFT JOIN PhishingCampaignSetor pcs
+                        ON pcs.IdCampaign = pc.IdCampaign
+
+                    LEFT JOIN Setor s
+                        ON s.IdSetor = pcs.IdSetor
+
+                    WHERE pc.IdEmpresa = @IdEmpresa
+
+                    GROUP BY
+                        pc.IdCampaign,
+                        pc.NomeCampanha,
+                        pc.Dt_Disparo
+
+                    ORDER BY pc.Dt_Disparo
+                ";
+
+                var campanhas = db.Query(sql, new { IdEmpresa = idEmpresa });
+
+                var resultado = campanhas.Select(c =>
+                {
+                    double score = 100;
+
+
+                    if (c.TotalUsuarios > 0)
+                    {
+                        score -= (Convert.ToDouble(c.LinksClicados) / Convert.ToDouble(c.TotalUsuarios)) * 30;
+                        score -= (Convert.ToDouble(c.CredenciaisEnviadas) / Convert.ToDouble(c.TotalUsuarios)) * 70;
+                    }
+
+                    if (score < 0)
+                        score = 0;
+
+                    return new
+                    {
+                        c.IdCampaign,
+                        c.NomeCampanha,
+
+                        c.Dt_Disparo,
+
+                        Setores = string.IsNullOrWhiteSpace(
+                            Convert.ToString(c.Setores)
+                        )
+                            ? "Todos"
+                            : Convert.ToString(c.Setores),
+
+                        c.TotalUsuarios,
+                        c.LinksClicados,
+                        c.CredenciaisEnviadas,
+
+                        Score = score
+                    };
+                });
+
+                return Ok(resultado);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Erro ao buscar evolução", error = ex.Message});
+            }
+        }
     }
 }

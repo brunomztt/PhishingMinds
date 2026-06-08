@@ -1,8 +1,8 @@
 <template>
-  <aside :class="['w-64 md:m-4 md:rounded-3xl shadow-md flex flex-col justify-between px-5 py-6 h-full fixed md:sticky top-0 md:top-4 md:h-[calc(100vh-2rem)] overflow-y-auto transition-colors', isDevAdmin ? 'bg-gray-800 border border-gray-700' : 'bg-white']">
+  <aside class="w-64 md:m-4 md:rounded-3xl shadow-md flex flex-col justify-between px-5 py-6 h-full fixed md:sticky top-0 md:top-4 md:h-[calc(100vh-2rem)] overflow-y-auto transition-colors bg-white border border-gray-100">
     <div>
       <div class="mb-10 flex items-center justify-between md:block text-center">
-        <h1 class="text-2xl font-bold leading-tight w-full" :class="isDevAdmin ? 'text-white' : 'text-green-900'">
+        <h1 class="text-2xl font-bold leading-tight w-full text-green-900">
           PHISHING <br class="hidden md:block" />
           <span class="md:hidden"> </span>MINDS
         </h1>
@@ -10,24 +10,20 @@
       </div>
 
       <nav class="space-y-2">
-        <router-link to="/painel" @click="$emit('close')" class="block w-full text-center md:text-left px-4 py-3 rounded-xl font-medium" :class="$route.path === '/painel' ? (isDevAdmin ? 'bg-green-600 text-white' : 'bg-green-700 text-white') : (isDevAdmin ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600')">
+        <router-link to="/painel" @click="$emit('close')" class="block w-full text-center md:text-left px-4 py-3 rounded-xl font-medium" :class="$route.path === '/painel' ? 'bg-green-700 text-white' : 'hover:bg-gray-100 text-gray-600'">
           Overview
         </router-link>
         <router-link v-if="!isPessoa"
                      to="/campanhas"
                      @click="$emit('close')"
                      class="block w-full text-center md:text-left px-4 py-3 rounded-xl font-medium"
-                     :class="$route.path.startsWith('/campanhas')
-    ? (isDevAdmin ? 'bg-green-600 text-white' : 'bg-green-700 text-white')
-    : (isDevAdmin ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600')">
+                     :class="$route.path.startsWith('/campanhas') ? 'bg-green-700 text-white' : 'hover:bg-gray-100 text-gray-600'">
           Campanhas
         </router-link>
         <router-link to="/organizacao"
                      @click="$emit('close')"
                      class="relative block w-full text-center md:text-left px-4 py-3 rounded-xl font-medium"
-                     :class="$route.path.startsWith('/organizacao')
-    ? (isDevAdmin ? 'bg-green-600 text-white' : 'bg-green-700 text-white')
-    : (isDevAdmin ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600')">
+                     :class="$route.path.startsWith('/organizacao') ? 'bg-green-700 text-white' : 'hover:bg-gray-100 text-gray-600'">
           Organização
 
           <span v-if="possuiNovasQuedas"
@@ -37,9 +33,7 @@
                      to="/contratos"
                      @click="$emit('close')"
                      class="block w-full text-center md:text-left px-4 py-3 rounded-xl font-medium"
-                     :class="$route.path.startsWith('/contratos')
-    ? (isDevAdmin ? 'bg-green-600 text-white' : 'bg-green-700 text-white')
-    : (isDevAdmin ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600')">
+                     :class="$route.path.startsWith('/contratos') ? 'bg-green-700 text-white' : 'hover:bg-gray-100 text-gray-600'">
           Contratos
         </router-link>
         <router-link v-if="isPessoa"
@@ -57,7 +51,7 @@
       </nav>
     </div>
 
-    <button @click="handleLogout" class="text-red-500 text-left px-4 mt-10 w-full py-3 rounded-xl transition-colors font-medium" :class="isDevAdmin ? 'hover:bg-gray-700' : 'hover:bg-red-50'">Sair</button>
+    <button @click="handleLogout" class="text-red-500 text-left px-4 mt-10 w-full py-3 rounded-xl transition-colors font-medium hover:bg-red-50">Sair</button>
   </aside>
 </template>
 
@@ -68,6 +62,8 @@ const isPessoa = ref(false)
 
 defineEmits(['close'])
 const possuiNovasQuedas = ref(false)
+
+const getToken = () => localStorage.getItem('token')
 
 const verificarNovasQuedas = async () => {
   const userStr = localStorage.getItem('user')
@@ -84,7 +80,12 @@ const verificarNovasQuedas = async () => {
 
   try {
     const res = await fetch(
-      `/api/Pessoa/caidos-phishing/${user.idEmpresa}`
+      `/api/Pessoa/caidos-phishing/${user.idEmpresa}`,
+      {
+        headers: {
+          'Authorization': `Bearer ${getToken()}`
+        }
+      }
     )
 
     if (!res.ok) return

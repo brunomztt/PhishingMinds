@@ -46,8 +46,6 @@ namespace PhishingMinds.Server.Controllers
         {
             try
             {
-                Console.WriteLine("PASSO 1");
-
                 using var db = _dbFactory.CreateConnection();
 
                 // 1. Tentar Empresa
@@ -56,15 +54,8 @@ namespace PhishingMinds.Server.Controllers
                     sqlEmpresa,
                     new { Email = request.Email });
 
-                Console.WriteLine("PASSO 2");
-
-                if (empresa != null)
+                if (empresa != null && empresa.Senha == request.Password)
                 {
-                    if (empresa.Senha != request.Password)
-                    {
-                        return Unauthorized("Senha inválida.");
-                    }
-
                     var tokenHandler = new JwtSecurityTokenHandler();
                     var jwtKey = _config["Jwt:Key"] ?? "PhishingMindsSuperSecretKey12345!@#";
                     var key = Encoding.ASCII.GetBytes(jwtKey);
@@ -73,10 +64,10 @@ namespace PhishingMinds.Server.Controllers
                     {
                         Subject = new ClaimsIdentity(new[]
                         {
-                    new Claim(ClaimTypes.NameIdentifier, empresa.IdEmpresa.ToString()),
-                    new Claim(ClaimTypes.Email, empresa.Mail),
-                    new Claim("IdEmpresa", empresa.IdEmpresa.ToString())
-                }),
+                            new Claim(ClaimTypes.NameIdentifier, empresa.IdEmpresa.ToString()),
+                            new Claim(ClaimTypes.Email, empresa.Mail),
+                            new Claim("IdEmpresa", empresa.IdEmpresa.ToString())
+                        }),
                         Expires = DateTime.UtcNow.AddHours(8),
                         SigningCredentials = new SigningCredentials(
                             new SymmetricSecurityKey(key),
@@ -99,8 +90,6 @@ namespace PhishingMinds.Server.Controllers
                     });
                 }
 
-                Console.WriteLine("PASSO 3");
-
                 // 2. Tentar Pessoa
                 var sqlPessoa = "SELECT * FROM Pessoa WHERE Email = @Email";
                 var pessoa = db.QueryFirstOrDefault<PhishingMinds.Server.Class.Pessoa>(
@@ -111,62 +100,57 @@ namespace PhishingMinds.Server.Controllers
                 {
                     var hashedInput = HashPassword(request.Password);
 
-                    if (pessoa.Senha != request.Password &&
-                        pessoa.Senha != hashedInput)
+                    if (pessoa.Senha == request.Password ||
+                        pessoa.Senha == hashedInput)
                     {
-                        return Unauthorized("Senha inválida.");
+                        // Atualiza último login
+                        db.Execute(
+                            "UPDATE Pessoa SET UltimoLogin = @Now WHERE IdUser = @IdUser",
+                            new
+                            {
+                                Now = DateTime.Now,
+                                IdUser = pessoa.IdUser
+                            });
+
+                        var tokenHandler = new JwtSecurityTokenHandler();
+                        var jwtKey = _config["Jwt:Key"] ?? "PhishingMindsSuperSecretKey12345!@#";
+                        var key = Encoding.ASCII.GetBytes(jwtKey);
+
+                        var tokenDescriptor = new SecurityTokenDescriptor
+                        {
+                            Subject = new ClaimsIdentity(new[]
+                            {
+                                new Claim(ClaimTypes.NameIdentifier, pessoa.IdUser.ToString()),
+                                new Claim(ClaimTypes.Email, pessoa.Email),
+                                new Claim("IdEmpresa", pessoa.IdEmpresa.ToString())
+                            }),
+                            Expires = DateTime.UtcNow.AddHours(8),
+                            SigningCredentials = new SigningCredentials(
+                                new SymmetricSecurityKey(key),
+                                SecurityAlgorithms.HmacSha256Signature)
+                        };
+
+                        var idPlano = db.ExecuteScalar<int>(
+                            "SELECT IdPlano FROM Empresa WHERE IdEmpresa = @IdEmpresa",
+                            new { IdEmpresa = pessoa.IdEmpresa });
+
+                        var token = tokenHandler.CreateToken(tokenDescriptor);
+
+                        return Ok(new
+{
+    Token = tokenHandler.WriteToken(token),
+    User = new
+    {
+        idEmpresa = pessoa.IdEmpresa,
+        idPlano = idPlano,
+        nome = pessoa.Nome,
+        email = pessoa.Email,
+        isPessoa = true,
+        idUser = pessoa.IdUser
+    }
+});
                     }
-
-                    // Atualiza último login
-                    db.Execute(
-                        "UPDATE Pessoa SET UltimoLogin = @Now WHERE IdUser = @IdUser",
-                        new
-                        {
-                            Now = DateTime.Now,
-                            IdUser = pessoa.IdUser
-                        });
-
-                    var tokenHandler = new JwtSecurityTokenHandler();
-                    var jwtKey = _config["Jwt:Key"] ?? "PhishingMindsSuperSecretKey12345!@#";
-                    var key = Encoding.ASCII.GetBytes(jwtKey);
-
-                    var tokenDescriptor = new SecurityTokenDescriptor
-                    {
-                        Subject = new ClaimsIdentity(new[]
-                        {
-                    new Claim(ClaimTypes.NameIdentifier, pessoa.IdUser.ToString()),
-                    new Claim(ClaimTypes.Email, pessoa.Email),
-                    new Claim("IdEmpresa", pessoa.IdEmpresa.ToString())
-                }),
-                        Expires = DateTime.UtcNow.AddHours(8),
-                        SigningCredentials = new SigningCredentials(
-                            new SymmetricSecurityKey(key),
-                            SecurityAlgorithms.HmacSha256Signature)
-                    };
-
-                    var idPlano = db.ExecuteScalar<int>(
-                        "SELECT IdPlano FROM Empresa WHERE IdEmpresa = @IdEmpresa",
-                        new { IdEmpresa = pessoa.IdEmpresa });
-
-                    var token = tokenHandler.CreateToken(tokenDescriptor);
-
-                    return Ok(new
-                    {
-                        Token = tokenHandler.WriteToken(token),
-                        User = new
-                        {
-                            idEmpresa = pessoa.IdEmpresa,
-                            idPlano = idPlano,
-                            nome = pessoa.Nome,
-                            email = pessoa.Email,
-                            isPessoa = true,
-                            idUser = pessoa.IdUser
-
-                        }
-                    });
                 }
-
-                Console.WriteLine("PASSO 4");
 
                 // 3. Fallback DEV
                 if (request.Email.Trim().ToLower() == "admin@phishingminds.com")
@@ -182,10 +166,10 @@ namespace PhishingMinds.Server.Controllers
                         {
                             Subject = new ClaimsIdentity(new[]
                             {
-                        new Claim(ClaimTypes.NameIdentifier, "1"),
-                        new Claim(ClaimTypes.Email, request.Email),
-                        new Claim("IdEmpresa", "1")
-                    }),
+                                new Claim(ClaimTypes.NameIdentifier, "1"),
+                                new Claim(ClaimTypes.Email, request.Email),
+                                new Claim("IdEmpresa", "1")
+                            }),
                             Expires = DateTime.UtcNow.AddHours(8),
                             SigningCredentials = new SigningCredentials(
                                 new SymmetricSecurityKey(key),
