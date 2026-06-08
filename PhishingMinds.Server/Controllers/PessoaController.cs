@@ -119,7 +119,8 @@ namespace PhishingMinds.Server.Controllers
                 INSERT INTO Pessoa (IdEmpresa, IdSetor, IdCargo, Nome, Email, Senha, Ativo, Dt_Cadastro, UltimoLogin, PhishingScore)
                 VALUES (@IdEmpresa, @IdSetor, @IdCargo, @Nome, @Email, @Senha, @Ativo, @Dt_Cadastro, @UltimoLogin, @PhishingScore);
                 SELECT LAST_INSERT_ID();";
-
+                
+            novaPessoa.PhishingScore = 100;
             var id = db.ExecuteScalar<int>(sql, novaPessoa);
             novaPessoa.IdUser = id;
 
