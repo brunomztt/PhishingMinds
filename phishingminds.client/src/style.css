@@ -350,3 +350,53 @@ body:has(.dark-theme) {
 .focus\:ring-green-500:focus {
   --tw-ring-color: #2D4A38 !important;
 }
+
+/* ==========================================================================
+   6. CUSTOM SCROLLBARS (Brand Green System)
+   ========================================================================== */
+
+/* Webkit browsers (Chrome, Safari, Edge, etc.) */
+::-webkit-scrollbar {
+  width: 8px; /* Width of the vertical scrollbar */
+  height: 8px; /* Height of the horizontal scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #b9c9ba; /* Sage green for light mode */
+  border-radius: 9999px;
+  border: 2px solid transparent; /* Creates padding around the thumb */
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #2D4A38; /* Pine green on hover for light mode */
+}
+
+/* Dark theme overrides */
+.dark-theme::-webkit-scrollbar-thumb,
+.dark-theme ::-webkit-scrollbar-thumb,
+body.dark-theme ::-webkit-scrollbar-thumb {
+  background-color: #2b4a37; /* Forest green for dark mode */
+}
+
+.dark-theme::-webkit-scrollbar-thumb:hover,
+.dark-theme ::-webkit-scrollbar-thumb:hover,
+body.dark-theme ::-webkit-scrollbar-thumb:hover {
+  background-color: #456f54; /* Lighter forest green on hover for dark mode */
+}
+
+/* Firefox support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #b9c9ba transparent;
+}
+
+.dark-theme,
+.dark-theme *,
+body.dark-theme * {
+  scrollbar-color: #2b4a37 transparent;
+}
