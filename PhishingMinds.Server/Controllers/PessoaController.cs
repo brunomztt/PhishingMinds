@@ -233,6 +233,7 @@ namespace PhishingMinds.Server.Controllers
 
             return Ok(new
             {
+                teste = "CHEGUEI",
                 totalQuedas,
                 necessitaTreinamento =
                     totalQuedas >= 3 &&

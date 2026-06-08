@@ -159,7 +159,9 @@ namespace PhishingMinds.Server.Controllers
                             idPlano = idPlano,
                             nome = pessoa.Nome,
                             email = pessoa.Email,
-                            isPessoa = true
+                            isPessoa = true,
+                            idUser = pessoa.IdUser
+
                         }
                     });
                 }
