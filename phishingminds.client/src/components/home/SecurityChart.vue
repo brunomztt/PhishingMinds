@@ -46,9 +46,70 @@ const chartData = computed(() => ({
   ]
 }))
 
+const emit = defineEmits([
+  'campaign-click'
+])
+
 const chartOptions = {
   responsive: true,
-  maintainAspectRatio: false
+  maintainAspectRatio: false,
+
+  onClick(event, elements) {
+    if (!elements.length)
+      return
+
+    const index = elements[0].index
+
+    emit(
+      'campaign-click',
+      props.evolucao[index]
+    )
+  },
+
+
+  plugins: {
+    tooltip: {
+      callbacks: {
+
+        title(context) {
+          return context[0].label
+        },
+
+        label(context) {
+          const campanha =
+            props.evolucao[
+              context.dataIndex
+            ]
+
+          return [
+            `Score: ${campanha.score}`,
+            `Links clicados: ${campanha.linksClicados}`,
+            `Credenciais enviadas: ${campanha.credenciaisEnviadas}`
+          ]
+        },
+
+        afterLabel(context) {
+          const campanha =
+            props.evolucao[
+              context.dataIndex
+            ]
+
+          const data =
+            new Date(
+              campanha.dt_Disparo
+            ).toLocaleDateString(
+              'pt-BR'
+            )
+
+          return [
+            '',
+            `Data: ${data}`,
+            `Setores: ${campanha.setores}`
+          ]
+        }
+      }
+    }
+  }
 }
 </script>
 

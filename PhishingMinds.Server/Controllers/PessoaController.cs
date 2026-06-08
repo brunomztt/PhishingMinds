@@ -119,7 +119,8 @@ namespace PhishingMinds.Server.Controllers
                 INSERT INTO Pessoa (IdEmpresa, IdSetor, IdCargo, Nome, Email, Senha, Ativo, Dt_Cadastro, UltimoLogin, PhishingScore)
                 VALUES (@IdEmpresa, @IdSetor, @IdCargo, @Nome, @Email, @Senha, @Ativo, @Dt_Cadastro, @UltimoLogin, @PhishingScore);
                 SELECT LAST_INSERT_ID();";
-
+                
+            novaPessoa.PhishingScore = 100;
             var id = db.ExecuteScalar<int>(sql, novaPessoa);
             novaPessoa.IdUser = id;
 
@@ -200,6 +201,45 @@ namespace PhishingMinds.Server.Controllers
             var resultado = db.Query(sql, new { IdEmpresa = idEmpresa });
 
             return Ok(resultado);
+        }
+
+
+        [HttpGet("necessita-treinamento/{idUser}")]
+        public IActionResult NecessitaTreinamento(int idUser)
+        {
+            using var db = _dbFactory.CreateConnection();
+
+            var totalQuedas = db.ExecuteScalar<int>(
+                @"
+        SELECT COUNT(*)
+        FROM PhishingCampaignTarget
+        WHERE IdUser = @IdUser
+          AND (
+                LinkClicked = 1
+                OR CredentialsSubmitted = 1
+              )
+        ",
+                new { IdUser = idUser }
+            );
+
+            var treinamentoConcluido = db.ExecuteScalar<int>(
+                @"
+        SELECT COUNT(*)
+        FROM treinamento
+        WHERE IdUser = @IdUser
+          AND Aprovado = 1
+        ",
+                new { IdUser = idUser }
+            );
+
+            return Ok(new
+            {
+                teste = "CHEGUEI",
+                totalQuedas,
+                necessitaTreinamento =
+                    totalQuedas >= 3 &&
+                    treinamentoConcluido == 0
+            });
         }
     }
 }

@@ -65,7 +65,7 @@ CREATE TABLE Pessoa (
     Ativo BOOLEAN,
     Dt_Cadastro DATETIME,
     UltimoLogin DATETIME,
-    PhishingScore INT DEFAULT 0,
+    PhishingScore INT DEFAULT 100,
     FOREIGN KEY (IdEmpresa) REFERENCES Empresa(IdEmpresa),
     FOREIGN KEY (IdSetor) REFERENCES Setor(IdSetor),
     FOREIGN KEY (IdCargo) REFERENCES Cargo(IdCargo)
@@ -185,6 +185,21 @@ CREATE TABLE MailCredentials (
     Id_EmailCredentials INT AUTO_INCREMENT PRIMARY KEY,
     Mail VARCHAR(200),
     Senha VARCHAR(200)
+);
+
+-- =========================
+-- TABELA DE TREINAMENTOS
+-- =========================
+
+CREATE TABLE treinamento (
+    IdTreinamento INT AUTO_INCREMENT PRIMARY KEY,
+    IdUser INT NOT NULL,
+    Aprovado BIT NOT NULL DEFAULT 0,
+    DtConclusao DATETIME NULL,
+
+    CONSTRAINT FK_Treinamento_Pessoa
+    FOREIGN KEY (IdUser)
+    REFERENCES pessoa(IdUser)
 );
 
 -- =========================
