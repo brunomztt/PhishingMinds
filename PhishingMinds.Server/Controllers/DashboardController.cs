@@ -32,7 +32,14 @@ namespace PhishingMinds.Server.Controllers
 
                 // 2. Trained Users
                 var trainedUsers = db.ExecuteScalar<int>(
-                    "SELECT COUNT(*) FROM Pessoa WHERE IdEmpresa = @IdEmpresa AND Ativo = 1",
+                    @"
+                    SELECT COUNT(DISTINCT t.IdUser)
+                    FROM treinamento t
+                    INNER JOIN Pessoa p
+                        ON p.IdUser = t.IdUser
+                    WHERE p.IdEmpresa = @IdEmpresa
+                      AND t.Aprovado = 1
+                    ",
                     new { IdEmpresa = idEmpresa }
                 );
 

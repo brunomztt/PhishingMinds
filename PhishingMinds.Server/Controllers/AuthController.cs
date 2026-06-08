@@ -137,17 +137,18 @@ namespace PhishingMinds.Server.Controllers
                         var token = tokenHandler.CreateToken(tokenDescriptor);
 
                         return Ok(new
-                        {
-                            Token = tokenHandler.WriteToken(token),
-                            User = new
-                            {
-                                idEmpresa = pessoa.IdEmpresa,
-                                idPlano = idPlano,
-                                nome = pessoa.Nome,
-                                email = pessoa.Email,
-                                isPessoa = true
-                            }
-                        });
+{
+    Token = tokenHandler.WriteToken(token),
+    User = new
+    {
+        idEmpresa = pessoa.IdEmpresa,
+        idPlano = idPlano,
+        nome = pessoa.Nome,
+        email = pessoa.Email,
+        isPessoa = true,
+        idUser = pessoa.IdUser
+    }
+});
                     }
                 }
 
