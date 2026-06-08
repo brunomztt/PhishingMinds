@@ -42,6 +42,15 @@
     : (isDevAdmin ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600')">
           Contratos
         </router-link>
+        <router-link v-if="isPessoa"
+                     to="/treinamentos"
+                     @click="$emit('close')"
+                     class="block w-full text-center md:text-left px-4 py-3 rounded-xl font-medium"
+                     :class="$route.path.startsWith('/treinamentos')
+    ? 'bg-green-700 text-white'
+    : 'hover:bg-gray-100 text-gray-600'">
+          Treinamentos
+        </router-link>
         <router-link to="/perfil" @click="$emit('close')" class="block w-full text-center md:text-left px-4 py-3 rounded-xl font-medium" :class="$route.path.startsWith('/perfil') ? (isDevAdmin ? 'bg-green-600 text-white' : 'bg-green-700 text-white') : (isDevAdmin ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600')">
           Meu Perfil
         </router-link>
@@ -66,6 +75,7 @@ const verificarNovasQuedas = async () => {
   if (!userStr) return
 
   const user = JSON.parse(userStr)
+  isPessoa.value = user.isPessoa === true
 
   if (
     user.idEmpresa === 1 &&

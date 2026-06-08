@@ -1,13 +1,17 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
+import * as XLSX from 'xlsx'
 import MainLayout from '../layouts/MainLayout.vue'
+import FileUploadButton from '../components/ui/FileUploadButton.vue'
 
 const isDevAdmin = ref(false)
 const isPessoa = ref(false)
 const userEmpresaId = ref(null)
 
 const setores = ref([])
+const treinamentosConcluidos = ref([])
 const funcionarios = ref([])
+const funcionariosImportados = ref([])
 const loadingSetores = ref(false)
 const loadingFuncionarios = ref(false)
 
@@ -45,7 +49,31 @@ const isDeleteFuncionarioModalOpen = ref(false)
 const setorForm = ref({ idSetor: 0, nm_Setor: '' })
 const funcionarioForm = ref({ idUser: 0, nome: '', email: '', idSetor: null })
 
+
 const itemToDelete = ref(null)
+
+
+const handleExcelUpload = async (event) => {
+  const file = event.target.files[0]
+
+  if (!file) return
+
+  const data = await file.arrayBuffer()
+
+  const workbook = XLSX.read(data)
+
+  const sheetName = workbook.SheetNames[0]
+
+  const worksheet = workbook.Sheets[sheetName]
+
+  const jsonData = XLSX.utils.sheet_to_json(worksheet)
+
+  console.log(jsonData)
+
+  funcionariosImportados.value = jsonData
+}
+
+
 
 // Search & Pagination
 const searchSetor = ref('')
@@ -78,6 +106,28 @@ const fetchFuncionariosPhishing = async () => {
   }
   finally {
     loadingPhishing.value = false
+  }
+}
+const fetchTreinamentosConcluidos = async () => {
+  if (!userEmpresaId.value) return
+
+  try {
+    const res = await fetch(
+      `/api/Treinamento/empresa/${userEmpresaId.value}`,
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`
+        }
+      }
+    )
+
+    if (res.ok) {
+      treinamentosConcluidos.value =
+        await res.json()
+    }
+  }
+  catch (e) {
+    console.error(e)
   }
 }
 
@@ -200,6 +250,12 @@ const saveSetor = async () => {
 }
 
 const saveFuncionario = async () => {
+
+  if (funcionariosImportados.value.length > 0) {
+    await importarFuncionarios()
+    return
+  }
+
   const isEdit = funcionarioForm.value.idUser > 0
   const url = isEdit ? `/api/Pessoa/${funcionarioForm.value.idUser}` : '/api/Pessoa'
   const method = isEdit ? 'PUT' : 'POST'
@@ -223,6 +279,52 @@ const saveFuncionario = async () => {
       isFuncionarioModalOpen.value = false
       fetchFuncionarios()
     }
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+const importarFuncionarios = async () => {
+
+
+
+
+  try {
+    for (const funcionario of funcionariosImportados.value) {
+      if (!funcionario.Nome && !funcionario.nome) continue
+      if (!funcionario.Email && !funcionario.email) continue
+      const payload = {
+        nome: funcionario.Nome || funcionario.nome,
+        email: funcionario.Email || funcionario.email,
+        idEmpresa: userEmpresaId.value,
+        idSetor: funcionarioForm.value.idSetor,
+        ativo: true,
+        idCargo: null,
+        idGestor: null,
+        phishingScore: 0
+      }
+
+      const res = await fetch(`/api/Pessoa`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getToken()}`
+        },
+        body: JSON.stringify(payload)
+      })
+
+      if (!res.ok) {
+        console.error('Erro ao importar:', funcionario)
+      }
+    }
+
+    fetchFuncionarios()
+
+    alert('Funcionários importados com sucesso!')
+    funcionariosImportados.value = []
+    isFuncionarioModalOpen.value = false
+    
+
   } catch (e) {
     console.error(e)
   }
@@ -287,6 +389,7 @@ const deleteFuncionario = async () => {
         fetchSetores()
         fetchFuncionarios()
         fetchFuncionariosPhishing()
+        fetchTreinamentosConcluidos()
 
         // marca o momento em que o gestor visualizou a tela
         localStorage.setItem(
@@ -538,7 +641,74 @@ const deleteFuncionario = async () => {
           </div>
         </div>
       </div>
+      <!-- Treinamentos Concluídos -->
+      <div v-if="!isPessoa"
+           class="bg-white rounded-3xl shadow-sm overflow-hidden mt-8">
+        <div class="p-6 border-b border-gray-100 bg-green-50">
+          <h3 class="text-xl font-semibold text-green-700">
+            Treinamentos Concluídos
+          </h3>
+
+          <p class="text-sm text-gray-500 mt-1">
+            Funcionários que concluíram o treinamento obrigatório.
+          </p>
+        </div>
+
+        <div class="p-6">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse min-w-[700px]">
+              <thead>
+                <tr class="text-gray-500 text-sm border-b border-gray-100">
+                  <th class="pb-3 font-medium">Nome</th>
+                  <th class="pb-3 font-medium">Email</th>
+                  <th class="pb-3 font-medium">Setor</th>
+                  <th class="pb-3 font-medium">Data Conclusão</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr v-if="treinamentosConcluidos.length === 0">
+                  <td colspan="4" class="py-4 text-center text-gray-500">
+                    Nenhum treinamento concluído.
+                  </td>
+                </tr>
+
+                <tr v-for="item in treinamentosConcluidos"
+                    :key="item.IdTreinamento"
+                    class="border-b border-gray-50 hover:bg-green-50 transition-colors">
+                  <td class="py-4 font-semibold text-gray-800">
+                    {{ item.Nome }}
+                  </td>
+
+                  <td class="py-4 text-gray-500">
+                    {{ item.Email }}
+                  </td>
+
+                  <td class="py-4">
+                    <span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-md font-semibold">
+                      {{ item.Nm_Setor || 'Sem Setor' }}
+                    </span>
+                  </td>
+
+                  <td class="py-4">
+                    {{
+                new Date(item.DtConclusao)
+                  .toLocaleDateString('pt-BR')
+                    }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="mt-4 text-sm text-gray-500">
+            Total de treinamentos concluídos:
+            <strong>{{ treinamentosConcluidos.length }}</strong>
+          </div>
+        </div>
+      </div>
     </div>
+
 
     <!-- Modal Setor -->
     <div v-if="isSetorModalOpen" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -599,10 +769,32 @@ const deleteFuncionario = async () => {
               <span class="text-sm">Clique para fazer upload (Desabilitado)</span>
             </div>
           </div>
+          <div v-if="!funcionarioForm.idUser">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Adicione uma lista de funcionarios</label>
+            <div class="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center text-gray-400">
+              <p class="text-xs text-gray-500 mb-2">
+                A planilha deve conter apenas as colunas
+                <strong>Nome</strong> e <strong>Email</strong>.
+                O setor será selecionado manualmente antes da importação.
+              </p>
+              <FileUploadButton
+                text="Selecionar Planilha Excel"
+                @change="handleExcelUpload"
+              />
+              <p v-if="funcionariosImportados.length > 0" class="text-sm text-green-600 mt-2">
+                {{ funcionariosImportados.length }} funcionários carregados
+              </p>
+            </div>
+          </div>
         </div>
         <div class="p-6 bg-gray-50 flex justify-end gap-3">
           <button @click="isFuncionarioModalOpen = false" class="px-5 py-2.5 text-gray-600 font-medium hover:bg-gray-200 rounded-xl transition-colors">Cancelar</button>
-          <button @click="saveFuncionario" class="px-5 py-2.5 bg-green-700 hover:bg-green-800 text-white font-medium rounded-xl transition-colors shadow-sm">Salvar</button>
+          <button
+            @click="saveFuncionario"
+            class="px-5 py-2.5 bg-green-700 hover:bg-green-800 text-white font-medium rounded-xl transition-colors shadow-sm"
+          >
+            {{ funcionariosImportados.length > 0 ? 'Importar Funcionários' : 'Salvar' }}
+          </button>
         </div>
       </div>
     </div>
