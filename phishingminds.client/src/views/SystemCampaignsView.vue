@@ -39,6 +39,21 @@ const customTemplateForm = ref({
 const apiError = ref('')
 const formSubmitting = ref(false)
 
+const toast = ref({
+  show: false,
+  message: '',
+  type: 'success'
+})
+
+const showToast = (message, type = 'success') => {
+  toast.value.message = message
+  toast.value.type = type
+  toast.value.show = true
+  setTimeout(() => {
+    toast.value.show = false
+  }, 4000)
+}
+
 // Load campaigns, templates, and sectors
 const loadData = async () => {
   const userStr = localStorage.getItem('user')
@@ -155,7 +170,7 @@ const saveCampaign = async () => {
       idEmpresa: userEmpresaId.value,
       idTemplateEmpresa: parseInt(campaignForm.value.idTemplateEmpresa, 10),
       idSetores: campaignForm.value.idSetores.map(id => parseInt(id, 10)),
-      dt_Disparo: new Date(campaignForm.value.dt_Disparo).toISOString()
+      dt_Disparo: campaignForm.value.dt_Disparo.length === 16 ? campaignForm.value.dt_Disparo + ':00' : campaignForm.value.dt_Disparo
     }
 
     let url = '/api/Campanha'
@@ -178,6 +193,7 @@ const saveCampaign = async () => {
     if (res.ok) {
       isModalOpen.value = false
       await loadData()
+      showToast(modalMode.value === 'create' ? 'Criado com sucesso!' : 'Atualizado com sucesso!', 'success')
     } else {
       const errText = await res.json()
       apiError.value = errText.message || 'Erro ao salvar campanha.'
@@ -216,12 +232,13 @@ const executeDeleteCampaign = async () => {
       isDeleteModalOpen.value = false
       campaignIdToDelete.value = null
       await loadData()
+      showToast('Excluido com sucesso!', 'success')
     } else {
-      alert('Erro ao excluir campanha.')
+      showToast('Erro ao excluir campanha.', 'error')
     }
   } catch (e) {
     console.error(e)
-    alert('Erro de comunicação ao excluir campanha.')
+    showToast('Erro de comunicação ao excluir campanha.', 'error')
   }
 }
 
@@ -250,7 +267,7 @@ const openTemplateCustomizer = () => {
 
 const saveCustomizedTemplate = async () => {
   if (!customTemplateForm.value.nomePersonalizado) {
-    alert('Nome personalizado do template é obrigatório.')
+    showToast('Nome personalizado do template é obrigatório.', 'error')
     return
   }
 
@@ -287,12 +304,13 @@ const saveCustomizedTemplate = async () => {
       // Auto-select newly created customized template
       campaignForm.value.idTemplateEmpresa = data.idTemplateEmpresa
       isCustomizingTemplate.value = false
+      showToast('Criado com sucesso!', 'success')
     } else {
-      alert('Erro ao customizar template.')
+      showToast('Erro ao customizar template.', 'error')
     }
   } catch (err) {
     console.error(err)
-    alert('Falha ao salvar template.')
+    showToast('Falha ao salvar template.', 'error')
   }
 }
 </script>
@@ -663,6 +681,38 @@ const saveCustomizedTemplate = async () => {
         </div>
       </div>
     </div>
+
+    <!-- Beautiful Floating Toast Notification -->
+    <Transition
+      enter-active-class="transform ease-out duration-300 transition"
+      enter-from-class="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+      enter-to-class="translate-y-0 opacity-100 sm:translate-x-0"
+      leave-active-class="transition ease-in duration-200"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div v-if="toast.show" class="fixed top-5 right-5 left-5 sm:left-auto sm:w-96 z-[100] flex bg-white border border-gray-100 text-gray-800 rounded-2xl shadow-xl overflow-hidden">
+        <div :class="[toast.type === 'success' ? 'bg-green-500' : 'bg-red-500', 'w-2']"></div>
+        <div class="p-4 flex items-center justify-between flex-1 gap-4">
+          <div class="flex items-center gap-3">
+            <!-- Check Icon for Success -->
+            <svg v-if="toast.type === 'success'" class="w-6 h-6 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <!-- Error Icon for Error -->
+            <svg v-else class="w-6 h-6 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <p class="text-sm font-semibold text-gray-800">{{ toast.message }}</p>
+          </div>
+          <button @click="toast.show = false" class="text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </Transition>
   </MainLayout>
 </template>
 

@@ -391,9 +391,14 @@ const saveSetor = async () => {
     if (res.ok) {
       isSetorModalOpen.value = false
       fetchSetores()
+      showToast(isEdit ? 'Atualizado com sucesso!' : 'Criado com sucesso!', 'success')
+    } else {
+      const errorText = await res.text()
+      showToast('Erro ao salvar setor: ' + errorText, 'error')
     }
   } catch (e) {
     console.error(e)
+    showToast('Erro ao salvar setor.', 'error')
   }
 }
 
@@ -426,9 +431,14 @@ const saveFuncionario = async () => {
     if (res.ok) {
       isFuncionarioModalOpen.value = false
       fetchFuncionarios()
+      showToast(isEdit ? 'Atualizado com sucesso!' : 'Criado com sucesso!', 'success')
+    } else {
+      const errorText = await res.text()
+      showToast('Erro ao salvar funcionário: ' + errorText, 'error')
     }
   } catch (e) {
     console.error(e)
+    showToast('Erro ao salvar funcionário.', 'error')
   }
 }
 
@@ -486,9 +496,14 @@ const deleteSetor = async () => {
     if (res.ok) {
       isDeleteSetorModalOpen.value = false
       fetchSetores()
+      showToast('Excluido com sucesso!', 'success')
+    } else {
+      const errorText = await res.text()
+      showToast('Erro ao excluir setor: ' + errorText, 'error')
     }
   } catch (e) {
     console.error(e)
+    showToast('Erro ao excluir setor.', 'error')
   }
 }
 
@@ -506,9 +521,14 @@ const deleteFuncionario = async () => {
     if (res.ok) {
       isDeleteFuncionarioModalOpen.value = false
       fetchFuncionarios()
+      showToast('Excluido com sucesso!', 'success')
+    } else {
+      const errorText = await res.text()
+      showToast('Erro ao excluir funcionário: ' + errorText, 'error')
     }
   } catch (e) {
     console.error(e)
+    showToast('Erro ao excluir funcionário.', 'error')
   }
 }
 

@@ -82,6 +82,9 @@ namespace EmailDispatcher.Application.Services
                     _configuration["TrackingBaseUrl"]
                     ?? "https://localhost:5164";
 
+                // Fetch template parameter values for this campaign template
+                var parametros = await _repo.BuscarParametrosCampanha(campanha.IdTemplateEmpresa);
+
                 foreach (var user in usuarios)
                 {
                     _logger.LogInformation(
@@ -96,7 +99,23 @@ namespace EmailDispatcher.Application.Services
                         var openTracking =
                             $"{baseUrl}/track/open?idTarget={user.IdTarget}";
 
-                        var body = campanha.BodyMail
+                        var body = campanha.BodyMail;
+                        var subjectRaw = campanha.Subject;
+
+                        // Replace custom template parameters (like Banco, Valor, etc.)
+                        foreach (var param in parametros)
+                        {
+                            if (param.Name.Equals("Nome", StringComparison.OrdinalIgnoreCase) || 
+                                param.Name.Equals("Link", StringComparison.OrdinalIgnoreCase))
+                            {
+                                continue;
+                            }
+                            body = body.Replace($"{{{{{param.Name}}}}}", param.Value);
+                            subjectRaw = subjectRaw.Replace($"{{{{{param.Name}}}}}", param.Value);
+                        }
+
+                        // Replace dynamic user-specific placeholders
+                        body = body
                             .Replace("{{Nome}}", user.Nome)
                             .Replace("{{Link}}", trackingLink);
 
@@ -108,7 +127,7 @@ namespace EmailDispatcher.Application.Services
 
                         string subject =
                             HomoglyphGenerator.Transform(
-                                campanha.Subject
+                                subjectRaw
                             );
 
                         string senderName =
