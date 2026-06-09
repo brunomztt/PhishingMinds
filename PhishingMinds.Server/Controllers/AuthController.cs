@@ -54,7 +54,7 @@ namespace PhishingMinds.Server.Controllers
                     sqlEmpresa,
                     new { Email = request.Email });
 
-                if (empresa != null && empresa.Senha == request.Password)
+                if (empresa != null && (empresa.Senha == request.Password || empresa.Senha == HashPassword(request.Password)))
                 {
                     var tokenHandler = new JwtSecurityTokenHandler();
                     var jwtKey = _config["Jwt:Key"] ?? "PhishingMindsSuperSecretKey12345!@#";
@@ -219,9 +219,10 @@ namespace PhishingMinds.Server.Controllers
 
                 if (empresa != null)
                 {
+                    var hashedNewPassword = HashPassword(request.NewPassword);
                     db.Execute(
                         "UPDATE Empresa SET Senha = @Senha WHERE Mail = @Email",
-                        new { Senha = request.NewPassword, Email = request.Email }
+                        new { Senha = hashedNewPassword, Email = request.Email }
                     );
                     return Ok("Senha de Administrador atualizada com sucesso.");
                 }
@@ -278,6 +279,11 @@ namespace PhishingMinds.Server.Controllers
                 if (request.IdPlano == 0)
                 {
                     request.IdPlano = 1;
+                }
+
+                if (!string.IsNullOrEmpty(request.Senha))
+                {
+                    request.Senha = HashPassword(request.Senha);
                 }
 
                 var sql = @"

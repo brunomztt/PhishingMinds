@@ -80,7 +80,7 @@ namespace EmailDispatcher.Application.Services
 
                 var baseUrl =
                     _configuration["TrackingBaseUrl"]
-                    ?? "https://localhost:7193";
+                    ?? "https://localhost:5164";
 
                 foreach (var user in usuarios)
                 {
