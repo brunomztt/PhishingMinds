@@ -1,4 +1,4 @@
-﻿using EmailDispatcher.Domain.Entities;
+using EmailDispatcher.Domain.Entities;
 using EmailDispatcher.Infrastructure.Data;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ namespace EmailDispatcher.Infrastructure.Repositories
         }
 
         // Buscar campanhas prontas para disparo
-        public async Task<List<Campaign>> BuscarCampanhasPendentes()
+        public virtual async Task<List<Campaign>> BuscarCampanhasPendentes()
         {
             var campanhas = new List<Campaign>();
 
@@ -27,6 +27,7 @@ namespace EmailDispatcher.Infrastructure.Repositories
             var cmd = new MySqlCommand(@"
                 SELECT 
                     pc.IdCampaign,
+                    pc.IdTemplateEmpresa,
                     pt.Subject,
                     pt.BodyMail,
                     pc.NomeCampanha
@@ -35,7 +36,7 @@ namespace EmailDispatcher.Infrastructure.Repositories
                     ON pte.IdTemplateEmpresa = pc.IdTemplateEmpresa
                 JOIN PhishingTemplate pt 
                     ON pt.IdTemplate = pte.IdTemplate
-                WHERE pc.Status = 'PENDENTE'
+                WHERE pc.Status = 'AGENDADO'
                 AND pc.Dt_Disparo <= NOW()
             ", conn);
 
@@ -46,6 +47,7 @@ namespace EmailDispatcher.Infrastructure.Repositories
                 campanhas.Add(new Campaign
                 {
                     IdCampaign = reader.GetInt32("IdCampaign"),
+                    IdTemplateEmpresa = reader.GetInt32("IdTemplateEmpresa"),
                     Subject = reader.GetString("Subject"),
                     BodyMail = reader.GetString("BodyMail"),
                     NomeCampanha = reader.GetString("NomeCampanha")
@@ -55,8 +57,45 @@ namespace EmailDispatcher.Infrastructure.Repositories
             return campanhas;
         }
 
+        // Buscar parâmetros customizados do template da empresa
+        public virtual async Task<List<(string Name, string Value)>> BuscarParametrosCampanha(int idTemplateEmpresa)
+        {
+            var paramsList = new List<(string Name, string Value)>();
+
+            using var conn = _factory.CreateConnection();
+            await conn.OpenAsync();
+
+            var cmd = new MySqlCommand(@"
+                SELECT 
+                    tp.ParameterName,
+                    COALESCE(pv.ParameterValue, tp.ExampleValue) AS ParameterValue
+                FROM TemplateParameter tp
+                LEFT JOIN ParameterValue pv 
+                    ON tp.IdParameter = pv.IdParameter 
+                    AND pv.IdTemplateEmpresa = @IdTemplateEmpresa
+                WHERE tp.IdTemplate = (
+                    SELECT IdTemplate 
+                    FROM PhishingTemplateEmpresa 
+                    WHERE IdTemplateEmpresa = @IdTemplateEmpresa
+                )
+            ", conn);
+
+            cmd.Parameters.AddWithValue("@IdTemplateEmpresa", idTemplateEmpresa);
+
+            using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                paramsList.Add((
+                    reader.GetString("ParameterName"),
+                    reader.GetString("ParameterValue")
+                ));
+            }
+
+            return paramsList;
+        }
+
         // Buscar usuários da campanha
-        public async Task<List<User>> BuscarUsuarios(int idCampaign)
+        public virtual async Task<List<User>> BuscarUsuarios(int idCampaign)
         {
             var usuarios = new List<User>();
 
@@ -92,7 +131,7 @@ namespace EmailDispatcher.Infrastructure.Repositories
         }
 
         // Marcar email como enviado
-        public async Task MarcarComoEnviado(int idTarget)
+        public virtual async Task MarcarComoEnviado(int idTarget)
         {
             using var conn = _factory.CreateConnection();
             await conn.OpenAsync();
@@ -110,7 +149,7 @@ namespace EmailDispatcher.Infrastructure.Repositories
         }
 
         // Marcar campanha como finalizada
-        public async Task MarcarCampanhaComoProcessada(int idCampaign)
+        public virtual async Task MarcarCampanhaComoProcessada(int idCampaign)
         {
             using var conn = _factory.CreateConnection();
             await conn.OpenAsync();
@@ -127,7 +166,7 @@ namespace EmailDispatcher.Infrastructure.Repositories
         }
 
         // Buscar credencial de envio
-        public async Task<MailCredential> GetMailCredential()
+        public virtual async Task<MailCredential> GetMailCredential()
         {
             using var conn = _factory.CreateConnection();
             await conn.OpenAsync();

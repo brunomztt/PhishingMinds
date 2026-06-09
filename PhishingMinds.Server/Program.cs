@@ -16,7 +16,7 @@ builder.Services.AddCors(options =>
 });
 
 // Add JWT Auth
-var jwtKey = builder.Configuration["Jwt:Key"] ?? "PUC@1234";
+var jwtKey = builder.Configuration["Jwt:Key"] ?? "PhishingMindsSuperSecretKey12345!@#";
 var key = Encoding.ASCII.GetBytes(jwtKey);
 builder.Services.AddAuthentication(x =>
 {
