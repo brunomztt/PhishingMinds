@@ -35,7 +35,7 @@ namespace EmailDispatcher.Infrastructure.Repositories
                     ON pte.IdTemplateEmpresa = pc.IdTemplateEmpresa
                 JOIN PhishingTemplate pt 
                     ON pt.IdTemplate = pte.IdTemplate
-                WHERE pc.Status = 'PENDENTE'
+                WHERE pc.Status = 'AGENDADO'
                 AND pc.Dt_Disparo <= NOW()
             ", conn);
 

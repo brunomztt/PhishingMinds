@@ -14,6 +14,8 @@ const metrics = ref({
   avgEvolution: 100
 })
 const ranking = ref([])
+const setores = ref([])
+const setorSelecionado = ref(null)
 
 const isPessoa = ref(false)
 const currentUser = ref(null)
@@ -29,6 +31,25 @@ const selectedCampaign = ref(null)
 const isCampaignModalOpen = ref(false)
 
 const getToken = () => localStorage.getItem('token')
+
+const carregarEvolucao = async () => {
+  let url =
+    `/api/Dashboard/evolucao/${userEmpresaId.value}`
+
+  if (setorSelecionado.value) {
+    url += `?idSetor=${setorSelecionado.value}`
+  }
+
+  const res = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${getToken()}`
+    }
+  })
+
+  if (res.ok) {
+    evolucao.value = await res.json()
+  }
+}
 
 const openCampaignModal = (campaign) => {
   selectedCampaign.value = campaign
@@ -109,23 +130,20 @@ onMounted(async () => {
       ranking.value = await rankingRes.json()
     }
 
-      // Fetch evolução
-      const evolucaoRes = await fetch(
-        `/api/Dashboard/evolucao/${userEmpresaId.value}`,
-        {
-          headers: {
-            'Authorization': `Bearer ${getToken()}`
-          }
+    const setoresRes = await fetch(
+      `/api/Dashboard/setores-lista/${userEmpresaId.value}`,
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`
         }
-      )
-
-      if (evolucaoRes.ok) {
-        evolucao.value = await evolucaoRes.json()
-
-        console.log('EVOLUCAO:')
-        console.log(evolucao.value)
-        console.log(JSON.stringify(evolucao.value, null, 2))
       }
+    )
+
+    if (setoresRes.ok) {
+      setores.value = await setoresRes.json()
+    }
+
+    await carregarEvolucao()
 
     } catch (e) {
       console.error('Erro ao buscar dados do dashboard:', e)
@@ -236,12 +254,34 @@ onMounted(async () => {
   <section class="mt-4 flex flex-col lg:flex-row gap-4 items-stretch">
 
     <div class="flex-[2.3] w-full">
+
+      <div class="mb-4">
+        <select
+          v-model="setorSelecionado"
+          @change="carregarEvolucao"
+          class="bg-white border border-gray-300 rounded-xl px-4 py-2"
+        >
+          <option :value="null">
+            Todos os setores
+          </option>
+
+          <option
+            v-for="setor in setores"
+            :key="setor.IdSetor"
+            :value="setor.IdSetor"
+          >
+            {{ setor.Nm_Setor }}
+          </option>
+
+        </select>
+      </div>
+
       <MainPlaceholder
         :evolucao="evolucao"
         @campaign-click="openCampaignModal"
       />
-    </div>
 
+    </div>
     <div class="flex-1 w-full lg:w-auto">
       <QuickAccess :ranking="ranking" />
     </div>

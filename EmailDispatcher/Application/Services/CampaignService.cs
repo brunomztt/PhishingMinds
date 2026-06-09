@@ -1,9 +1,11 @@
 using EmailDispatcher.Infrastructure.Email;
 using EmailDispatcher.Infrastructure.Repositories;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
+using System.Collections.Generic; 
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
+using EmailDispatcher.Application.Services.Utils;
 
 namespace EmailDispatcher.Application.Services
 {
@@ -14,7 +16,25 @@ namespace EmailDispatcher.Application.Services
         private readonly IConfiguration _configuration;
         private readonly ILogger<CampaignService> _logger;
 
-        public CampaignService(CampaignRepository repo, EmailSender emailSender, IConfiguration configuration, ILogger<CampaignService> logger)
+        private static readonly string[] FakeSenders =
+        {
+            "Microsoft",
+            "Equipe de TI",
+            "Office 365",
+            "Portal Corporativo",
+            "Central de Senhas",
+            "Administrador de Sistemas",
+            "Seguranca da Informacao",
+            "Suporte Tecnico",
+            "Microsoft Security",
+            "Office Support"
+        };
+
+        public CampaignService(
+            CampaignRepository repo,
+            EmailSender emailSender,
+            IConfiguration configuration,
+            ILogger<CampaignService> logger)
         {
             _repo = repo;
             _emailSender = emailSender;
@@ -28,7 +48,9 @@ namespace EmailDispatcher.Application.Services
 
             if (!campanhas.Any())
             {
-                _logger.LogInformation("Nenhuma campanha pendente.");
+                _logger.LogInformation(
+                    "Nenhuma campanha pendente."
+                );
                 return;
             }
 
@@ -36,65 +58,123 @@ namespace EmailDispatcher.Application.Services
 
             foreach (var campanha in campanhas)
             {
-                _logger.LogInformation($"Processando campanha {campanha.IdCampaign}");
+                _logger.LogInformation(
+                    $"Processando campanha {campanha.IdCampaign}"
+                );
 
-                var usuarios = await _repo.BuscarUsuarios(campanha.IdCampaign);
+                var usuarios =
+                    await _repo.BuscarUsuarios(
+                        campanha.IdCampaign
+                    );
 
                 if (!usuarios.Any())
                 {
-                    _logger.LogWarning($"Campanha {campanha.IdCampaign} sem usuários.");
-                    continue; // 🔴 NÃO marca como processada
+                    _logger.LogWarning(
+                        $"Campanha {campanha.IdCampaign} sem usuários."
+                    );
+
+                    continue;
                 }
 
                 int enviados = 0;
 
-                var baseUrl = _configuration["TrackingBaseUrl"] ?? "https://localhost:7193";
+                var baseUrl =
+                    _configuration["TrackingBaseUrl"]
+                    ?? "https://localhost:7193";
 
                 foreach (var user in usuarios)
                 {
+                    _logger.LogInformation(
+                        $"Enviando para {user.Email} | Target={user.IdTarget}"
+                    );
+
                     try
                     {
-                        var trackingLink = $"{baseUrl}/track?idTarget={user.IdTarget}";
-                        var openTracking = $"{baseUrl}/track/open?idTarget={user.IdTarget}";
-                        var body = campanha.BodyMail
-                        .Replace("{{Nome}}", user.Nome)
-                        .Replace("{{Link}}", trackingLink);
+                        var trackingLink =
+                            $"{baseUrl}/track?idTarget={user.IdTarget}";
 
-                                            body += $@"
-                    <img src='{openTracking}'
-                         width='1'
-                         height='1'
-                         style='display:none;' />";
+                        var openTracking =
+                            $"{baseUrl}/track/open?idTarget={user.IdTarget}";
+
+                        var body = campanha.BodyMail
+                            .Replace("{{Nome}}", user.Nome)
+                            .Replace("{{Link}}", trackingLink);
+
+                        body += $@"
+<img src='{openTracking}'
+     width='1'
+     height='1'
+     style='display:none;' />";
+
+                        string subject =
+                            HomoglyphGenerator.Transform(
+                                campanha.Subject
+                            );
+
+                        string senderName =
+                            HomoglyphGenerator.Transform(
+                                FakeSenders[
+                                    Random.Shared.Next(
+                                        FakeSenders.Length
+                                    )
+                                ]
+                            );
+
+                        _logger.LogInformation(
+                            $"Remetente escolhido: {senderName}"
+                        );
+
+                        _logger.LogInformation(
+                            $"Assunto original: {campanha.Subject}"
+                        );
+
+                        _logger.LogInformation(
+                            $"Assunto enviado: {subject}"
+                        );
 
                         await _emailSender.Send(
                             user.Email,
-                            campanha.Subject,
+                            subject,
                             body,
                             cred.Mail,
-                            campanha.NomeCampanha,
+                            senderName,
                             cred.Senha
                         );
 
-                        await _repo.MarcarComoEnviado(user.IdTarget);
+                        await _repo.MarcarComoEnviado(
+                            user.IdTarget
+                        );
 
                         enviados++;
 
-                        _logger.LogInformation($"Email enviado para {user.Email}");
+                        _logger.LogInformation(
+                            $"Email enviado para {user.Email}"
+                        );
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, $"Erro ao enviar para {user.Email}");
+                        _logger.LogError(
+                            ex,
+                            $"Erro ao enviar para {user.Email}"
+                        );
                     }
                 }
 
-                // 🔥 SÓ marca se realmente enviou
                 if (enviados > 0)
                 {
-                    await _repo.MarcarCampanhaComoProcessada(campanha.IdCampaign);
+                    await _repo.MarcarCampanhaComoProcessada(
+                        campanha.IdCampaign
+                    );
+
+                    _logger.LogInformation(
+                        $"Campanha {campanha.IdCampaign} processada."
+                    );
                 }
                 else
                 {
-                    _logger.LogWarning($"Nenhum email enviado na campanha {campanha.IdCampaign}");
+                    _logger.LogWarning(
+                        $"Nenhum email enviado na campanha {campanha.IdCampaign}"
+                    );
                 }
             }
         }
