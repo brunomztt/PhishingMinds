@@ -5,6 +5,7 @@ import Topbar from '../components/Layout/Topbar.vue'
 
 const isDevAdmin = ref(false)
 const isCorpAdmin = ref(false)
+const isPessoa = ref(false)
 const isDarkMode = ref(false)
 
 const handleToggleTheme = () => {
@@ -18,6 +19,7 @@ onMounted(() => {
     const user = JSON.parse(userStr)
     isDevAdmin.value = user.idEmpresa === 1 && user.isEmpresa === true
     isCorpAdmin.value = !isDevAdmin.value && user.isEmpresa === true
+    isPessoa.value = user.isPessoa === true
     
     // Check saved theme
     const savedTheme = localStorage.getItem('theme')
@@ -31,12 +33,12 @@ onMounted(() => {
   }
 })
 
-watch([isDarkMode, isDevAdmin, isCorpAdmin], () => {
+watch([isDarkMode, isDevAdmin, isCorpAdmin, isPessoa], () => {
   if (isDarkMode.value) {
     document.body.classList.add('dark-theme')
     document.body.classList.remove('corp-light-theme')
     document.body.classList.remove('dev-light-theme')
-    if (isCorpAdmin.value) {
+    if (isCorpAdmin.value || isPessoa.value) {
       document.body.classList.add('corp-theme')
     } else {
       document.body.classList.remove('corp-theme')
@@ -44,7 +46,7 @@ watch([isDarkMode, isDevAdmin, isCorpAdmin], () => {
   } else {
     document.body.classList.remove('dark-theme')
     document.body.classList.remove('corp-theme')
-    if (isCorpAdmin.value) {
+    if (isCorpAdmin.value || isPessoa.value) {
       document.body.classList.add('corp-light-theme')
       document.body.classList.remove('dev-light-theme')
     } else if (isDevAdmin.value) {
@@ -97,7 +99,7 @@ const closeSidebar = () => {
       <Topbar 
         @toggle-sidebar="toggleSidebar" 
         :is-dark-mode="isDarkMode"
-        :can-toggle-theme="isDevAdmin || isCorpAdmin"
+        :can-toggle-theme="isDevAdmin || isCorpAdmin || isPessoa"
         @toggle-theme="handleToggleTheme"
       />
       <div class="flex-1 pb-6">
