@@ -300,6 +300,7 @@ const saveCustomizedTemplate = async () => {
 <template>
   <MainLayout>
     <!-- Header -->
+    <!-- responsividade -->
     <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
       <div>
         <h2 class="text-3xl md:text-4xl font-bold text-green-900">
@@ -342,6 +343,7 @@ const saveCustomizedTemplate = async () => {
         <div v-else class="space-y-4">
           
           <!-- Campaign Item -->
+          <!-- responsividade -->
           <div 
             v-for="c in campaigns" 
             :key="c.idCampaign" 
@@ -408,6 +410,7 @@ const saveCustomizedTemplate = async () => {
     </div>
 
     <!-- MAIN MODAL (CREATE / EDIT CAMPAIGN) -->
+    <!-- responsividade -->
     <div 
       v-if="isModalOpen" 
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm transition-opacity overflow-y-auto"

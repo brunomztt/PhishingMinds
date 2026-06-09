@@ -42,6 +42,7 @@
   <div class="min-h-screen flex">
 
     <!--  LADO ESQUERDO -->
+    <!-- responsividade -->
     <div class="hidden md:flex w-1/2 bg-gradient-to-br bg-[#2D4A38] text-white p-12 flex-col justify-center">
 
       <div class="max-w-md">
@@ -64,6 +65,7 @@
     </div>
 
     <!-- LADO DIREITO -->
+    <!-- responsividade -->
     <div class="w-full md:w-1/2 bg-[#f5f3ef] flex items-center justify-center p-6">
 
       <div class="bg-white w-full max-w-md rounded-3xl shadow-xl p-8 relative">

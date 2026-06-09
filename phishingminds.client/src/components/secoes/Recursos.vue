@@ -2,6 +2,7 @@
   <section id="secao-recursos" class="bg-[#F5F2EC] pt-32 pb-16 px-6 md:px-12 lg:px-[137px]">
 
     <!-- Header -->
+    <!-- responsividade -->
     <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-8">
       <div class="max-w-2xl">
         <div class="flex items-center gap-2 mb-4">
@@ -31,6 +32,7 @@
     </div>
 
     <!-- Grid -->
+    <!-- responsividade -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
       <!-- Card Principal -->
@@ -219,6 +221,7 @@
   </section>
 
   <!-- Modal -->
+  <!-- responsividade -->
   <div v-if="modalAberto"
        @click="fecharModal"
        class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">

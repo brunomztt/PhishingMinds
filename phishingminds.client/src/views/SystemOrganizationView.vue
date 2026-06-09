@@ -405,6 +405,7 @@ const deleteFuncionario = async () => {
   <MainLayout>
     <div v-if="isDevAdmin">
       <!-- Dev Admin View: Unchanged -->
+      <!-- responsividade -->
       <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 class="text-3xl md:text-4xl font-bold text-green-900">Lista de Organizações</h2>
@@ -450,6 +451,7 @@ const deleteFuncionario = async () => {
 
     <div v-else>
       <!-- Org Admin View -->
+      <!-- responsividade -->
       <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 class="text-3xl md:text-4xl font-bold text-green-900">Estrutura Organizacional</h2>
@@ -459,6 +461,7 @@ const deleteFuncionario = async () => {
 
       <!-- Setores Section -->
       <div class="bg-white rounded-3xl shadow-sm overflow-hidden mt-8">
+        <!-- responsividade -->
         <div class="p-6 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-50/50">
           <h3 class="text-xl font-semibold text-gray-800">Setores</h3>
           <div class="flex gap-4 w-full sm:w-auto">
@@ -711,6 +714,7 @@ const deleteFuncionario = async () => {
 
 
     <!-- Modal Setor -->
+    <!-- responsividade -->
     <div v-if="isSetorModalOpen" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
       <div class="bg-white rounded-3xl w-full max-w-md shadow-xl overflow-hidden my-auto">
         <div class="p-6 border-b border-gray-100 flex justify-between items-center">
@@ -739,6 +743,7 @@ const deleteFuncionario = async () => {
     </div>
 
     <!-- Modal Funcionario -->
+    <!-- responsividade -->
     <div v-if="isFuncionarioModalOpen" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
       <div class="bg-white rounded-3xl w-full max-w-lg shadow-xl overflow-hidden my-auto">
         <div class="p-6 border-b border-gray-100 flex justify-between items-center">

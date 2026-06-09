@@ -49,6 +49,7 @@ const handleReset = async () => {
 </script>
 
 <template>
+  <!-- responsividade -->
   <div class="min-h-screen flex items-center justify-center bg-[#f5f3ef] p-6">
     <div class="bg-white w-full max-w-md rounded-3xl shadow-xl p-8">
 
