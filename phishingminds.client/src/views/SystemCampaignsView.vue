@@ -300,6 +300,7 @@ const saveCustomizedTemplate = async () => {
 <template>
   <MainLayout>
     <!-- Header -->
+    <!-- responsividade -->
     <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
       <div>
         <h2 class="text-3xl md:text-4xl font-bold text-green-900">
@@ -342,6 +343,7 @@ const saveCustomizedTemplate = async () => {
         <div v-else class="space-y-4">
           
           <!-- Campaign Item -->
+          <!-- responsividade -->
           <div 
             v-for="c in campaigns" 
             :key="c.idCampaign" 
@@ -408,13 +410,14 @@ const saveCustomizedTemplate = async () => {
     </div>
 
     <!-- MAIN MODAL (CREATE / EDIT CAMPAIGN) -->
+    <!-- responsividade -->
     <div 
       v-if="isModalOpen" 
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm transition-opacity"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm transition-opacity overflow-y-auto"
       style="animation: fadeIn 0.2s ease-out;"
     >
       <div 
-        class="w-full max-w-xl bg-white border border-gray-100 text-gray-800 rounded-3xl shadow-xl overflow-hidden transition-all"
+        class="w-full max-w-xl bg-white border border-gray-100 text-gray-800 rounded-3xl shadow-xl overflow-hidden transition-all my-auto"
         style="animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);"
       >
         <!-- Modal Header -->
@@ -548,11 +551,11 @@ const saveCustomizedTemplate = async () => {
     <!-- TEMPLATE CUSTOMIZER SUB-MODAL (INLINE POPUP) -->
     <div 
       v-if="isCustomizingTemplate" 
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm overflow-y-auto"
       style="animation: fadeIn 0.15s ease-out;"
     >
       <div 
-        class="w-full max-w-lg bg-white border border-gray-100 text-gray-800 rounded-3xl shadow-2xl overflow-hidden"
+        class="w-full max-w-lg bg-white border border-gray-100 text-gray-800 rounded-3xl shadow-2xl overflow-hidden my-auto"
       >
         <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
           <div>
@@ -624,11 +627,11 @@ const saveCustomizedTemplate = async () => {
     <!-- DELETE CONFIRMATION MODAL -->
     <div 
       v-if="isDeleteModalOpen" 
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm overflow-y-auto"
       style="animation: fadeIn 0.2s ease-out;"
     >
       <div 
-        class="w-full max-w-md bg-white border border-gray-100 text-gray-800 rounded-3xl shadow-2xl overflow-hidden text-center p-6"
+        class="w-full max-w-md bg-white border border-gray-100 text-gray-800 rounded-3xl shadow-2xl overflow-hidden text-center p-6 my-auto"
         style="animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);"
       >
         <!-- Warning Icon -->
