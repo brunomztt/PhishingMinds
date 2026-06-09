@@ -1,0 +1,28 @@
+UTILIZAMOS VITEST
+
+TESTES BACKEND
+
+Passo 1 :
+
+cd "c:\.../.../ AQUI COLOCA O CAMINHO DA SUA PASTA\PhishingMinds.Tests"
+
+Passo 2:
+
+opção A: dotnet test
+
+opção B: dotnet test --settings coverlet.runsettings
+
+onde vai ta os resultados? no terminal ou na pasta PishingMinds.Tests\TestResults\<id_aleatorio>\...
+
+TESTES FRONTEND
+
+Passo 1:
+
+cd "c:\.../.../ AQUI COLOCA O CAMINHO DA SUA PASTA\phishingminds.client"
+
+
+Passo 2:
+
+opção A: npm run test
+
+opção B: npm run test:coverage

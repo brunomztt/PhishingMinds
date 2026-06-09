@@ -65,7 +65,7 @@ CREATE TABLE Pessoa (
     Ativo BOOLEAN,
     Dt_Cadastro DATETIME,
     UltimoLogin DATETIME,
-    PhishingScore INT DEFAULT 0,
+    PhishingScore INT DEFAULT 100,
     FOREIGN KEY (IdEmpresa) REFERENCES Empresa(IdEmpresa),
     FOREIGN KEY (IdSetor) REFERENCES Setor(IdSetor),
     FOREIGN KEY (IdCargo) REFERENCES Cargo(IdCargo)
@@ -107,6 +107,8 @@ CREATE TABLE PhishingTemplateEmpresa (
     IdEmpresa INT,
     IdTemplate INT,
     NomePersonalizado VARCHAR(200),
+    Subject VARCHAR(300) NULL,
+    BodyMail TEXT NULL,
     FOREIGN KEY (IdEmpresa) REFERENCES Empresa(IdEmpresa),
     FOREIGN KEY (IdTemplate) REFERENCES PhishingTemplate(IdTemplate)
 );
@@ -140,6 +142,18 @@ CREATE TABLE PhishingCampaign (
 );
 
 -- =========================
+-- MULTIPLOS SETORES PARA CAMPANHAS DE PHISHING 
+-- =========================
+CREATE TABLE PhishingCampaignSetor (
+    IdCampaign INT,
+    IdSetor INT,
+    PRIMARY KEY (IdCampaign, IdSetor),
+    FOREIGN KEY (IdCampaign) REFERENCES PhishingCampaign(IdCampaign) ON DELETE CASCADE,
+    FOREIGN KEY (IdSetor) REFERENCES Setor(IdSetor) ON DELETE CASCADE
+);
+
+
+-- =========================
 -- RESULTADO DO USUARIO
 -- =========================
 CREATE TABLE PhishingCampaignTarget (
@@ -152,6 +166,7 @@ CREATE TABLE PhishingCampaignTarget (
     CredentialsSubmitted BOOLEAN,
     Reported BOOLEAN,
     Dt_Register DATETIME,
+    Dt_Click DATETIME,
     FOREIGN KEY (IdCampaign) REFERENCES PhishingCampaign(IdCampaign),
     FOREIGN KEY (IdUser) REFERENCES Pessoa(IdUser)
 );
@@ -173,6 +188,21 @@ CREATE TABLE MailCredentials (
     Id_EmailCredentials INT AUTO_INCREMENT PRIMARY KEY,
     Mail VARCHAR(200),
     Senha VARCHAR(200)
+);
+
+-- =========================
+-- TABELA DE TREINAMENTOS
+-- =========================
+
+CREATE TABLE treinamento (
+    IdTreinamento INT AUTO_INCREMENT PRIMARY KEY,
+    IdUser INT NOT NULL,
+    Aprovado BIT NOT NULL DEFAULT 0,
+    DtConclusao DATETIME NULL,
+
+    CONSTRAINT FK_Treinamento_Pessoa
+    FOREIGN KEY (IdUser)
+    REFERENCES pessoa(IdUser)
 );
 
 -- =========================

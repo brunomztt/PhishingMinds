@@ -1,24 +1,45 @@
 using Microsoft.AspNetCore.Mvc;
 using PhishingMinds.Server.Class;
+using PhishingMinds.Server.Data;
+using Dapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PhishingMinds.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class SetorController : ControllerBase
     {
-        private static List<Setor> setores = new List<Setor>();
+        private readonly DbConnectionFactory _dbFactory;
+
+        public SetorController(DbConnectionFactory dbFactory)
+        {
+            _dbFactory = dbFactory;
+        }
 
         [HttpGet]
         public ActionResult<List<Setor>> Get()
         {
+            using var db = _dbFactory.CreateConnection();
+            var sql = @"
+                SELECT s.*, p.Nome as Nm_Gestor 
+                FROM Setor s
+                LEFT JOIN Pessoa p ON s.IdGestor = p.IdUser";
+            var setores = db.Query<Setor>(sql).ToList();
             return Ok(setores);
         }
 
         [HttpGet("{id}")]
         public ActionResult<Setor> GetById(int id)
         {
-            var setor = setores.FirstOrDefault(s => s.IdSetor == id);
+            using var db = _dbFactory.CreateConnection();
+            var sql = @"
+                SELECT s.*, p.Nome as Nm_Gestor 
+                FROM Setor s
+                LEFT JOIN Pessoa p ON s.IdGestor = p.IdUser
+                WHERE s.IdSetor = @Id";
+            var setor = db.QueryFirstOrDefault<Setor>(sql, new { Id = id });
 
             if (setor == null)
                 return NotFound("Setor não encontrado");
@@ -29,44 +50,86 @@ namespace PhishingMinds.Server.Controllers
         [HttpGet("empresa/{idEmpresa}")]
         public ActionResult<List<Setor>> GetByEmpresa(int idEmpresa)
         {
-            var lista = setores.Where(s => s.IdEmpresa == idEmpresa).ToList();
+            using var db = _dbFactory.CreateConnection();
+            var sql = @"
+                SELECT s.*, p.Nome as Nm_Gestor 
+                FROM Setor s
+                LEFT JOIN Pessoa p ON s.IdGestor = p.IdUser
+                WHERE s.IdEmpresa = @IdEmpresa";
+            var lista = db.Query<Setor>(sql, new { IdEmpresa = idEmpresa }).ToList();
             return Ok(lista);
         }
 
         [HttpPost]
-        public ActionResult Create(Setor novoSetor)
+        public ActionResult Create([FromBody] Setor novoSetor)
         {
-            novoSetor.IdSetor = setores.Count > 0 ? setores.Max(s => s.IdSetor) + 1 : 1;
-            setores.Add(novoSetor);
+            using var db = _dbFactory.CreateConnection();
+            var sql = @"
+                INSERT INTO Setor (IdEmpresa, Nm_Setor, IdGestor) 
+                VALUES (@IdEmpresa, @Nm_Setor, @IdGestor);
+                SELECT LAST_INSERT_ID();";
+
+            var id = db.ExecuteScalar<int>(sql, novoSetor);
+            novoSetor.IdSetor = id;
 
             return Ok(novoSetor);
         }
 
         [HttpPut("{id}")]
-        public ActionResult Update(int id, Setor setorAtualizado)
+        public ActionResult Update(int id, [FromBody] Setor setorAtualizado)
         {
-            var setor = setores.FirstOrDefault(s => s.IdSetor == id);
+            using var db = _dbFactory.CreateConnection();
+            var sql = @"
+                UPDATE Setor 
+                SET Nm_Setor = @Nm_Setor, IdEmpresa = @IdEmpresa, IdGestor = @IdGestor
+                WHERE IdSetor = @IdSetor";
 
-            if (setor == null)
+            setorAtualizado.IdSetor = id;
+            var rows = db.Execute(sql, setorAtualizado);
+
+            if (rows == 0)
                 return NotFound("Setor não encontrado");
 
-            setor.Nm_Setor = setorAtualizado.Nm_Setor;
-            setor.IdEmpresa = setorAtualizado.IdEmpresa;
-            setor.IdGestor = setorAtualizado.IdGestor;
-
-            return Ok(setor);
+            return Ok(setorAtualizado);
         }
 
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
-            var setor = setores.FirstOrDefault(s => s.IdSetor == id);
+            try
+            {
+                using var db = _dbFactory.CreateConnection();
+                db.Open();
+                using var transaction = db.BeginTransaction();
 
-            if (setor == null)
-                return NotFound("Setor não encontrado");
+                try
+                {
+                    // 1. Clear references to this sector in Pessoa (set to NULL)
+                    db.Execute("UPDATE Pessoa SET IdSetor = NULL WHERE IdSetor = @Id", new { Id = id }, transaction);
 
-            setores.Remove(setor);
-            return Ok("Setor removido");
+                    // 2. Clear references to this sector in PhishingCampaign (set to NULL)
+                    db.Execute("UPDATE PhishingCampaign SET IdSetor = NULL WHERE IdSetor = @Id", new { Id = id }, transaction);
+
+                    // 3. Delete the sector itself (PhishingCampaignSetor handles delete via cascading)
+                    var rows = db.Execute("DELETE FROM Setor WHERE IdSetor = @Id", new { Id = id }, transaction);
+
+                    transaction.Commit();
+
+                    if (rows == 0)
+                        return NotFound("Setor não encontrado");
+
+                    return Ok(new { message = "Setor removido" });
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Erro ao excluir setor", error = ex.Message });
+            }
         }
     }
 }

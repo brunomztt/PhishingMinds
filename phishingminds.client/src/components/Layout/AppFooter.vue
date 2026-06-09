@@ -7,7 +7,7 @@
         <div class="md:col-span-1">
           <div class="flex items-center gap-2 mb-6">
             <div class="w-32 h-32 flex-shrink-0">
-              <img src="@/assets/img/logo.svg" alt="Logo Phishing Minds" class="w-full h-full object-contain" />
+              <img src="@/assets/img/Logo.svg" alt="Logo Phishing Minds" class="w-full h-full object-contain" />
             </div>
           </div>
           <p class="text-[13px] text-gray-400 leading-relaxed pr-4">
