@@ -113,7 +113,11 @@ namespace PhishingMinds.Server.Controllers
 
             using var db = _dbFactory.CreateConnection();
             novaPessoa.Dt_Cadastro = DateTime.Now;
-            novaPessoa.Senha = HashPassword(Guid.NewGuid().ToString("N").Substring(0, 8)); // Generate a random hash code for the initial password
+            if (string.IsNullOrEmpty(novaPessoa.Senha))
+            {
+                novaPessoa.Senha = "1";
+            }
+            novaPessoa.Senha = HashPassword(novaPessoa.Senha);
 
             var sql = @"
                 INSERT INTO Pessoa (IdEmpresa, IdSetor, IdCargo, Nome, Email, Senha, Ativo, Dt_Cadastro, UltimoLogin, PhishingScore)

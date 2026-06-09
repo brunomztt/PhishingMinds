@@ -27,6 +27,7 @@ namespace EmailDispatcher.Infrastructure.Repositories
             var cmd = new MySqlCommand(@"
                 SELECT 
                     pc.IdCampaign,
+                    pc.IdTemplateEmpresa,
                     pt.Subject,
                     pt.BodyMail,
                     pc.NomeCampanha
@@ -46,6 +47,7 @@ namespace EmailDispatcher.Infrastructure.Repositories
                 campanhas.Add(new Campaign
                 {
                     IdCampaign = reader.GetInt32("IdCampaign"),
+                    IdTemplateEmpresa = reader.GetInt32("IdTemplateEmpresa"),
                     Subject = reader.GetString("Subject"),
                     BodyMail = reader.GetString("BodyMail"),
                     NomeCampanha = reader.GetString("NomeCampanha")
@@ -53,6 +55,43 @@ namespace EmailDispatcher.Infrastructure.Repositories
             }
 
             return campanhas;
+        }
+
+        // Buscar parâmetros customizados do template da empresa
+        public virtual async Task<List<(string Name, string Value)>> BuscarParametrosCampanha(int idTemplateEmpresa)
+        {
+            var paramsList = new List<(string Name, string Value)>();
+
+            using var conn = _factory.CreateConnection();
+            await conn.OpenAsync();
+
+            var cmd = new MySqlCommand(@"
+                SELECT 
+                    tp.ParameterName,
+                    COALESCE(pv.ParameterValue, tp.ExampleValue) AS ParameterValue
+                FROM TemplateParameter tp
+                LEFT JOIN ParameterValue pv 
+                    ON tp.IdParameter = pv.IdParameter 
+                    AND pv.IdTemplateEmpresa = @IdTemplateEmpresa
+                WHERE tp.IdTemplate = (
+                    SELECT IdTemplate 
+                    FROM PhishingTemplateEmpresa 
+                    WHERE IdTemplateEmpresa = @IdTemplateEmpresa
+                )
+            ", conn);
+
+            cmd.Parameters.AddWithValue("@IdTemplateEmpresa", idTemplateEmpresa);
+
+            using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                paramsList.Add((
+                    reader.GetString("ParameterName"),
+                    reader.GetString("ParameterValue")
+                ));
+            }
+
+            return paramsList;
         }
 
         // Buscar usuários da campanha

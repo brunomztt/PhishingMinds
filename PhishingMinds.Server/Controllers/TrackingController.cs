@@ -56,6 +56,26 @@ namespace PhishingMinds.Server.Controllers
                     WHERE IdTarget = @IdTarget
                 ", new { IdTarget = idTarget });
 
+                var redirectUrl = db.QueryFirstOrDefault<string>(@"
+                    SELECT COALESCE(pv.ParameterValue, tp.ExampleValue)
+                    FROM PhishingCampaignTarget pct
+                    JOIN PhishingCampaign pc ON pct.IdCampaign = pc.IdCampaign
+                    JOIN PhishingTemplateEmpresa pte ON pc.IdTemplateEmpresa = pte.IdTemplateEmpresa
+                    JOIN TemplateParameter tp ON tp.IdTemplate = pte.IdTemplate
+                    LEFT JOIN ParameterValue pv ON pv.IdTemplateEmpresa = pte.IdTemplateEmpresa AND pv.IdParameter = tp.IdParameter
+                    WHERE pct.IdTarget = @IdTarget 
+                    AND tp.ParameterName = 'Link'
+                    LIMIT 1", new { IdTarget = idTarget });
+
+                if (!string.IsNullOrWhiteSpace(redirectUrl))
+                {
+                    if (!redirectUrl.StartsWith("http://") && !redirectUrl.StartsWith("https://"))
+                    {
+                        redirectUrl = "http://" + redirectUrl;
+                    }
+                    return Redirect(redirectUrl);
+                }
+
                 return Redirect("https://www.microsoft.com");
             }
             catch (Exception ex)

@@ -61,7 +61,7 @@ namespace PhishingMinds.Server.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create(Setor novoSetor)
+        public ActionResult Create([FromBody] Setor novoSetor)
         {
             using var db = _dbFactory.CreateConnection();
             var sql = @"
@@ -76,13 +76,13 @@ namespace PhishingMinds.Server.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult Update(int id, Setor setorAtualizado)
+        public ActionResult Update(int id, [FromBody] Setor setorAtualizado)
         {
             using var db = _dbFactory.CreateConnection();
             var sql = @"
                 UPDATE Setor 
                 SET Nm_Setor = @Nm_Setor, IdEmpresa = @IdEmpresa, IdGestor = @IdGestor
-                WHERE IdSetor = @Id";
+                WHERE IdSetor = @IdSetor";
 
             setorAtualizado.IdSetor = id;
             var rows = db.Execute(sql, setorAtualizado);
@@ -96,13 +96,40 @@ namespace PhishingMinds.Server.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
-            using var db = _dbFactory.CreateConnection();
-            var rows = db.Execute("DELETE FROM Setor WHERE IdSetor = @Id", new { Id = id });
+            try
+            {
+                using var db = _dbFactory.CreateConnection();
+                db.Open();
+                using var transaction = db.BeginTransaction();
 
-            if (rows == 0)
-                return NotFound("Setor não encontrado");
+                try
+                {
+                    // 1. Clear references to this sector in Pessoa (set to NULL)
+                    db.Execute("UPDATE Pessoa SET IdSetor = NULL WHERE IdSetor = @Id", new { Id = id }, transaction);
 
-            return Ok(new { message = "Setor removido" });
+                    // 2. Clear references to this sector in PhishingCampaign (set to NULL)
+                    db.Execute("UPDATE PhishingCampaign SET IdSetor = NULL WHERE IdSetor = @Id", new { Id = id }, transaction);
+
+                    // 3. Delete the sector itself (PhishingCampaignSetor handles delete via cascading)
+                    var rows = db.Execute("DELETE FROM Setor WHERE IdSetor = @Id", new { Id = id }, transaction);
+
+                    transaction.Commit();
+
+                    if (rows == 0)
+                        return NotFound("Setor não encontrado");
+
+                    return Ok(new { message = "Setor removido" });
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Erro ao excluir setor", error = ex.Message });
+            }
         }
     }
 }

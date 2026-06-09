@@ -62,6 +62,8 @@ namespace PhishingMinds.Tests
             _mockRepo.Setup(r => r.BuscarCampanhasPendentes()).ReturnsAsync(mockCampaigns);
             _mockRepo.Setup(r => r.GetMailCredential()).ReturnsAsync(mockCredential);
             _mockRepo.Setup(r => r.BuscarUsuarios(1)).ReturnsAsync(mockUsers);
+            _mockRepo.Setup(r => r.BuscarParametrosCampanha(It.IsAny<int>()))
+                .ReturnsAsync(new List<(string Name, string Value)>());
             _mockRepo.Setup(r => r.MarcarComoEnviado(It.IsAny<int>())).Returns(Task.CompletedTask);
             _mockRepo.Setup(r => r.MarcarCampanhaComoProcessada(It.IsAny<int>())).Returns(Task.CompletedTask);
 
