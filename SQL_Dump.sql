@@ -8,8 +8,8 @@ VALUES
 INSERT INTO Empresa
 (IdPlano,Nm_Empresa,Nm_Dono,Mail,CNPJ,Dt_Cadastro,Dt_Contratacao,Dt_FimContrato,Ativo, Senha)
 VALUES
-(1,'Phishing Minds Corp','Bruno Mazetto','admin@phishingminds.com','12345678000100',NOW(),NOW(),DATE_ADD(NOW(),INTERVAL 1 YEAR),1, '123456'),
-(2,'Tech Corp','João Souza','joaosouza@techcorp.com','98765432000100',NOW(),NOW(),DATE_ADD(NOW(),INTERVAL 1 YEAR),1, '123456');
+(1,'Phishing Minds Dev','Admin Dev','teste.admin@email.com','12345678000100',NOW(),NOW(),DATE_ADD(NOW(),INTERVAL 1 YEAR),1, '1'),
+(2,'Teste Corp','Teste de Empresa','teste.empresa@email.com','98765432000100',NOW(),NOW(),DATE_ADD(NOW(),INTERVAL 1 YEAR),1, '1');
 
 
 -- CARGOS
@@ -24,20 +24,21 @@ VALUES
 -- SETORES
 INSERT INTO Setor (IdEmpresa,Nm_Setor)
 VALUES
-(1,'Financeiro'),
-(1,'TI'),
-(1,'RH'),
-(1,'Comercial');
+(2,'Financeiro'),
+(2,'TI'),
+(2,'RH'),
+(2,'Comercial');
 
 -- PESSOAS FAKE
 INSERT INTO Pessoa
 (IdEmpresa,IdSetor,IdCargo,Nome,Email,Senha,Ativo,Dt_Cadastro)
 VALUES
-(1,2,5,'Bruno Mazetto','bruno@empresa.com','123',1,NOW()),
-(1,3,1,'Leticia Fabri','leticia@empresa.com','123',1,NOW()),
-(1,4,1,'Helen Kenway','helen@empresa.com','123',1,NOW()),
-(1,1,4,'Rafael Emo','rafael@empresa.com','123',1,NOW()),
-(1,1,2,'Marco Agronomo','marco@empresa.com','123',1,NOW());
+(2,null,null,'Teste de User','teste.user@email.com','1',1,NOW()),
+(2,2,5,'Bruno Mazetto','bruno@empresa.com','1',1,NOW()),
+(2,3,1,'Leticia Fabri','leticia@empresa.com','1',1,NOW()),
+(2,4,1,'Helen Kenway','helenbonato02@gmail.com','1',1,NOW()),
+(2,1,4,'Rafael Emo','rafael@empresa.com','1',1,NOW()),
+(2,1,2,'Marco Agronomo','marco@empresa.com','1',1,NOW());
 
 -- TEMPLATE PHISHING
 INSERT INTO PhishingTemplate
@@ -45,29 +46,39 @@ INSERT INTO PhishingTemplate
 VALUES
 (
 'Reset Senha Microsoft',
-'Atualiza��o de senha obrigat�ria',
-'Ol� {{Nome}}, detectamos atividade suspeita. Clique aqui {{Link}}',
+'Atualizacao de senha obrigatoria',
+'Ola {{Nome}}, detectamos atividade suspeita. Clique aqui {{Link}}',
 'Credential',
 3
+),
+(
+'Alerta de Segurança Google',
+'Novo login detectado no seu dispositivo',
+'Ola {{Nome}}, um novo dispositivo acabou de fazer login na sua conta Google. Se nao foi voce, verifique a atividade imediatamente clicando aqui: {{Link}}',
+'Credential',
+4
 );
 
 -- PARAMETROS
 INSERT INTO TemplateParameter (IdTemplate,ParameterName,ExampleValue)
 VALUES
 (1,'Nome','Bruno'),
-(1,'Link','https://fake-login.com');
+(1,'Link','https://fake-login.com'),
+(2,'Nome','Helen'),
+(2,'Link','https://google-security-alert.com');
+
 
 -- TEMPLATE EMPRESA
 INSERT INTO PhishingTemplateEmpresa
 (IdEmpresa,IdTemplate,NomePersonalizado)
 VALUES
-(1,1,'Template Reset Empresa');
+(2,1,'Template Reset Empresa');
 
 -- CAMPANHA
 INSERT INTO PhishingCampaign
 (IdEmpresa,IdTemplateEmpresa,IdSetor,NomeCampanha,Dt_Disparo,Status)
 VALUES
-(1,1,NULL,'Campanha Teste Geral',NOW(),'AGENDADO');
+(2,1,NULL,'Campanha Teste Geral',NOW(),'AGENDADO');
 
 -- EMAIL CREDENTIAL
 INSERT INTO MailCredentials
