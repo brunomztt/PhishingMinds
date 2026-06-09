@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Net.Mail;
 
@@ -6,7 +6,7 @@ namespace EmailDispatcher.Infrastructure.Email
 {
     public class EmailSender
     {
-        public async Task Send(string to, string subject, string body, string fromEmail, string NomeCampanha, string password)
+        public virtual async Task Send(string to, string subject, string body, string fromEmail, string NomeCampanha, string password)
         {
             using var smtp = new SmtpClient("smtp.gmail.com", 587)
             {

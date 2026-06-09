@@ -1,4 +1,4 @@
-﻿using EmailDispatcher.Domain.Entities;
+using EmailDispatcher.Domain.Entities;
 using EmailDispatcher.Infrastructure.Data;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ namespace EmailDispatcher.Infrastructure.Repositories
         }
 
         // Buscar campanhas prontas para disparo
-        public async Task<List<Campaign>> BuscarCampanhasPendentes()
+        public virtual async Task<List<Campaign>> BuscarCampanhasPendentes()
         {
             var campanhas = new List<Campaign>();
 
@@ -56,7 +56,7 @@ namespace EmailDispatcher.Infrastructure.Repositories
         }
 
         // Buscar usuários da campanha
-        public async Task<List<User>> BuscarUsuarios(int idCampaign)
+        public virtual async Task<List<User>> BuscarUsuarios(int idCampaign)
         {
             var usuarios = new List<User>();
 
@@ -92,7 +92,7 @@ namespace EmailDispatcher.Infrastructure.Repositories
         }
 
         // Marcar email como enviado
-        public async Task MarcarComoEnviado(int idTarget)
+        public virtual async Task MarcarComoEnviado(int idTarget)
         {
             using var conn = _factory.CreateConnection();
             await conn.OpenAsync();
@@ -110,7 +110,7 @@ namespace EmailDispatcher.Infrastructure.Repositories
         }
 
         // Marcar campanha como finalizada
-        public async Task MarcarCampanhaComoProcessada(int idCampaign)
+        public virtual async Task MarcarCampanhaComoProcessada(int idCampaign)
         {
             using var conn = _factory.CreateConnection();
             await conn.OpenAsync();
@@ -127,7 +127,7 @@ namespace EmailDispatcher.Infrastructure.Repositories
         }
 
         // Buscar credencial de envio
-        public async Task<MailCredential> GetMailCredential()
+        public virtual async Task<MailCredential> GetMailCredential()
         {
             using var conn = _factory.CreateConnection();
             await conn.OpenAsync();

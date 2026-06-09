@@ -102,6 +102,7 @@ onMounted(() => {
 
 <template>
   <MainLayout>
+    <!-- responsividade -->
     <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
       <div>
         <h2 class="text-3xl md:text-4xl font-bold text-green-900">Meu Perfil</h2>
@@ -129,6 +130,7 @@ onMounted(() => {
     </div>
     <div v-else-if="!isPessoa"
          class="bg-white rounded-3xl shadow-sm overflow-hidden mt-8">
+      <!-- responsividade -->
       <div class="p-8 border-b border-gray-100 flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left bg-gray-50/50">
         <div class="w-24 h-24 bg-green-700 rounded-full flex-shrink-0 flex items-center justify-center text-white text-3xl font-bold shadow-md">
           {{ profileData.nm_Empresa ? profileData.nm_Empresa.charAt(0).toUpperCase() : 'O' }}
@@ -149,6 +151,7 @@ onMounted(() => {
 
       <div class="p-8">
         <h4 class="text-lg font-semibold text-gray-800 mb-6">Informações Detalhadas</h4>
+        <!-- responsividade -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
             <p class="text-sm font-medium text-gray-500 mb-1">Nome do Responsável</p>
@@ -222,8 +225,9 @@ onMounted(() => {
     </div>
 
     <!-- Edit Modal -->
-    <div v-if="isModalOpen" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div class="bg-white rounded-3xl w-full max-w-2xl shadow-xl overflow-hidden">
+    <!-- responsividade -->
+    <div v-if="isModalOpen" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+      <div class="bg-white rounded-3xl w-full max-w-2xl shadow-xl overflow-hidden my-auto">
         <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
           <h3 class="text-xl font-bold text-gray-800">Editar Perfil</h3>
           <button @click="isModalOpen = false" class="text-gray-400 hover:text-gray-600">
