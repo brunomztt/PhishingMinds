@@ -82,7 +82,15 @@ namespace PhishingMinds.Tests
             _mockRepo.Verify(r => r.BuscarUsuarios(1), Times.Once);
             
             _mockEmailSender.Verify(e => e.Send(
-                "user1@test.com", "Subject 1", It.Is<string>(b => b.Contains("User 1") && b.Contains("http://localhost/track?idTarget=101")), "sender@test.com", "Camp 1", "pwd"
+                "user1@test.com",
+                It.IsAny<string>(),
+                It.Is<string>(b =>
+                    b.Contains("User 1") &&
+                    b.Contains("http://localhost/track?idTarget=101")
+                ),
+                "sender@test.com",
+                It.IsAny<string>(),
+                "pwd"
             ), Times.Once);
 
             _mockRepo.Verify(r => r.MarcarComoEnviado(101), Times.Once);

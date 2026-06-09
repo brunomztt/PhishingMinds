@@ -20,6 +20,7 @@ namespace PhishingMinds.Server.Controllers
         [HttpGet("metrics/{idEmpresa}")]
         public IActionResult GetMetrics(int idEmpresa)
         {
+        
             try
             {
                 using var db = _dbFactory.CreateConnection();
@@ -105,7 +106,10 @@ namespace PhishingMinds.Server.Controllers
         }
 
         [HttpGet("evolucao/{idEmpresa}")]
-        public IActionResult GetEvolucao(int idEmpresa)
+        public IActionResult GetEvolucao(
+            int idEmpresa,
+            [FromQuery] int? idSetor = null
+        )
         {
             try
             {
@@ -152,6 +156,15 @@ namespace PhishingMinds.Server.Controllers
                         ON s.IdSetor = pcs.IdSetor
 
                     WHERE pc.IdEmpresa = @IdEmpresa
+                    AND (
+                        @IdSetor IS NULL
+                        OR pcs.IdSetor = @IdSetor
+                        OR NOT EXISTS (
+                            SELECT 1
+                            FROM PhishingCampaignSetor pcs2
+                            WHERE pcs2.IdCampaign = pc.IdCampaign
+                        )
+                    )
 
                     GROUP BY
                         pc.IdCampaign,
@@ -161,7 +174,14 @@ namespace PhishingMinds.Server.Controllers
                     ORDER BY pc.Dt_Disparo
                 ";
 
-                var campanhas = db.Query(sql, new { IdEmpresa = idEmpresa });
+                var campanhas = db.Query(
+                    sql,
+                    new
+                    {
+                        IdEmpresa = idEmpresa,
+                        IdSetor = idSetor
+                    }
+                );
 
                 var resultado = campanhas.Select(c =>
                 {
@@ -204,6 +224,25 @@ namespace PhishingMinds.Server.Controllers
             {
                 return StatusCode(500, new { message = "Erro ao buscar evolução", error = ex.Message});
             }
+        }
+        [HttpGet("setores-lista/{idEmpresa}")]
+        public IActionResult GetSetoresLista(int idEmpresa)
+        {
+            using var db = _dbFactory.CreateConnection();
+
+            var setores = db.Query(@"
+                SELECT
+                    IdSetor,
+                    Nm_Setor
+                FROM Setor
+                WHERE IdEmpresa = @IdEmpresa
+                ORDER BY Nm_Setor
+            ", new
+            {
+                IdEmpresa = idEmpresa
+            });
+
+            return Ok(setores);
         }
     }
 }
