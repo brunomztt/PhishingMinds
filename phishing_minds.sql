@@ -107,19 +107,10 @@ CREATE TABLE PhishingTemplateEmpresa (
     IdEmpresa INT,
     IdTemplate INT,
     NomePersonalizado VARCHAR(200),
+    Subject VARCHAR(300) NULL,
+    BodyMail TEXT NULL,
     FOREIGN KEY (IdEmpresa) REFERENCES Empresa(IdEmpresa),
     FOREIGN KEY (IdTemplate) REFERENCES PhishingTemplate(IdTemplate)
-);
-
--- =========================
--- MULTIPLOS SETORES PARA CAMPANHAS DE PHISHING 
--- =========================
-CREATE TABLE PhishingCampaignSetor (
-    IdCampaign INT,
-    IdSetor INT,
-    PRIMARY KEY (IdCampaign, IdSetor),
-    FOREIGN KEY (IdCampaign) REFERENCES PhishingCampaign(IdCampaign) ON DELETE CASCADE,
-    FOREIGN KEY (IdSetor) REFERENCES Setor(IdSetor) ON DELETE CASCADE
 );
 
 -- =========================
@@ -149,6 +140,18 @@ CREATE TABLE PhishingCampaign (
     FOREIGN KEY (IdTemplateEmpresa) REFERENCES PhishingTemplateEmpresa(IdTemplateEmpresa),
     FOREIGN KEY (IdSetor) REFERENCES Setor(IdSetor)
 );
+
+-- =========================
+-- MULTIPLOS SETORES PARA CAMPANHAS DE PHISHING 
+-- =========================
+CREATE TABLE PhishingCampaignSetor (
+    IdCampaign INT,
+    IdSetor INT,
+    PRIMARY KEY (IdCampaign, IdSetor),
+    FOREIGN KEY (IdCampaign) REFERENCES PhishingCampaign(IdCampaign) ON DELETE CASCADE,
+    FOREIGN KEY (IdSetor) REFERENCES Setor(IdSetor) ON DELETE CASCADE
+);
+
 
 -- =========================
 -- RESULTADO DO USUARIO
