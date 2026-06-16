@@ -290,47 +290,35 @@ var assemblies = [
   {
     "name": "EmailDispatcher",
     "classes": [
-      { "name": "EmailDispatcher.Application.Services.CampaignService", "rp": "EmailDispatcher_CampaignService.html", "cl": 135, "ucl": 26, "cal": 161, "tl": 201, "cb": 23, "tb": 34, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "EmailDispatcher.Application.Services.CampaignService", "rp": "EmailDispatcher_CampaignService.html", "cl": 118, "ucl": 25, "cal": 143, "tl": 201, "cb": 12, "tb": 20, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "EmailDispatcher.Application.Services.Utils.HomoglyphGenerator", "rp": "EmailDispatcher_HomoglyphGenerator.html", "cl": 51, "ucl": 0, "cal": 51, "tl": 74, "cb": 8, "tb": 8, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "EmailDispatcher.Domain.Entities.Campaign", "rp": "EmailDispatcher_Campaign.html", "cl": 5, "ucl": 0, "cal": 5, "tl": 16, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "EmailDispatcher.Domain.Entities.MailCredential", "rp": "EmailDispatcher_MailCredential.html", "cl": 3, "ucl": 0, "cal": 3, "tl": 13, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "EmailDispatcher.Domain.Entities.User", "rp": "EmailDispatcher_User.html", "cl": 3, "ucl": 0, "cal": 3, "tl": 13, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "EmailDispatcher.Infrastructure.Data.MySqlConnectionFactory", "rp": "EmailDispatcher_MySqlConnectionFactory.html", "cl": 0, "ucl": 7, "cal": 7, "tl": 24, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "EmailDispatcher.Infrastructure.Email.EmailSender", "rp": "EmailDispatcher_EmailSender.html", "cl": 0, "ucl": 22, "cal": 22, "tl": 38, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "EmailDispatcher.Infrastructure.Repositories.CampaignRepository", "rp": "EmailDispatcher_CampaignRepository.html", "cl": 4, "ucl": 153, "cal": 157, "tl": 220, "cb": 0, "tb": 14, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "EmailDispatcher.Worker", "rp": "EmailDispatcher_Worker.html", "cl": 0, "ucl": 23, "cal": 23, "tl": 42, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "Program", "rp": "EmailDispatcher_Program.html", "cl": 0, "ucl": 11, "cal": 11, "tl": 29, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "EmailDispatcher.Infrastructure.Data.MySqlConnectionFactory", "rp": "EmailDispatcher_MySqlConnectionFactory.html", "cl": 7, "ucl": 0, "cal": 7, "tl": 24, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "EmailDispatcher.Infrastructure.Email.EmailSender", "rp": "EmailDispatcher_EmailSender.html", "cl": 20, "ucl": 2, "cal": 22, "tl": 38, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "EmailDispatcher.Infrastructure.Repositories.CampaignRepository", "rp": "EmailDispatcher_CampaignRepository.html", "cl": 153, "ucl": 0, "cal": 153, "tl": 220, "cb": 17, "tb": 18, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
     ]},
   {
     "name": "PhishingMinds.Server",
     "classes": [
       { "name": "PhishingMinds.Server.Class.Cargo", "rp": "PhishingMinds.Server_Cargo.html", "cl": 2, "ucl": 0, "cal": 2, "tl": 8, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "PhishingMinds.Server.Class.Empresa", "rp": "PhishingMinds.Server_Empresa.html", "cl": 11, "ucl": 0, "cal": 11, "tl": 20, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "PhishingMinds.Server.Class.MailCredentials", "rp": "PhishingMinds.Server_MailCredentials.html", "cl": 0, "ucl": 3, "cal": 3, "tl": 9, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "PhishingMinds.Server.Class.ParameterValueEntry", "rp": "PhishingMinds.Server_ParameterValueEntry.html", "cl": 0, "ucl": 5, "cal": 5, "tl": 13, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "PhishingMinds.Server.Class.MailCredentials", "rp": "PhishingMinds.Server_MailCredentials.html", "cl": 3, "ucl": 0, "cal": 3, "tl": 9, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "PhishingMinds.Server.Class.ParameterValueEntry", "rp": "PhishingMinds.Server_ParameterValueEntry.html", "cl": 5, "ucl": 0, "cal": 5, "tl": 13, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "PhishingMinds.Server.Class.Pessoa", "rp": "PhishingMinds.Server_Pessoa.html", "cl": 14, "ucl": 0, "cal": 14, "tl": 22, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "PhishingMinds.Server.Class.PhishingCampaign", "rp": "PhishingMinds.Server_PhishingCampaign.html", "cl": 0, "ucl": 11, "cal": 11, "tl": 20, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "PhishingMinds.Server.Class.PhishingCampaignTarget", "rp": "PhishingMinds.Server_PhishingCampaignTarget.html", "cl": 0, "ucl": 11, "cal": 11, "tl": 21, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "PhishingMinds.Server.Class.PhishingTemplate", "rp": "PhishingMinds.Server_PhishingTemplate.html", "cl": 0, "ucl": 6, "cal": 6, "tl": 12, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "PhishingMinds.Server.Class.PhishingTemplateEmpresa", "rp": "PhishingMinds.Server_PhishingTemplateEmpresa.html", "cl": 0, "ucl": 6, "cal": 6, "tl": 14, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "PhishingMinds.Server.Class.Plano", "rp": "PhishingMinds.Server_Plano.html", "cl": 8, "ucl": 0, "cal": 8, "tl": 14, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "PhishingMinds.Server.Class.PhishingCampaign", "rp": "PhishingMinds.Server_PhishingCampaign.html", "cl": 11, "ucl": 0, "cal": 11, "tl": 20, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "PhishingMinds.Server.Class.PhishingCampaignTarget", "rp": "PhishingMinds.Server_PhishingCampaignTarget.html", "cl": 11, "ucl": 0, "cal": 11, "tl": 21, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "PhishingMinds.Server.Class.PhishingTemplate", "rp": "PhishingMinds.Server_PhishingTemplate.html", "cl": 6, "ucl": 0, "cal": 6, "tl": 12, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "PhishingMinds.Server.Class.PhishingTemplateEmpresa", "rp": "PhishingMinds.Server_PhishingTemplateEmpresa.html", "cl": 6, "ucl": 0, "cal": 6, "tl": 14, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "PhishingMinds.Server.Class.Plano", "rp": "PhishingMinds.Server_Plano.html", "cl": 7, "ucl": 0, "cal": 7, "tl": 14, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "PhishingMinds.Server.Class.Setor", "rp": "PhishingMinds.Server_Setor.html", "cl": 5, "ucl": 0, "cal": 5, "tl": 12, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "PhishingMinds.Server.Class.TemplateParameter", "rp": "PhishingMinds.Server_TemplateParameter.html", "cl": 0, "ucl": 5, "cal": 5, "tl": 13, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "PhishingMinds.Server.Class.Treinamento", "rp": "PhishingMinds.Server_Treinamento.html", "cl": 0, "ucl": 4, "cal": 4, "tl": 10, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "PhishingMinds.Server.Controllers.AuthController", "rp": "PhishingMinds.Server_AuthController.html", "cl": 177, "ucl": 42, "cal": 219, "tl": 304, "cb": 27, "tb": 40, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "PhishingMinds.Server.Controllers.CampanhaController", "rp": "PhishingMinds.Server_CampanhaController.html", "cl": 0, "ucl": 207, "cal": 207, "tl": 320, "cb": 0, "tb": 70, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "PhishingMinds.Server.Class.Treinamento", "rp": "PhishingMinds.Server_Treinamento.html", "cl": 4, "ucl": 0, "cal": 4, "tl": 10, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "PhishingMinds.Server.Controllers.AuthController", "rp": "PhishingMinds.Server_AuthController.html", "cl": 164, "ucl": 42, "cal": 206, "tl": 304, "cb": 21, "tb": 34, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "PhishingMinds.Server.Controllers.CargoController", "rp": "PhishingMinds.Server_CargoController.html", "cl": 39, "ucl": 0, "cal": 39, "tl": 78, "cb": 8, "tb": 8, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "PhishingMinds.Server.Controllers.ConcluirTreinamentoRequest", "rp": "PhishingMinds.Server_ConcluirTreinamentoRequest.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 105, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "PhishingMinds.Server.Controllers.DashboardController", "rp": "PhishingMinds.Server_DashboardController.html", "cl": 156, "ucl": 56, "cal": 212, "tl": 248, "cb": 1, "tb": 140, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "PhishingMinds.Server.Controllers.EmpresaController", "rp": "PhishingMinds.Server_EmpresaController.html", "cl": 0, "ucl": 163, "cal": 163, "tl": 223, "cb": 0, "tb": 28, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "PhishingMinds.Server.Controllers.PessoaController", "rp": "PhishingMinds.Server_PessoaController.html", "cl": 189, "ucl": 6, "cal": 195, "tl": 249, "cb": 18, "tb": 18, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "PhishingMinds.Server.Controllers.PlanoController", "rp": "PhishingMinds.Server_PlanoController.html", "cl": 86, "ucl": 0, "cal": 86, "tl": 113, "cb": 16, "tb": 16, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "PhishingMinds.Server.Controllers.SetorController", "rp": "PhishingMinds.Server_SetorController.html", "cl": 73, "ucl": 7, "cal": 80, "tl": 135, "cb": 8, "tb": 8, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "PhishingMinds.Server.Controllers.TemplateController", "rp": "PhishingMinds.Server_TemplateController.html", "cl": 0, "ucl": 122, "cal": 122, "tl": 182, "cb": 0, "tb": 38, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "PhishingMinds.Server.Controllers.TrackingController", "rp": "PhishingMinds.Server_TrackingController.html", "cl": 0, "ucl": 105, "cal": 105, "tl": 137, "cb": 0, "tb": 48, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "PhishingMinds.Server.Controllers.PessoaController", "rp": "PhishingMinds.Server_PessoaController.html", "cl": 167, "ucl": 6, "cal": 173, "tl": 249, "cb": 12, "tb": 12, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "PhishingMinds.Server.Controllers.PlanoController", "rp": "PhishingMinds.Server_PlanoController.html", "cl": 65, "ucl": 0, "cal": 65, "tl": 113, "cb": 8, "tb": 8, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "PhishingMinds.Server.Controllers.SetorController", "rp": "PhishingMinds.Server_SetorController.html", "cl": 71, "ucl": 7, "cal": 78, "tl": 135, "cb": 6, "tb": 6, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "PhishingMinds.Server.Controllers.TreinamentoController", "rp": "PhishingMinds.Server_TreinamentoController.html", "cl": 69, "ucl": 0, "cal": 69, "tl": 105, "cb": 2, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "PhishingMinds.Server.Data.DbConnectionFactory", "rp": "PhishingMinds.Server_DbConnectionFactory.html", "cl": 9, "ucl": 4, "cal": 13, "tl": 28, "cb": 1, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "Program", "rp": "PhishingMinds.Server_Program.html", "cl": 0, "ucl": 78, "cal": 78, "tl": 85, "cb": 0, "tb": 8, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
     ]},
 ];
 
@@ -345,82 +333,10 @@ var riskHotspotMetrics = [
 
 var riskHotspots = [
   {
-    "assembly": "PhishingMinds.Server", "class": "PhishingMinds.Server.Controllers.DashboardController", "reportPath": "PhishingMinds.Server_DashboardController.html", "methodName": "GetEvolucao(System.Int32)", "methodShortName": "GetEvolucao(...)", "fileIndex": 0, "line": 109,
-    "metrics": [
-      { "value": 4692, "exceeded": true },
-      { "value": 68, "exceeded": true },
-    ]},
-  {
-    "assembly": "PhishingMinds.Server", "class": "PhishingMinds.Server.Controllers.CampanhaController", "reportPath": "PhishingMinds.Server_CampanhaController.html", "methodName": "Update(System.Int32,PhishingMinds.Server.Class.PhishingCampaign)", "methodShortName": "Update(...)", "fileIndex": 0, "line": 172,
-    "metrics": [
-      { "value": 1056, "exceeded": true },
-      { "value": 32, "exceeded": true },
-    ]},
-  {
-    "assembly": "PhishingMinds.Server", "class": "PhishingMinds.Server.Controllers.TemplateController", "reportPath": "PhishingMinds.Server_TemplateController.html", "methodName": "GetByEmpresa(System.Int32)", "methodShortName": "GetByEmpresa(...)", "fileIndex": 0, "line": 36,
-    "metrics": [
-      { "value": 1056, "exceeded": true },
-      { "value": 32, "exceeded": true },
-    ]},
-  {
-    "assembly": "PhishingMinds.Server", "class": "PhishingMinds.Server.Controllers.CampanhaController", "reportPath": "PhishingMinds.Server_CampanhaController.html", "methodName": "Create(PhishingMinds.Server.Class.PhishingCampaign)", "methodShortName": "Create(...)", "fileIndex": 0, "line": 89,
-    "metrics": [
-      { "value": 506, "exceeded": true },
-      { "value": 22, "exceeded": true },
-    ]},
-  {
-    "assembly": "PhishingMinds.Server", "class": "PhishingMinds.Server.Controllers.TrackingController", "reportPath": "PhishingMinds.Server_TrackingController.html", "methodName": "Track(System.Int32)", "methodShortName": "Track(...)", "fileIndex": 0, "line": 21,
-    "metrics": [
-      { "value": 210, "exceeded": true },
-      { "value": 14, "exceeded": false },
-    ]},
-  {
-    "assembly": "PhishingMinds.Server", "class": "PhishingMinds.Server.Controllers.TrackingController", "reportPath": "PhishingMinds.Server_TrackingController.html", "methodName": "Open(System.Int32)", "methodShortName": "Open(...)", "fileIndex": 0, "line": 89,
-    "metrics": [
-      { "value": 210, "exceeded": true },
-      { "value": 14, "exceeded": false },
-    ]},
-  {
-    "assembly": "PhishingMinds.Server", "class": "PhishingMinds.Server.Controllers.TrackingController", "reportPath": "PhishingMinds.Server_TrackingController.html", "methodName": "Open(System.Int32)", "methodShortName": "Open(...)", "fileIndex": 0, "line": 69,
-    "metrics": [
-      { "value": 210, "exceeded": true },
-      { "value": 14, "exceeded": false },
-    ]},
-  {
-    "assembly": "PhishingMinds.Server", "class": "PhishingMinds.Server.Controllers.DashboardController", "reportPath": "PhishingMinds.Server_DashboardController.html", "methodName": "GetEvolucao(System.Int32,System.Nullable\u00601\u003CSystem.Int32\u003E)", "methodShortName": "GetEvolucao(...)", "fileIndex": 0, "line": 113,
-    "metrics": [
-      { "value": 177, "exceeded": true },
-      { "value": 68, "exceeded": true },
-    ]},
-  {
-    "assembly": "PhishingMinds.Server", "class": "PhishingMinds.Server.Controllers.CampanhaController", "reportPath": "PhishingMinds.Server_CampanhaController.html", "methodName": "GetByEmpresa(System.Int32)", "methodShortName": "GetByEmpresa(...)", "fileIndex": 0, "line": 31,
-    "metrics": [
-      { "value": 72, "exceeded": true },
-      { "value": 8, "exceeded": false },
-    ]},
-  {
-    "assembly": "PhishingMinds.Server", "class": "PhishingMinds.Server.Controllers.EmpresaController", "reportPath": "PhishingMinds.Server_EmpresaController.html", "methodName": "Update(System.Int32,PhishingMinds.Server.Class.Empresa)", "methodShortName": "Update(...)", "fileIndex": 0, "line": 86,
-    "metrics": [
-      { "value": 72, "exceeded": true },
-      { "value": 8, "exceeded": false },
-    ]},
-  {
-    "assembly": "PhishingMinds.Server", "class": "PhishingMinds.Server.Controllers.CampanhaController", "reportPath": "PhishingMinds.Server_CampanhaController.html", "methodName": "Delete(System.Int32)", "methodShortName": "Delete(...)", "fileIndex": 0, "line": 286,
-    "metrics": [
-      { "value": 42, "exceeded": true },
-      { "value": 6, "exceeded": false },
-    ]},
-  {
-    "assembly": "PhishingMinds.Server", "class": "PhishingMinds.Server.Controllers.TemplateController", "reportPath": "PhishingMinds.Server_TemplateController.html", "methodName": "CustomizeTemplate(System.Int32,PhishingMinds.Server.Controllers.TemplateController/CustomizeRequest)", "methodShortName": "CustomizeTemplate(...)", "fileIndex": 0, "line": 141,
-    "metrics": [
-      { "value": 42, "exceeded": true },
-      { "value": 6, "exceeded": false },
-    ]},
-  {
     "assembly": "PhishingMinds.Server", "class": "PhishingMinds.Server.Controllers.AuthController", "reportPath": "PhishingMinds.Server_AuthController.html", "methodName": "Login(PhishingMinds.Server.Controllers.AuthController/LoginRequest)", "methodShortName": "Login(...)", "fileIndex": 0, "line": 46,
     "metrics": [
-      { "value": 30, "exceeded": false },
-      { "value": 22, "exceeded": true },
+      { "value": 34, "exceeded": true },
+      { "value": 24, "exceeded": true },
     ]},
   {
     "assembly": "EmailDispatcher", "class": "EmailDispatcher.Application.Services.CampaignService", "reportPath": "EmailDispatcher_CampaignService.html", "methodName": "ProcessarCampanhas()", "methodShortName": "ProcessarCampanhas()", "fileIndex": 0, "line": 46,
