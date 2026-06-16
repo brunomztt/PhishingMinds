@@ -1,8 +1,9 @@
 using EmailDispatcher.Domain.Entities;
 using EmailDispatcher.Infrastructure.Data;
-using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Threading.Tasks;
 
 namespace EmailDispatcher.Infrastructure.Repositories
@@ -16,6 +17,24 @@ namespace EmailDispatcher.Infrastructure.Repositories
             _factory = factory;
         }
 
+        private static int GetInt32(DbDataReader reader, string columnName)
+        {
+            return reader.GetInt32(reader.GetOrdinal(columnName));
+        }
+
+        private static string GetString(DbDataReader reader, string columnName)
+        {
+            return reader.GetString(reader.GetOrdinal(columnName));
+        }
+
+        private static void AddParameter(DbCommand cmd, string name, object value)
+        {
+            var p = cmd.CreateParameter();
+            p.ParameterName = name;
+            p.Value = value ?? DBNull.Value;
+            cmd.Parameters.Add(p);
+        }
+
         // Buscar campanhas prontas para disparo
         public virtual async Task<List<Campaign>> BuscarCampanhasPendentes()
         {
@@ -24,7 +43,8 @@ namespace EmailDispatcher.Infrastructure.Repositories
             using var conn = _factory.CreateConnection();
             await conn.OpenAsync();
 
-            var cmd = new MySqlCommand(@"
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = @"
                 SELECT 
                     pc.IdCampaign,
                     pc.IdTemplateEmpresa,
@@ -38,7 +58,7 @@ namespace EmailDispatcher.Infrastructure.Repositories
                     ON pt.IdTemplate = pte.IdTemplate
                 WHERE pc.Status = 'AGENDADO'
                 AND pc.Dt_Disparo <= NOW()
-            ", conn);
+            ";
 
             using var reader = await cmd.ExecuteReaderAsync();
 
@@ -46,11 +66,11 @@ namespace EmailDispatcher.Infrastructure.Repositories
             {
                 campanhas.Add(new Campaign
                 {
-                    IdCampaign = reader.GetInt32("IdCampaign"),
-                    IdTemplateEmpresa = reader.GetInt32("IdTemplateEmpresa"),
-                    Subject = reader.GetString("Subject"),
-                    BodyMail = reader.GetString("BodyMail"),
-                    NomeCampanha = reader.GetString("NomeCampanha")
+                    IdCampaign = GetInt32(reader, "IdCampaign"),
+                    IdTemplateEmpresa = GetInt32(reader, "IdTemplateEmpresa"),
+                    Subject = GetString(reader, "Subject"),
+                    BodyMail = GetString(reader, "BodyMail"),
+                    NomeCampanha = GetString(reader, "NomeCampanha")
                 });
             }
 
@@ -65,7 +85,8 @@ namespace EmailDispatcher.Infrastructure.Repositories
             using var conn = _factory.CreateConnection();
             await conn.OpenAsync();
 
-            var cmd = new MySqlCommand(@"
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = @"
                 SELECT 
                     tp.ParameterName,
                     COALESCE(pv.ParameterValue, tp.ExampleValue) AS ParameterValue
@@ -78,16 +99,16 @@ namespace EmailDispatcher.Infrastructure.Repositories
                     FROM PhishingTemplateEmpresa 
                     WHERE IdTemplateEmpresa = @IdTemplateEmpresa
                 )
-            ", conn);
+            ";
 
-            cmd.Parameters.AddWithValue("@IdTemplateEmpresa", idTemplateEmpresa);
+            AddParameter(cmd, "@IdTemplateEmpresa", idTemplateEmpresa);
 
             using var reader = await cmd.ExecuteReaderAsync();
             while (await reader.ReadAsync())
             {
                 paramsList.Add((
-                    reader.GetString("ParameterName"),
-                    reader.GetString("ParameterValue")
+                    GetString(reader, "ParameterName"),
+                    GetString(reader, "ParameterValue")
                 ));
             }
 
@@ -102,7 +123,8 @@ namespace EmailDispatcher.Infrastructure.Repositories
             using var conn = _factory.CreateConnection();
             await conn.OpenAsync();
 
-            var cmd = new MySqlCommand(@"
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = @"
                 SELECT 
                     t.IdTarget,
                     p.Nome,
@@ -111,9 +133,9 @@ namespace EmailDispatcher.Infrastructure.Repositories
                 JOIN Pessoa p ON p.IdUser = t.IdUser
                 WHERE t.IdCampaign = @IdCampaign
                 AND t.MailSent = 0
-            ", conn);
+            ";
 
-            cmd.Parameters.AddWithValue("@IdCampaign", idCampaign);
+            AddParameter(cmd, "@IdCampaign", idCampaign);
 
             using var reader = await cmd.ExecuteReaderAsync();
 
@@ -121,9 +143,9 @@ namespace EmailDispatcher.Infrastructure.Repositories
             {
                 usuarios.Add(new User
                 {
-                    IdTarget = reader.GetInt32("IdTarget"),
-                    Nome = reader.GetString("Nome"),
-                    Email = reader.GetString("Email")
+                    IdTarget = GetInt32(reader, "IdTarget"),
+                    Nome = GetString(reader, "Nome"),
+                    Email = GetString(reader, "Email")
                 });
             }
 
@@ -136,14 +158,15 @@ namespace EmailDispatcher.Infrastructure.Repositories
             using var conn = _factory.CreateConnection();
             await conn.OpenAsync();
 
-            var cmd = new MySqlCommand(@"
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = @"
                 UPDATE PhishingCampaignTarget
                 SET MailSent = 1,
                     Dt_Register = NOW()
                 WHERE IdTarget = @IdTarget
-            ", conn);
+            ";
 
-            cmd.Parameters.AddWithValue("@IdTarget", idTarget);
+            AddParameter(cmd, "@IdTarget", idTarget);
 
             await cmd.ExecuteNonQueryAsync();
         }
@@ -154,13 +177,14 @@ namespace EmailDispatcher.Infrastructure.Repositories
             using var conn = _factory.CreateConnection();
             await conn.OpenAsync();
 
-            var cmd = new MySqlCommand(@"
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = @"
                 UPDATE PhishingCampaign
                 SET Status = 'PROCESSADA'
                 WHERE IdCampaign = @IdCampaign
-            ", conn);
+            ";
 
-            cmd.Parameters.AddWithValue("@IdCampaign", idCampaign);
+            AddParameter(cmd, "@IdCampaign", idCampaign);
 
             await cmd.ExecuteNonQueryAsync();
         }
@@ -171,11 +195,12 @@ namespace EmailDispatcher.Infrastructure.Repositories
             using var conn = _factory.CreateConnection();
             await conn.OpenAsync();
 
-            var cmd = new MySqlCommand(@"
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = @"
                 SELECT Id_EmailCredentials, Mail, Senha
                 FROM MailCredentials
                 LIMIT 1
-            ", conn);
+            ";
 
             using var reader = await cmd.ExecuteReaderAsync();
 
@@ -183,9 +208,9 @@ namespace EmailDispatcher.Infrastructure.Repositories
             {
                 return new MailCredential
                 {
-                    Id = reader.GetInt32("Id_EmailCredentials"),
-                    Mail = reader.GetString("Mail"),
-                    Senha = reader.GetString("Senha")
+                    Id = GetInt32(reader, "Id_EmailCredentials"),
+                    Mail = GetString(reader, "Mail"),
+                    Senha = GetString(reader, "Senha")
                 };
             }
 

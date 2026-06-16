@@ -1,7 +1,8 @@
-﻿using MySql.Data.MySqlClient;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Data.Common;
 using Microsoft.Extensions.Configuration;
 
 namespace EmailDispatcher.Infrastructure.Data
@@ -15,7 +16,7 @@ namespace EmailDispatcher.Infrastructure.Data
             _conn = config.GetConnectionString("DefaultConnection");
         }
 
-        public MySqlConnection CreateConnection()
+        public virtual DbConnection CreateConnection()
         {
             return new MySqlConnection(_conn);
         }

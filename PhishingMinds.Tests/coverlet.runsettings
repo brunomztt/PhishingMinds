@@ -5,7 +5,7 @@
       <DataCollector friendlyName="XPlat Code Coverage">
         <Configuration>
           <Format>cobertura</Format>
-          <Exclude>[PhishingMinds.Tests]*,[*]EmailDispatcher.Infrastructure.*,[*]EmailDispatcher.Domain.*,[*]EmailDispatcher.Worker*,[*]EmailDispatcher.Program*,[*]PhishingMinds.Server.Data.*,[*]PhishingMinds.Server.Models.*,[*]PhishingMinds.Server.Class.*,[*]PhishingMinds.Server.Program*,[*]Program*,[*]PhishingMinds.Server.Controllers.CampanhaController*,[*]PhishingMinds.Server.Controllers.DashboardController*,[*]PhishingMinds.Server.Controllers.EmpresaController*,[*]PhishingMinds.Server.Controllers.TemplateController*,[*]PhishingMinds.Server.Controllers.TrackingController*</Exclude>
+          <Exclude>[PhishingMinds.Tests]*,[*]EmailDispatcher.Domain.*,[*]EmailDispatcher.Worker*,[*]EmailDispatcher.Program*,[*]PhishingMinds.Server.Data.*,[*]PhishingMinds.Server.Models.*,[*]PhishingMinds.Server.Program*,[*]Program*,[*]PhishingMinds.Server.Controllers.CampanhaController*,[*]PhishingMinds.Server.Controllers.DashboardController*,[*]PhishingMinds.Server.Controllers.EmpresaController*,[*]PhishingMinds.Server.Controllers.TemplateController*,[*]PhishingMinds.Server.Controllers.TrackingController*</Exclude>
         </Configuration>
       </DataCollector>
     </DataCollectors>
